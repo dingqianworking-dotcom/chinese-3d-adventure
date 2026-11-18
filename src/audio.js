@@ -36,34 +36,40 @@ class SoundEngine {
 
   ensureCtx() {
     if (this.muted) return null;
-    if (!this.ctx) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (AC) this.ctx = new AC();
+    try {
+      if (!this.ctx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) this.ctx = new AC();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+      return this.ctx;
+    } catch (_) {
+      return null;
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume().catch(() => {});
-    }
-    return this.ctx;
   }
 
   tone(freq, dur = 0.12, type = 'sine', vol = 0.16, delay = 0, slideTo = null) {
-    const ctx = this.ensureCtx();
-    if (!ctx) return;
-    const now = ctx.currentTime + delay;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, now);
-    if (slideTo) {
-      osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), now + dur);
-    }
-    gain.gain.setValueAtTime(0.001, now);
-    gain.gain.linearRampToValueAtTime(vol, now + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + dur + 0.02);
+    try {
+      const ctx = this.ensureCtx();
+      if (!ctx) return;
+      const now = ctx.currentTime + delay;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      if (slideTo) {
+        osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), now + dur);
+      }
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(Math.max(0.002, vol), now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + dur + 0.02);
+    } catch (_) {}
   }
 
   playTap() {

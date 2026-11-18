@@ -89,25 +89,29 @@ class ChineseAdventureApp {
   }
 
   triggerLessonFX(lessonId, x, y, intensity = 1) {
-    const cfg = LESSON_FX_CONFIG[lessonId] || {
-      cheer: '✨ 奇幻魔法！',
-      emojis: ['✨', '🌟', '🌈'],
-      colors: ['#fde047', '#38bdf8', '#fb7185'],
-      floatUp: true,
-    };
-    this.sound.playLessonSFX(lessonId);
-    this.fx.multiRipple(x, y, cfg.colors);
-    this.fx.emojiBurst(x, y, cfg.emojis, Math.round(14 * intensity), cfg.floatUp);
-    this.fx.confettiBurst(x, y, Math.round(20 * intensity));
-    this.fx.floatText(x, y - 18, cfg.cheer, cfg.colors[0]);
-    this.world.spawnBurst([0, 0.25, 0.55], Math.round(22 * intensity), cfg.colors);
+    try {
+      const cfg = LESSON_FX_CONFIG[lessonId] || {
+        cheer: '✨ 奇幻魔法！',
+        emojis: ['✨', '🌟', '🌈'],
+        colors: ['#fde047', '#38bdf8', '#fb7185'],
+        floatUp: true,
+      };
+      const safeX = Number.isFinite(x) ? x : window.innerWidth * 0.5;
+      const safeY = Number.isFinite(y) ? y : window.innerHeight * 0.4;
+      this.sound.playLessonSFX(lessonId);
+      this.fx.multiRipple(safeX, safeY, cfg.colors);
+      this.fx.emojiBurst(safeX, safeY, cfg.emojis, Math.round(14 * intensity), cfg.floatUp);
+      this.fx.confettiBurst(safeX, safeY, Math.round(20 * intensity));
+      this.fx.floatText(safeX, safeY - 18, cfg.cheer, cfg.colors[0]);
+      this.world.spawnBurst([0, 0.25, 0.55], Math.round(22 * intensity), cfg.colors);
 
-    const stageWrap = document.getElementById('stage-3d-wrap');
-    if (stageWrap) {
-      stageWrap.classList.remove('stage-light-flash');
-      void stageWrap.offsetWidth;
-      stageWrap.classList.add('stage-light-flash');
-    }
+      const stageWrap = document.getElementById('stage-3d-wrap');
+      if (stageWrap) {
+        stageWrap.classList.remove('stage-light-flash');
+        void stageWrap.offsetWidth;
+        stageWrap.classList.add('stage-light-flash');
+      }
+    } catch (_) {}
   }
 
   bindStageInteractive() {
@@ -291,8 +295,22 @@ class ChineseAdventureApp {
     this.render();
   }
 
+  scrollToStage() {
+    try {
+      if (typeof window !== 'undefined' && window.scrollY > 80) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } catch (_) {
+      try { window.scrollTo(0, 0); } catch (__) {}
+    }
+  }
+
+  findAnyLesson(lessonId) {
+    return [...GRADE1_LESSONS, ...GRADE2_LESSONS].find((l) => l.id === lessonId) || null;
+  }
+
   openStudy(lessonId) {
-    const lesson = this.getLessons().find((l) => l.id === lessonId);
+    const lesson = this.findAnyLesson(lessonId);
     if (!lesson) return;
     this.sound.playPop();
     this.activeLesson = lesson;
@@ -300,13 +318,14 @@ class ChineseAdventureApp {
     this.syncSky(lesson.sky);
     this.world.setScene(lesson.scene);
     this.render();
+    this.scrollToStage();
     if (this.state.autoRead) {
       this.sound.speak(`${lesson.code}，${lesson.title}，考前重點秘笈！點選卡片可以聽發音喔！`);
     }
   }
 
   startLesson(lessonId) {
-    const lesson = this.getLessons().find((l) => l.id === lessonId);
+    const lesson = this.findAnyLesson(lessonId);
     if (!lesson) return;
     this.sound.playPop();
     this.activeLesson = lesson;
@@ -350,6 +369,7 @@ class ChineseAdventureApp {
     this.customSelectedIds = new Set(this.getLessons().map((l) => l.id));
     this.view = 'custom_picker';
     this.render();
+    this.scrollToStage();
   }
 
   startCustomSession() {
@@ -435,6 +455,7 @@ class ChineseAdventureApp {
     document.body.classList.remove('fever-active');
     this.world.setScene(cfg.scene);
     this.render();
+    this.scrollToStage();
     this.autoSpeakCurrent();
   }
 
@@ -962,9 +983,10 @@ class ChineseAdventureApp {
       const card = document.createElement('div');
       card.className = 'lesson-card lesson-card-3d';
       card.id = `card-${l.id}`;
+      card.dataset.lessonId = l.id;
       card.innerHTML = `
         <div class="lesson-3d-thumb">
-          <img class="lesson-3d-img" src="${thumbSrc}" alt="${escapeHtml(l.title)}" loading="lazy" />
+          <img class="lesson-3d-img" src="${thumbSrc}" alt="${escapeHtml(l.title)}" draggable="false" />
           <span class="lesson-3d-gloss"></span>
           <span class="lesson-3d-code">${escapeHtml(l.code)}</span>
           <span class="lesson-3d-stars">${this.renderStars(st)}</span>
@@ -973,13 +995,14 @@ class ChineseAdventureApp {
         <div class="lesson-card-body">
           <h3 class="lesson-name">${this.fmtText(l.title)}</h3>
           <div class="lesson-btn-row">
-            <button class="toy-btn sun sm" id="study-${l.id}" style="white-space:nowrap;">📖 課文</button>
-            <button class="toy-btn primary sm" id="play-${l.id}" style="white-space:nowrap;">▶️ 玩！</button>
+            <button type="button" class="toy-btn sun sm" id="study-${l.id}" style="white-space:nowrap;">📖 課文</button>
+            <button type="button" class="toy-btn primary sm" id="play-${l.id}" style="white-space:nowrap;">▶️ 玩！</button>
           </div>
         </div>
       `;
 
-      card.onpointerenter = () => {
+      card.onpointerenter = (e) => {
+        if (e && e.pointerType && e.pointerType !== 'mouse') return;
         const changed = !this.hoverLesson || this.hoverLesson.id !== l.id;
         this.hoverLesson = l;
         this.world.setScene(l.scene);
@@ -992,17 +1015,18 @@ class ChineseAdventureApp {
       };
 
       card.onpointermove = (e) => {
+        if (e && e.pointerType && e.pointerType !== 'mouse') return;
         const r = card.getBoundingClientRect();
         const px = (e.clientX - r.left) / Math.max(1, r.width) - 0.5;
         const py = (e.clientY - r.top) / Math.max(1, r.height) - 0.5;
-        card.style.setProperty('--rx', `${(-py * 11).toFixed(2)}deg`);
-        card.style.setProperty('--ry', `${(px * 13).toFixed(2)}deg`);
+        card.style.setProperty('--ix', `${(-px * 10).toFixed(1)}px`);
+        card.style.setProperty('--iy', `${(-py * 8).toFixed(1)}px`);
         card.style.setProperty('--gx', `${Math.round((px + 0.5) * 100)}%`);
       };
 
       card.onpointerleave = () => {
-        card.style.setProperty('--rx', '0deg');
-        card.style.setProperty('--ry', '0deg');
+        card.style.setProperty('--ix', '0px');
+        card.style.setProperty('--iy', '0px');
       };
 
       grid.appendChild(card);
@@ -1018,21 +1042,28 @@ class ChineseAdventureApp {
       document.getElementById(`study-${l.id}`).onclick = (e) => {
         e.stopPropagation();
         const r = card.getBoundingClientRect();
-        this.triggerLessonFX(l.id, r.left + r.width / 2, r.top + 60, 0.75);
+        const fxX = r.left + r.width / 2;
+        const fxY = r.top + 60;
         this.openStudy(l.id);
+        this.triggerLessonFX(l.id, fxX, fxY, 0.75);
       };
 
       document.getElementById(`play-${l.id}`).onclick = (e) => {
         e.stopPropagation();
         const r = card.getBoundingClientRect();
-        this.triggerLessonFX(l.id, r.left + r.width / 2, r.top + 60, 0.9);
+        const fxX = r.left + r.width / 2;
+        const fxY = r.top + 60;
         this.startLesson(l.id);
+        this.triggerLessonFX(l.id, fxX, fxY, 0.9);
       };
 
       card.onclick = (e) => {
+        if (e.target && e.target.closest && e.target.closest('button')) return;
         const r = card.getBoundingClientRect();
-        this.triggerLessonFX(l.id, e.clientX || (r.left + r.width / 2), e.clientY || (r.top + 60), 0.9);
+        const fxX = e.clientX || (r.left + r.width / 2);
+        const fxY = e.clientY || (r.top + 60);
         this.startLesson(l.id);
+        this.triggerLessonFX(l.id, fxX, fxY, 0.9);
       };
     });
   }
