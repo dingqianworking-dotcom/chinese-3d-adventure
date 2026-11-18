@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>國小一二年級國語 3D 奇幻期末大冒險（115南一版）</title>
+  <meta name="description" content="專為國小一年級、二年級與ADHD學童設計的3D立體國語期末考分課闖關與總複習互動遊戲，涵蓋115南一版一上第1~7課與二上第7~12課。" />
+  <style>/*__INLINE_CSS__*/</style>
+</head>
+<body>
+  <div class="sky-decor-layer" aria-hidden="true">
+    <span class="sky-cloud c1">☁️</span>
+    <span class="sky-cloud c2">☁️</span>
+    <span class="sky-cloud c3">☁️</span>
+    <span class="sky-star s1">✨</span>
+    <span class="sky-star s2">⭐</span>
+    <span class="sky-star s3">🌟</span>
+  </div>
+  <canvas id="fx-canvas" aria-hidden="true"></canvas>
+  <div class="app-shell">
+    <header class="hud-bar">
+      <div class="brand-cluster" id="btn-brand-home" style="cursor:pointer;" title="回首頁">
+        <span style="font-size:1.85rem;">🏰</span>
+        <div>
+          <h1 class="brand-title">國語大冒險</h1>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-chip" id="hud-coins-chip" title="金幣">
+          🪙 <span id="hud-coins-val">60</span>
+        </div>
+        <div class="stat-chip gem" title="寶石">
+          💎 <span id="hud-gems-val">3</span>
+        </div>
+        <button id="btn-open-gacha" class="toy-btn sun sm">🎰 扭蛋</button>
+        <button id="btn-open-report" class="toy-btn sm">📊 成績</button>
+        <button id="btn-toggle-zhuyin" class="toy-btn sm active-toggle"><span class="zy-mini-stack"><span>ㄅ</span><span>ㄆ</span><span>ㄇ</span></span> 開</button>
+        <button id="btn-toggle-voice" class="toy-btn sm active-toggle">🔊 唸題</button>
+        <button id="btn-toggle-bgm" class="toy-btn sm">🎵 音樂</button>
+      </div>
+    </header>
+
+    <section class="stage-3d-wrap" id="stage-3d-wrap" aria-label="奇幻浮空島舞台">
+      <div class="stage-bg-art" id="stage-bg-art"></div>
+      <canvas id="world3d"></canvas>
+      <div class="pixar-stage-actor" id="pixar-stage-actor"></div>
+      <div class="stage-overlay-top" id="stage-overlay-top"></div>
+      <div id="stage-overlay-bot"></div>
+      <div class="dopamine-fx-layer" id="dopamine-fx-layer" aria-live="polite"></div>
+    </section>
+
+    <main class="deck-panel" id="main-deck"></main>
+  </div>
+  <script>/*__INLINE_JS__*/</script>
+</body>
+</html>
