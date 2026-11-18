@@ -16,6 +16,20 @@ const RADICAL_SPEECH_MAP = [
   ['＋', '加'],
 ];
 
+const BOPOMOFO_SPEECH_MAP = {
+  'ㄅ': '玻', 'ㄆ': '坡', 'ㄇ': '摸', 'ㄈ': '佛',
+  'ㄉ': '得', 'ㄊ': '特', 'ㄋ': '訥', 'ㄌ': '勒',
+  'ㄍ': '哥', 'ㄎ': '科', 'ㄏ': '喝',
+  'ㄐ': '基', 'ㄑ': '欺', 'ㄒ': '希',
+  'ㄓ': '知', 'ㄔ': '蚩', 'ㄕ': '詩', 'ㄖ': '日',
+  'ㄗ': '資', 'ㄘ': '雌', 'ㄙ': '思',
+  'ㄧ': '衣', 'ㄨ': '屋', 'ㄩ': '迂',
+  'ㄚ': '啊', 'ㄛ': '喔', 'ㄜ': '鵝', 'ㄝ': '耶',
+  'ㄞ': '哀', 'ㄟ': '欸', 'ㄠ': '熬', 'ㄡ': '歐',
+  'ㄢ': '安', 'ㄣ': '恩', 'ㄤ': '昂', 'ㄥ': '亨',
+  'ㄦ': '兒',
+};
+
 class SoundEngine {
   constructor() {
     this.ctx = null;
@@ -115,6 +129,32 @@ class SoundEngine {
 
   playLessonSFX(lessonId) {
     switch (lessonId) {
+      case 'k2_L1': // 親親一家人: Warm music-box heart chord
+        [523.25, 659.25, 783.99, 1046.5].forEach((n, i) => this.tone(n, 0.16, 'sine', 0.16, i * 0.055));
+        break;
+      case 'k2_L2': // 快樂動物村: Playful bunny hop + bird chirp
+        this.tone(320, 0.11, 'sine', 0.17, 0, 740);
+        this.tone(987.77, 0.09, 'triangle', 0.15, 0.12, 1318.5);
+        break;
+      case 'k2_L3': // 汪汪喵喵派對: Cute puppy-kitty bell bounce
+        this.tone(587.33, 0.1, 'triangle', 0.17, 0, 783.99);
+        this.tone(880, 0.14, 'sine', 0.16, 0.09, 1174.66);
+        break;
+      case 'k2_L4': // 小雞吃西瓜: Chick peep-peep!
+        [1046.5, 1318.5, 1567.98].forEach((n, i) => this.tone(n, 0.075, 'sine', 0.15, i * 0.065, n * 1.18));
+        break;
+      case 'k2_L5': // 太陽與山水: Golden sunbeam & stream chime
+        [523.25, 587.33, 783.99, 1046.5, 1318.5].forEach((n, i) => this.tone(n, 0.13, 'triangle', 0.15, i * 0.045));
+        break;
+      case 'k2_L6': // 森林數一數: 1-2-3-4 Toy Xylophone scale!
+        [523.25, 587.33, 659.25, 698.46, 783.99].forEach((n, i) => this.tone(n, 0.1, 'triangle', 0.17, i * 0.055));
+        break;
+      case 'k2_L7': // 月亮綿羊島: Dreamy celesta lullaby twinkle
+        [659.25, 987.77, 1318.5, 1567.98].forEach((n, i) => this.tone(n, 0.18, 'sine', 0.14, i * 0.06));
+        break;
+      case 'k2_L8': // 象形識字王: Royal xylophone fanfare
+        [523.25, 659.25, 783.99, 1046.5, 1567.98].forEach((n, i) => this.tone(n, 0.15, 'triangle', 0.17, i * 0.05));
+        break;
       case 'g1_L1': // 小船: Ocean wave + boat bell
         this.tone(320, 0.18, 'sine', 0.14, 0, 520);
         this.tone(880, 0.22, 'triangle', 0.16, 0.08);
@@ -264,11 +304,13 @@ class SoundEngine {
       for (const [sym, spoken] of RADICAL_SPEECH_MAP) {
         clean = clean.split(sym).join(spoken);
       }
-      // Remove parenthesized raw Zhuyin like （ㄔㄨㄢˊ） so TTS doesn't choke
+      // First remove parenthesized Zhuyin annotations like （ㄔㄨㄢˊ） so words aren't read twice
+      clean = clean.replace(/[（(][\u3105-\u3129ˊˇˋ˙\s/]+[)）]/g, '');
+      // Convert any remaining standalone Bopomofo symbols (e.g. K2 ㄅㄆㄇ cards/options) to Taiwan Mandarin phonetic names!
+      clean = clean.replace(/[\u3105-\u3129]/g, (ch) => (BOPOMOFO_SPEECH_MAP[ch] ? ` ${BOPOMOFO_SPEECH_MAP[ch]} ` : ''));
       clean = clean
-        .replace(/[（(][\u3105-\u3129ˊˇˋ˙\s/]+[)）]/g, '')
-        .replace(/[\u3105-\u3129]+/g, '')
-        .replace(/[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥]/g, ' ')
+        .replace(/[ˊˇˋ˙]/g, '')
+        .replace(/[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜]/gu, ' ')
         .replace(/＿+/g, '空格')
         .replace(/\s+/g, ' ')
         .trim();

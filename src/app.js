@@ -1,7 +1,8 @@
 const { SoundEngine } = require('./audio');
 const { FXEngine } = require('./fx');
-const { annotateZhuyin, renderVerticalZhuyin, escapeHtml } = require('./zhuyin_helper');
+const { annotateZhuyin, renderVerticalZhuyin, renderCharWithZhuyin, escapeHtml } = require('./zhuyin_helper');
 const { World3DEngine } = require('./webgl3d');
+const { K2_LESSONS, K2_BOSS_EXTRAS } = require('./curriculum_k2');
 const { GRADE1_LESSONS, GRADE1_BOSS_EXTRAS } = require('./curriculum_g1');
 const { GRADE2_LESSONS, GRADE2_BOSS_EXTRAS, PET_CATALOG } = require('./curriculum_g2');
 
@@ -29,12 +30,20 @@ function shuffle(arr) {
 function cleanExplain(text) {
   if (!text) return '';
   return String(text).replace(
-    /^(答對[^！!]*|太[^！!]*|超[^！!]*|完全[^！!]*|神[^！!]*|百發百中|一百分|滿分|叮咚[^！!]*|轟隆[^！!]*|金光[^！!]*|閃耀[^！!]*|合成[^！!]*|破案[^！!]*|抓到[^！!]*|抓得好|沒錯|沒被騙[^！!]*|嘟嘟[^！!]*|月考[^！!]*|魔王題[^！!]*|學霸[^！!]*|理解力[^！!]*|三胞胎[^！!]*|射中[^！!]*|射得好|成語[^！!]*|觀念[^！!]*|邏輯[^！!]*|想像力[^！!]*|暖心[^！!]*|精準[^！!]*|訂正[^！!]*|火眼金睛|眼力[^！!]*|素養[^！!]*|閱讀[^！!]*|哈哈[^！!]*|破解[^！!]*)[！!]\s*/,
+    /^(答對[^！!]*|太[^！!]*|超[^！!]*|完全[^！!]*|神[^！!]*|百發百中|一百分|滿分|叮咚[^！!]*|轟隆[^！!]*|金光[^！!]*|閃耀[^！!]*|合成[^！!]*|破案[^！!]*|抓到[^！!]*|抓得好|沒錯|沒被騙[^！!]*|嘟嘟[^！!]*|月考[^！!]*|魔王題[^！!]*|學霸[^！!]*|理解力[^！!]*|三胞胎[^！!]*|射中[^！!]*|射得好|成語[^！!]*|觀念[^！!]*|邏輯[^！!]*|想像力[^！!]*|暖心[^！!]*|精準[^！!]*|訂正[^！!]*|火眼金睛|眼力[^！!]*|素養[^！!]*|閱讀[^！!]*|哈哈[^！!]*|破解[^！!]*|好棒[^！!]*|好厲害[^！!]*)[！!]\s*/,
     ''
   );
 }
 
 const LESSON_FX_CONFIG = {
+  k2_L1: { action: '🏡 點溫馨小屋', cheer: '🩷 爸爸媽媽抱抱！', emojis: ['🏡', '🩷', '👨', '👩', '✨'], colors: ['#f472b6', '#fb7185', '#fde047'], floatUp: true },
+  k2_L2: { action: '🐰 點快樂動物', cheer: '🐰 動物朋友嗨！', emojis: ['🐰', '🐘', '🐮', '🐦', '✨'], colors: ['#34d399', '#fb923c', '#fde047'], floatUp: true },
+  k2_L3: { action: '🐶 點汪喵派對', cheer: '🐶 汪汪喵喵！', emojis: ['🐶', '🐱', '🌸', '🔥', '✨'], colors: ['#38bdf8', '#fb7185', '#fde047'], floatUp: true },
+  k2_L4: { action: '🐥 點小雞西瓜', cheer: '🐥 啾啾吃西瓜！', emojis: ['🐥', '🍉', '🐟', '🌟', '✨'], colors: ['#facc15', '#fb7185', '#4ade80'], floatUp: true },
+  k2_L5: { action: '☀️ 點太陽山水', cheer: '☀️ 太陽亮晶晶！', emojis: ['☀️', '⛰️', '💧', '🚗', '✨'], colors: ['#fde047', '#38bdf8', '#4ade80'], floatUp: true },
+  k2_L6: { action: '🌿 點森林數數', cheer: '🌿 一二三四！', emojis: ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '🌿'], colors: ['#10b981', '#fde047', '#38bdf8'], floatUp: true },
+  k2_L7: { action: '🌙 點月亮綿羊', cheer: '🌙 晚安小綿羊！', emojis: ['🌙', '🐑', '⭐', '🦆', '✨'], colors: ['#818cf8', '#f472b6', '#fde047'], floatUp: true },
+  k2_L8: { action: '🌳 點魔法大樹', cheer: '👑 識字小狀元！', emojis: ['🌳', '⭐', '👑', '💖', '✨'], colors: ['#fb7185', '#fde047', '#4ade80'], floatUp: true },
   g1_L1: { action: '🌊 點小船衝浪', cheer: '⛵ 乘風破浪！', emojis: ['⛵', '🐟', '🌊', '💧', '✨'], colors: ['#38bdf8', '#0ea5e9', '#fde047'], floatUp: false },
   g1_L2: { action: '🖐️ 點彩虹手印', cheer: '🌈 五彩手印！', emojis: ['🖐️', '🌸', '🌷', '🌈', '✨'], colors: ['#fb7185', '#facc15', '#c084fc'], floatUp: true },
   g1_L3: { action: '🫧 點吹泡泡', cheer: '🫧 泡泡飛高高！', emojis: ['🫧', '🌈', '✨', '💫'], colors: ['#38bdf8', '#c084fc', '#f472b6'], floatUp: true },
@@ -72,7 +81,7 @@ class ChineseAdventureApp {
     this.bindGlobalKeys();
     this.bindStageInteractive();
     this.syncSky(this.getHubSky());
-    this.world.setScene(this.state.grade === 'g1' ? 'hub_g1' : 'hub_g2');
+    this.world.setScene(this.state.grade === 'g2' ? 'hub_g2' : 'hub_g1');
     this.render();
   }
 
@@ -82,7 +91,7 @@ class ChineseAdventureApp {
     if ((this.view === 'play' || this.view === 'victory') && this.session) {
       if (LESSON_FX_CONFIG[this.session.id]) return this.session.id;
       const q = this.session.questions && this.session.questions[this.session.index];
-      const m = q && q.id && q.id.match(/^(g[12]_L\d+)/);
+      const m = q && q.id && q.id.match(/^((?:k2|g[12])_L\d+)/);
       if (m && LESSON_FX_CONFIG[m[1]]) return m[1];
     }
     return null;
@@ -166,9 +175,12 @@ class ChineseAdventureApp {
       if (!raw) return fallback;
       const parsed = JSON.parse(raw);
       const merged = { ...fallback, ...parsed };
+      if (!['k2', 'g1', 'g2'].includes(merged.grade)) merged.grade = 'g1';
       if (merged.mistakes && typeof merged.mistakes === 'object') {
         const canonical = {};
         [
+          ...K2_LESSONS.flatMap((l) => l.questions),
+          ...K2_BOSS_EXTRAS,
           ...GRADE1_LESSONS.flatMap((l) => l.questions),
           ...GRADE1_BOSS_EXTRAS,
           ...GRADE2_LESSONS.flatMap((l) => l.questions),
@@ -200,14 +212,17 @@ class ChineseAdventureApp {
   }
 
   getLessons(grade = this.state.grade) {
+    if (grade === 'k2') return K2_LESSONS;
     return grade === 'g1' ? GRADE1_LESSONS : GRADE2_LESSONS;
   }
 
   getBossExtras(grade = this.state.grade) {
+    if (grade === 'k2') return K2_BOSS_EXTRAS;
     return grade === 'g1' ? GRADE1_BOSS_EXTRAS : GRADE2_BOSS_EXTRAS;
   }
 
   getHubSky() {
+    if (this.state.grade === 'k2') return ['#f472b6', '#fbcfe8', '#fef9c3'];
     return this.state.grade === 'g1'
       ? ['#38bdf8', '#bae6fd', '#fef9c3']
       : ['#10b981', '#a7f3d0', '#fef9c3'];
@@ -277,7 +292,7 @@ class ChineseAdventureApp {
     this.syncSky(this.getHubSky());
     this.world.fever = false;
     document.body.classList.remove('fever-active');
-    this.world.setScene(g === 'g1' ? 'hub_g1' : 'hub_g2');
+    this.world.setScene(g === 'g2' ? 'hub_g2' : 'hub_g1');
     this.render();
   }
 
@@ -290,7 +305,7 @@ class ChineseAdventureApp {
     this.world.fever = false;
     document.body.classList.remove('fever-active');
     this.syncSky(this.getHubSky());
-    this.world.setScene(this.state.grade === 'g1' ? 'hub_g1' : 'hub_g2');
+    this.world.setScene(this.state.grade === 'g2' ? 'hub_g2' : 'hub_g1');
     this.world.setPet(this.state.equippedPet);
     this.render();
   }
@@ -306,7 +321,7 @@ class ChineseAdventureApp {
   }
 
   findAnyLesson(lessonId) {
-    return [...GRADE1_LESSONS, ...GRADE2_LESSONS].find((l) => l.id === lessonId) || null;
+    return [...K2_LESSONS, ...GRADE1_LESSONS, ...GRADE2_LESSONS].find((l) => l.id === lessonId) || null;
   }
 
   openStudy(lessonId) {
@@ -320,7 +335,10 @@ class ChineseAdventureApp {
     this.render();
     this.scrollToStage();
     if (this.state.autoRead) {
-      this.sound.speak(`${lesson.code}，${lesson.title}，考前重點秘笈！點選卡片可以聽發音喔！`);
+      const msg = lesson.id.startsWith('k2_')
+        ? `${lesson.code}，點選大圖卡，聽注音認識國字喔！`
+        : `${lesson.code}，${lesson.title}，考前重點秘笈！點選卡片可以聽發音喔！`;
+      this.sound.speak(msg);
     }
   }
 
@@ -350,12 +368,18 @@ class ChineseAdventureApp {
       const picked = shuffle(l.questions).slice(0, 1);
       perLessonPool.push(...picked);
     });
-    const extras = shuffle(this.getBossExtras(g)).slice(0, g === 'g1' ? 5 : 6);
+    const extraCount = g === 'k2' ? 4 : g === 'g1' ? 5 : 6;
+    const extras = shuffle(this.getBossExtras(g)).slice(0, extraCount);
     const combined = shuffle([...perLessonPool, ...extras]).slice(0, 12).map((q) => this.prepareQuestion(q));
+    const bossTitle = g === 'k2'
+      ? '🐉 幼兒中班總複習：ㄅ ㄆ ㄇ 識字小狀元'
+      : g === 'g1'
+        ? '🐉 一年級期末總複習：星際魔王決戰'
+        : '🐉 二年級期末總複習：夢工廠魔王決戰';
 
     this.launchSession({
       id: `boss_${g}`,
-      title: g === 'g1' ? '🐉 一年級期末總複習：星際魔王決戰' : '🐉 二年級期末總複習：夢工廠魔王決戰',
+      title: bossTitle,
       scene: 'boss',
       sky: ['#be123c', '#fda4af', '#fef08a'],
       isBoss: true,
@@ -804,7 +828,11 @@ class ChineseAdventureApp {
       }
     }
 
-    let label = this.state.grade === 'g1' ? '🏝️ 一年級天空王國' : '🏝️ 二年級夢幻王國';
+    let label = this.state.grade === 'k2'
+      ? '🎠 幼兒中班 ㄅ ㄆ ㄇ 識字樂園'
+      : this.state.grade === 'g1'
+        ? '🏝️ 一年級天空王國'
+        : '🏝️ 二年級夢幻王國';
     if (this.view === 'hub' && this.hoverLesson) {
       label = `${this.hoverLesson.code}《${this.hoverLesson.title}》`;
     } else if (this.view === 'study' && this.activeLesson) {
@@ -824,7 +852,7 @@ class ChineseAdventureApp {
     }
 
     stageTop.innerHTML = `
-      <div class="scene-label-tag">${escapeHtml(label)}</div>
+      <div class="scene-label-tag">${renderVerticalZhuyin(label, 'inline')}</div>
       ${comboHtml}
     `;
 
@@ -927,32 +955,48 @@ class ChineseAdventureApp {
   }
 
   renderHub(deck) {
-    const isG1 = this.state.grade === 'g1';
+    const g = this.state.grade;
+    const isK2 = g === 'k2';
     const lessons = this.getLessons();
     const mistakesCount = this.getGradeMistakes().length;
-    const bossStars = this.state.stars[`boss_${this.state.grade}`] || 0;
+    const bossStars = this.state.stars[`boss_${g}`] || 0;
 
     deck.innerHTML = `
       <div class="grade-tabs">
         <div class="grade-switch-group">
-          <button id="tab-grade-1" class="toy-btn grade-tab-btn ${isG1 ? 'coral' : ''}">
+          <button id="tab-grade-k2" class="toy-btn grade-tab-btn ${g === 'k2' ? 'sun' : ''}">
+            🐥 幼兒中班
+          </button>
+          <button id="tab-grade-1" class="toy-btn grade-tab-btn ${g === 'g1' ? 'coral' : ''}">
             🐣 一年級
           </button>
-          <button id="tab-grade-2" class="toy-btn grade-tab-btn ${!isG1 ? 'mint' : ''}">
+          <button id="tab-grade-2" class="toy-btn grade-tab-btn ${g === 'g2' ? 'mint' : ''}">
             🚀 二年級
           </button>
         </div>
       </div>
 
+      ${isK2 ? `
+        <div class="k2-step-ribbon" aria-label="中班四步慢慢認國字">
+          <span class="k2-step-chip">🎯 聽音認 ${renderVerticalZhuyin('ㄅ', 'inline')}${renderVerticalZhuyin('ㄆ', 'inline')}${renderVerticalZhuyin('ㄇ', 'inline')}</span>
+          <span class="k2-step-arrow">➔</span>
+          <span class="k2-step-chip">🧪 拼音變國字</span>
+          <span class="k2-step-arrow">➔</span>
+          <span class="k2-step-chip">🧩 注音陪讀</span>
+          <span class="k2-step-arrow">➔</span>
+          <span class="k2-step-chip">🔨 敲地鼠認國字</span>
+        </div>
+      ` : ''}
+
       <div class="review-hero-strip">
         <div class="hero-action-card boss-card">
-          <h2 class="hero-card-title">🐉 打大魔王 ${this.renderStars(bossStars)}</h2>
+          <h2 class="hero-card-title">${isK2 ? '👑 識字大魔王' : '🐉 打大魔王'} ${this.renderStars(bossStars)}</h2>
           <button id="btn-start-boss" class="toy-btn coral">⚔️ 開戰！(12題)</button>
         </div>
 
         <div class="hero-action-card custom-card">
-          <h2 class="hero-card-title">🎯 自己選課</h2>
-          <button id="btn-open-custom" class="toy-btn primary">✨ 選課複習</button>
+          <h2 class="hero-card-title">🎯 自己選關</h2>
+          <button id="btn-open-custom" class="toy-btn primary">✨ 選關複習</button>
         </div>
 
         <div class="hero-action-card mistake-card">
@@ -964,11 +1008,12 @@ class ChineseAdventureApp {
       </div>
 
       <h2 style="margin:6px 0 12px;font-size:1.15rem;font-weight:900;color:#0f172a;">
-        🗺️ 選一課來玩！
+        🗺️ ${isK2 ? '選一關邊玩邊認字！' : '選一課來玩！'}
       </h2>
       <div class="lessons-grid" id="lessons-grid"></div>
     `;
 
+    document.getElementById('tab-grade-k2').onclick = () => this.switchGrade('k2');
     document.getElementById('tab-grade-1').onclick = () => this.switchGrade('g1');
     document.getElementById('tab-grade-2').onclick = () => this.switchGrade('g2');
     document.getElementById('btn-start-boss').onclick = () => this.startBossBattle();
@@ -980,6 +1025,7 @@ class ChineseAdventureApp {
     lessons.forEach((l) => {
       const st = this.state.stars[l.id] || 0;
       const thumbSrc = (window.__ART__ && window.__ART__.lessons && window.__ART__.lessons[l.id]) || '';
+      const isLessonK2 = l.id.startsWith('k2_');
       const card = document.createElement('div');
       card.className = 'lesson-card lesson-card-3d';
       card.id = `card-${l.id}`;
@@ -995,7 +1041,7 @@ class ChineseAdventureApp {
         <div class="lesson-card-body">
           <h3 class="lesson-name">${this.fmtText(l.title)}</h3>
           <div class="lesson-btn-row">
-            <button type="button" class="toy-btn sun sm" id="study-${l.id}" style="white-space:nowrap;">📖 課文</button>
+            <button type="button" class="toy-btn sun sm" id="study-${l.id}" style="white-space:nowrap;">${isLessonK2 ? '📖 圖卡' : '📖 課文'}</button>
             <button type="button" class="toy-btn primary sm" id="play-${l.id}" style="white-space:nowrap;">▶️ 玩！</button>
           </div>
         </div>
@@ -1071,18 +1117,19 @@ class ChineseAdventureApp {
   renderStudy(deck) {
     const l = this.activeLesson;
     if (!l) return this.goHub();
+    const isK2 = l.id.startsWith('k2_');
     deck.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
         <div>
           <span class="mode-pill">🔊 點卡片聽發音！</span>
-          <h2 style="margin:4px 0 0;font-size:1.45rem;font-weight:900;">${l.code}：${this.fmtText(l.title)}</h2>
+          <h2 style="margin:4px 0 0;font-size:1.45rem;font-weight:900;">${escapeHtml(l.code)}：${this.fmtText(l.title)}</h2>
         </div>
         <div style="display:flex;gap:8px;">
           <button id="btn-study-back" class="toy-btn">⬅️ 回去</button>
           <button id="btn-study-go" class="toy-btn coral">▶️ 開始玩！</button>
         </div>
       </div>
-      <div class="flashcards-grid" id="study-cards-wrap"></div>
+      <div class="flashcards-grid ${isK2 ? 'k2-flashcards-grid' : ''}" id="study-cards-wrap"></div>
     `;
     document.getElementById('btn-study-back').onclick = () => this.goHub();
     document.getElementById('btn-study-go').onclick = () => {
@@ -1093,19 +1140,30 @@ class ChineseAdventureApp {
     const wrap = document.getElementById('study-cards-wrap');
     l.studyCards.forEach((sc) => {
       const div = document.createElement('div');
-      div.className = 'study-card';
-      div.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div class="study-word">${this.fmtText(sc.word)}</div>
-          <span>🔊✨</span>
-        </div>
-        <div class="study-zhuyin">${renderVerticalZhuyin(sc.zhuyin, 'study')}</div>
-        <div class="study-tip">${this.fmtText(sc.tip)}</div>
-      `;
+      div.className = `study-card ${isK2 ? 'k2-study-card' : ''}`;
+      if (isK2) {
+        div.innerHTML = `
+          <div class="k2-study-top">
+            <span class="k2-study-pic">${escapeHtml(sc.pic || '🌟')}</span>
+            <span class="k2-study-hanzi">${escapeHtml(sc.word)}</span>
+            <div class="study-zhuyin k2-study-zy">${renderVerticalZhuyin(sc.zhuyin, 'study')}</div>
+          </div>
+          <div class="study-tip">${this.fmtText(sc.tip)} 🔊</div>
+        `;
+      } else {
+        div.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="study-word">${this.fmtText(sc.word)}</div>
+            <span>🔊✨</span>
+          </div>
+          <div class="study-zhuyin">${renderVerticalZhuyin(sc.zhuyin, 'study')}</div>
+          <div class="study-tip">${this.fmtText(sc.tip)}</div>
+        `;
+      }
       div.onclick = (e) => {
         const r = div.getBoundingClientRect();
         this.triggerLessonFX(l.id, e.clientX || (r.left + r.width / 2), e.clientY || (r.top + 30), 0.7);
-        this.sound.speak(`${sc.word}。${sc.tip}`);
+        this.sound.speak(sc.tts || `${sc.word}。${sc.tip}`);
       };
       wrap.appendChild(div);
     });
@@ -1116,7 +1174,7 @@ class ChineseAdventureApp {
     deck.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
         <div>
-          <h2 style="margin:0;font-size:1.38rem;font-weight:900;">🎯 勾選想玩的課！</h2>
+          <h2 style="margin:0;font-size:1.38rem;font-weight:900;">🎯 勾選想玩的關卡！</h2>
         </div>
         <div style="display:flex;gap:8px;">
           <button id="btn-custom-all" class="toy-btn sm">全選</button>
@@ -1126,7 +1184,7 @@ class ChineseAdventureApp {
       <div class="scope-check-grid" id="scope-grid"></div>
       <div style="text-align:center;margin-top:14px;">
         <button id="btn-launch-custom" class="toy-btn coral" style="font-size:1.15rem;padding:13px 28px;">
-          ▶️ 開始玩！（${this.customSelectedIds.size} 課）
+          ▶️ 開始玩！（${this.customSelectedIds.size} 關）
         </button>
       </div>
     `;
@@ -1148,7 +1206,7 @@ class ChineseAdventureApp {
       label.innerHTML = `
         <input type="checkbox" ${checked ? 'checked' : ''} />
         <img src="${thumbSrc}" alt="" style="width:46px;height:32px;border-radius:8px;object-fit:cover;border:2px solid #cbd5e1;flex-shrink:0;" />
-        <span>${l.code}《${this.fmtText(l.title)}》</span>
+        <span>${escapeHtml(l.code)}《${this.fmtText(l.title)}》</span>
       `;
       label.querySelector('input').onchange = (e) => {
         if (e.target.checked) {
@@ -1188,7 +1246,7 @@ class ChineseAdventureApp {
 
       <div class="question-header">
         <div style="flex:1;">
-          <span class="mode-pill">${escapeHtml(q.modeBadge || '🌟 闖關挑戰')}</span>
+          <span class="mode-pill">${renderVerticalZhuyin(q.modeBadge || '🌟 闖關挑戰', 'inline')}</span>
           <h2 class="question-prompt">${this.fmtText(q.prompt, q)}</h2>
         </div>
       </div>
@@ -1212,6 +1270,10 @@ class ChineseAdventureApp {
       if (s.index % 2 === 0) this.renderDartMode(arena, q, s);
       else this.renderBubbleMode(arena, q, s);
     }
+    else if (q.type === 'k2_sound') this.renderK2SoundMode(arena, q, s);
+    else if (q.type === 'k2_spell') this.renderK2SpellMode(arena, q, s);
+    else if (q.type === 'k2_bridge') this.renderK2BridgeMode(arena, q, s);
+    else if (q.type === 'k2_mole') this.renderK2MoleMode(arena, q, s);
     else if (q.type === 'typo') this.renderTypoMode(arena, q, s);
     else if (q.type === 'alchemy') this.renderAlchemyMode(arena, q, s);
     else if (q.type === 'train') this.renderTrainMode(arena, q, s);
@@ -1229,7 +1291,7 @@ class ChineseAdventureApp {
         <div class="feedback-sheet ${s.isCorrect ? 'good' : 'retry'}">
           <div class="feedback-text">
             ${chestBanner}
-            ${s.isCorrect ? '🎉 <strong>答對囉！</strong> ' : '💡 <strong>學起來就不怕考出來！</strong> '}
+            ${s.isCorrect ? '🎉 <strong>答對囉！</strong> ' : '💡 <strong>學起來就會囉！</strong> '}
             ${this.fmtText(bodyExplain)}
           </div>
           <button id="btn-next-q" class="toy-btn ${s.isCorrect ? 'mint' : 'orange'}" style="font-size:1.08rem;padding:11px 22px;">
@@ -1613,21 +1675,268 @@ class ChineseAdventureApp {
     });
   }
 
+  renderK2SoundMode(arena, q, s) {
+    const useDart = s.index % 2 === 0;
+    arena.innerHTML = `
+      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點我再聽一次！">
+        <span class="k2-clue-pic">${escapeHtml(q.pic || '🌟')}</span>
+        <span class="k2-clue-hanzi">${escapeHtml(q.charFocus || '')}</span>
+        <span class="k2-speak-tag">🔊 點聽發音</span>
+      </button>
+      ${useDart ? `
+        <div class="dart-arena-box">
+          <div class="dart-arena-hint">🎯 聽聲音，射中對的注音！</div>
+          <div class="dart-targets-grid" id="k2-sound-wrap"></div>
+          <div class="dart-launcher-bar" id="dart-launcher">🎯 點靶心發射！</div>
+        </div>
+      ` : `
+        <div class="bubbles-stage" id="k2-sound-wrap"></div>
+      `}
+    `;
+
+    const clueBtn = document.getElementById('btn-k2-clue');
+    if (clueBtn) {
+      clueBtn.onclick = () => {
+        this.sound.playPop();
+        this.sound.speak(q.tts || q.charFocus);
+      };
+    }
+
+    const wrap = document.getElementById('k2-sound-wrap');
+    const launcher = document.getElementById('dart-launcher');
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.optIdx = idx;
+      if (useDart) {
+        btn.className = `dart-target-btn d-${idx}`;
+        if (s.answered) {
+          if (opt === q.answer) btn.classList.add('correct-pick');
+          else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+        }
+        btn.innerHTML = `
+          <span class="dart-ring-outer">
+            <span class="dart-ring-mid">
+              <span class="dart-ring-core">${renderVerticalZhuyin(opt, 'dart')}</span>
+            </span>
+          </span>
+        `;
+        btn.onclick = () => {
+          if (s.answered || q._dartFlying) return;
+          q._dartFlying = true;
+          this.sound.playDartThrow();
+          const r = btn.getBoundingClientRect();
+          const lr = launcher ? launcher.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight - 60, width: 0, height: 0 };
+          this.fx.flyDart(lr.left + lr.width / 2, lr.top + lr.height / 2, r.left + r.width / 2, r.top + r.height / 2, () => {
+            q._dartFlying = false;
+            this.handleAnswer(opt === q.answer, opt);
+          });
+        };
+      } else {
+        btn.className = 'bubble-opt-btn';
+        if (s.answered) {
+          if (opt === q.answer) btn.classList.add('correct-pick');
+          else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+        }
+        btn.innerHTML = renderVerticalZhuyin(opt, 'bubble');
+        btn.onclick = () => {
+          if (s.answered) return;
+          const r = btn.getBoundingClientRect();
+          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 90);
+          this.handleAnswer(opt === q.answer, opt);
+        };
+      }
+      wrap.appendChild(btn);
+    });
+  }
+
+  renderK2SpellMode(arena, q, s) {
+    const firstIsMissing = q.missingPos === 'first';
+    const slot1Html = firstIsMissing
+      ? `<div class="alchemy-slot k2-zy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? renderVerticalZhuyin(q.answer, 'bubble') : '？'}</div>`
+      : `<div class="alchemy-slot k2-zy-slot">${renderVerticalZhuyin(q.fixedPart, 'bubble')}</div>`;
+    const slot2Html = !firstIsMissing
+      ? `<div class="alchemy-slot k2-zy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? renderVerticalZhuyin(q.answer, 'bubble') : '？'}</div>`
+      : `<div class="alchemy-slot k2-zy-slot">${renderVerticalZhuyin(q.fixedPart, 'bubble')}</div>`;
+
+    arena.innerHTML = `
+      <div class="alchemy-arena k2-spell-arena">
+        <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
+          <span class="k2-clue-pic">${escapeHtml(q.pic || '🧪')}</span>
+          <span class="k2-speak-tag">🔊 點聽拼音</span>
+        </button>
+        <div class="alchemy-formula">
+          ${slot1Html}
+          <div class="alchemy-plus">＋</div>
+          ${slot2Html}
+          <div class="alchemy-plus">＝</div>
+          <div class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}">
+            ${s.answered ? renderCharWithZhuyin(q.resultChar, q.fullZhuyin, 'k2ruby') : escapeHtml(q.resultChar)}
+          </div>
+        </div>
+      </div>
+      <div class="options-grid k2-spell-opts" id="k2-spell-opts"></div>
+    `;
+
+    const clueBtn = document.getElementById('btn-k2-clue');
+    if (clueBtn) {
+      clueBtn.onclick = () => {
+        this.sound.playPop();
+        this.sound.speak(q.tts || q.resultChar);
+      };
+    }
+
+    const wrap = document.getElementById('k2-spell-opts');
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'option-card-btn k2-zy-card-btn';
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      btn.innerHTML = `
+        <span class="k2-zy-opt-center">${renderVerticalZhuyin(opt, 'bubble')}</span>
+        <span role="button" tabindex="0" class="opt-speak-chip" title="聽注音發音">🔊</span>
+      `;
+      const spk = btn.querySelector('.opt-speak-chip');
+      if (spk) {
+        spk.onclick = (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.sound.speak(opt);
+        };
+      }
+      btn.onclick = () => {
+        if (s.answered) return;
+        this.handleAnswer(opt === q.answer, opt);
+      };
+      wrap.appendChild(btn);
+    });
+  }
+
+  renderK2BridgeMode(arena, q, s) {
+    arena.innerHTML = `
+      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點圖再聽一次！">
+        <span class="k2-clue-pic giant">${escapeHtml(q.pic || '🌟')}</span>
+        <span class="k2-speak-tag">🔊 點圖聽聲音</span>
+      </button>
+      <div class="options-grid k2-bridge-grid" id="k2-bridge-opts"></div>
+    `;
+
+    const clueBtn = document.getElementById('btn-k2-clue');
+    if (clueBtn) {
+      clueBtn.onclick = () => {
+        this.sound.playPop();
+        this.sound.speak(q.tts || q.answer);
+      };
+    }
+
+    const wrap = document.getElementById('k2-bridge-opts');
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'option-card-btn k2-bridge-btn';
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      const zy = q.optZhuyin && q.optZhuyin[opt];
+      btn.innerHTML = `
+        <span class="k2-bridge-char-wrap">${renderCharWithZhuyin(opt, zy, 'k2ruby')}</span>
+        <span role="button" tabindex="0" class="opt-speak-chip" title="聽這個字的發音">🔊</span>
+      `;
+      const spk = btn.querySelector('.opt-speak-chip');
+      if (spk) {
+        spk.onclick = (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.sound.speak(opt);
+        };
+      }
+      btn.onclick = () => {
+        if (s.answered) return;
+        this.handleAnswer(opt === q.answer, opt);
+      };
+      wrap.appendChild(btn);
+    });
+  }
+
+  renderK2MoleMode(arena, q, s) {
+    arena.innerHTML = `
+      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點我聽聲音提示！">
+        <span class="k2-clue-pic">${escapeHtml(q.pic || '🌟')}</span>
+        ${q.hintZhuyin ? `<span class="k2-mole-zy-badge">${renderVerticalZhuyin(q.hintZhuyin, 'bubble')}</span>` : ''}
+        <span class="k2-speak-tag">🔊 點聽找國字</span>
+      </button>
+      <div class="mole-meadow-arena">
+        <div class="mole-arena-title">🔨 敲出對的國字地鼠！</div>
+        <div class="mole-holes-grid" id="mole-holes-grid"></div>
+      </div>
+    `;
+
+    const clueBtn = document.getElementById('btn-k2-clue');
+    if (clueBtn) {
+      clueBtn.onclick = () => {
+        this.sound.playPop();
+        this.sound.speak(q.tts || q.answer);
+      };
+    }
+
+    const holes = document.getElementById('mole-holes-grid');
+    const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
+    q.shuffledOptions.forEach((opt, idx) => {
+      const hole = document.createElement('button');
+      hole.type = 'button';
+      hole.className = `mole-hole-btn m-${idx}`;
+      hole.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) hole.classList.add('correct-pick');
+        else if (opt === s.pickedValue) hole.classList.add('wrong-pick');
+      }
+      hole.innerHTML = `
+        <span class="mole-hammer">🔨</span>
+        <span class="mole-critter">
+          <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
+          <span class="mole-sign k2-mole-hanzi">${escapeHtml(opt)}</span>
+        </span>
+        <span class="mole-mound"></span>
+      `;
+      hole.onclick = () => {
+        if (s.answered || q._moleWhacking) return;
+        q._moleWhacking = true;
+        hole.classList.add('whacking');
+        const isOk = opt === q.answer;
+        this.sound.playHammerBonk(isOk);
+        const r = hole.getBoundingClientRect();
+        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
+        this.fx.screenShake(7);
+        setTimeout(() => {
+          q._moleWhacking = false;
+          this.handleAnswer(isOk, opt);
+        }, 220);
+      };
+      holes.appendChild(hole);
+    });
+  }
+
   renderVictory(deck) {
     const s = this.session;
     const canGacha = this.state.coins >= 50;
     deck.innerHTML = `
       <div class="victory-center">
         <span class="mode-pill">🎊 闖關大成功！</span>
-        <h2 style="margin:8px 0 4px;font-size:1.65rem;font-weight:900;">${escapeHtml(s.title)}</h2>
+        <h2 style="margin:8px 0 4px;font-size:1.65rem;font-weight:900;">${renderVerticalZhuyin(s.title, 'inline')}</h2>
         <div class="victory-stars">${this.renderStars(s.finalStars)}</div>
         <p style="font-size:1.15rem;font-weight:900;color:#334155;margin:6px 0 14px;">
           答對 ${s.correctCount} / ${s.questions.length} 題 ・ 最高 ${s.maxCombo} 連擊 ・ 獲得 🪙 +${s.earnedCoins} 金幣 ＆ 💎 +${s.earnedGems} 寶石！
         </p>
-        ${s.unlockedSpecialDragon ? `<div style="background:#fef9c3;padding:10px 16px;border-radius:16px;font-weight:900;color:#b45309;margin-bottom:14px;">🐉 傳說降臨！你以三星滿分擊敗期末大魔王，免費獲得神話神獸【星光狀元龍】！</div>` : ''}
+        ${s.unlockedSpecialDragon ? `<div style="background:#fef9c3;padding:10px 16px;border-radius:16px;font-weight:900;color:#b45309;margin-bottom:14px;">🐉 傳說降臨！你以三星滿分擊敗大魔王，免費獲得神話神獸【星光狀元龍】！</div>` : ''}
         <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:10px;">
           ${canGacha ? `<button id="btn-vic-gacha" class="toy-btn sun" style="font-size:1.12rem;padding:12px 22px;">🎰 去轉 3D 扭蛋抽神獸！（目前 ${this.state.coins} 🪙）</button>` : ''}
-          <button id="btn-vic-hub" class="toy-btn primary" style="font-size:1.12rem;padding:12px 22px;">🗺️ 回浮空島選下一課</button>
+          <button id="btn-vic-hub" class="toy-btn primary" style="font-size:1.12rem;padding:12px 22px;">🗺️ 回地圖選下一關</button>
         </div>
       </div>
     `;
@@ -1699,6 +2008,7 @@ class ChineseAdventureApp {
   }
 
   renderReport(deck) {
+    const k2Stars = K2_LESSONS.reduce((s, l) => s + (this.state.stars[l.id] || 0), 0);
     const g1Stars = GRADE1_LESSONS.reduce((s, l) => s + (this.state.stars[l.id] || 0), 0);
     const g2Stars = GRADE2_LESSONS.reduce((s, l) => s + (this.state.stars[l.id] || 0), 0);
     const totalMistakes = Object.keys(this.state.mistakes).length;
@@ -1707,12 +2017,16 @@ class ChineseAdventureApp {
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
         <div>
           <span class="mode-pill">📊 學習進度與榮譽榜</span>
-          <h2 style="margin:4px 0 0;font-size:1.42rem;font-weight:900;">期末總複習學習戰報</h2>
+          <h2 style="margin:4px 0 0;font-size:1.42rem;font-weight:900;">奇幻學習榮譽戰報</h2>
         </div>
         <button id="btn-report-back" class="toy-btn primary">⬅️ 回冒險地圖</button>
       </div>
 
       <div class="review-hero-strip" style="margin-top:14px;">
+        <div class="hero-action-card">
+          <h3 class="hero-card-title">🐥 幼兒中班（第1～8關）</h3>
+          <p class="hero-card-desc">累計星星：<strong>${k2Stars} / 24 ⭐</strong><br>識字魔王戰：${this.renderStars(this.state.stars.boss_k2 || 0)}</p>
+        </div>
         <div class="hero-action-card">
           <h3 class="hero-card-title">🐣 一年級進度（第1～7課）</h3>
           <p class="hero-card-desc">累計星星：<strong>${g1Stars} / 21 ⭐</strong><br>期末魔王戰：${this.renderStars(this.state.stars.boss_g1 || 0)}</p>
@@ -1734,3 +2048,4 @@ class ChineseAdventureApp {
 window.addEventListener('DOMContentLoaded', () => {
   window.__app = new ChineseAdventureApp();
 });
+

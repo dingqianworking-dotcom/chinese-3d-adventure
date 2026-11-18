@@ -7,6 +7,7 @@ const modules = {
   './fx': fs.readFileSync(path.join(__dirname, 'src/fx.js'), 'utf8'),
   './zhuyin_helper': fs.readFileSync(path.join(__dirname, 'src/zhuyin_helper.js'), 'utf8'),
   './webgl3d': fs.readFileSync(path.join(__dirname, 'src/webgl3d.js'), 'utf8'),
+  './curriculum_k2': fs.readFileSync(path.join(__dirname, 'src/curriculum_k2.js'), 'utf8'),
   './curriculum_g1': fs.readFileSync(path.join(__dirname, 'src/curriculum_g1.js'), 'utf8'),
   './curriculum_g2': fs.readFileSync(path.join(__dirname, 'src/curriculum_g2.js'), 'utf8'),
   './app': fs.readFileSync(path.join(__dirname, 'src/app.js'), 'utf8'),
@@ -25,6 +26,7 @@ const bossUri = toDataUri('src/assets/boss_dragon.jpg');
 const moleUri = toDataUri('src/assets/mole_pal.jpg');
 
 const lessonIds = [
+  'k2_L1', 'k2_L2', 'k2_L3', 'k2_L4', 'k2_L5', 'k2_L6', 'k2_L7', 'k2_L8',
   'g1_L1', 'g1_L2', 'g1_L3', 'g1_L4', 'g1_L5', 'g1_L6', 'g1_L7',
   'g2_L7', 'g2_L8', 'g2_L9', 'g2_L10', 'g2_L11', 'g2_L12',
 ];

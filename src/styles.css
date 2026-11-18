@@ -2341,7 +2341,8 @@ body.in-play .stage-3d-wrap {
 .char-tile-btn,
 .study-card,
 .pet-card,
-.train-hooked-car {
+.train-hooked-car,
+.k2-hero-clue-card {
   touch-action: manipulation;
 }
 
@@ -2349,6 +2350,302 @@ body.in-play .stage-3d-wrap {
 .lesson-3d-stars {
   pointer-events: none;
 }
+
+/* =========================================================
+   v8 Kindergarten Middle Class (🐥 幼兒中班 ㄅㄆㄇ ➔ 慢慢認國字)
+   ========================================================= */
+.k2-step-ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #fff1f2 0%, #fef9c3 50%, #e0f2fe 100%);
+  border: 2.5px solid #ffffff;
+  border-radius: 20px;
+  padding: 9px 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 5px 0 rgba(244, 114, 182, 0.25), 0 8px 18px rgba(15, 23, 42, 0.07);
+}
+
+.k2-step-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 900;
+  font-size: 0.9rem;
+  padding: 5px 11px;
+  border-radius: 999px;
+  box-shadow: 0 3px 0 #e2e8f0;
+}
+
+.k2-step-arrow {
+  font-weight: 900;
+  color: #f43f5e;
+  font-size: 1rem;
+}
+
+/* K2 Flashcards (📖 圖卡): Giant Picture + Big Hanzi + Vertical Bopomofo */
+.k2-flashcards-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.k2-study-card {
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  border: 3px solid #fde68a;
+  border-radius: 22px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 0 #facc15, 0 10px 20px rgba(15, 23, 42, 0.08);
+  transition: transform 0.14s ease;
+}
+
+.k2-study-card:hover {
+  transform: translateY(-4px);
+}
+
+.k2-study-card:active {
+  transform: translateY(2px);
+}
+
+.k2-study-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.k2-study-pic {
+  font-size: 2.85rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.14));
+}
+
+.k2-study-hanzi {
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: #be123c;
+  line-height: 1.08;
+  background: #fff1f2;
+  padding: 4px 14px;
+  border-radius: 18px;
+  border: 2px solid #fecdd3;
+  box-shadow: 0 4px 0 #fda4af;
+}
+
+.k2-study-zy .zy-vbox.zy-study {
+  font-size: 1.12rem;
+  padding: 6px 10px;
+}
+
+/* K2 Interactive Clue Banner (Picture + Character/Zhuyin + Audio Trigger) */
+.k2-hero-clue-card {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 4px auto 14px;
+  padding: 12px 24px;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(135deg, #fffbeb 0%, #ffe4e6 55%, #e0f2fe 100%);
+  box-shadow: 0 7px 0 #f59e0b, 0 12px 24px rgba(15, 23, 42, 0.12);
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.14s ease;
+}
+
+.k2-hero-clue-card.compact {
+  padding: 8px 18px;
+  margin-bottom: 6px;
+}
+
+.k2-hero-clue-card:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+
+.k2-hero-clue-card:active {
+  transform: translateY(2px);
+}
+
+.k2-clue-pic {
+  font-size: 3.6rem;
+  line-height: 1;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.16));
+  animation: k2PicBounce 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.k2-clue-pic.giant {
+  font-size: 4.3rem;
+}
+
+@keyframes k2PicBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1.06); }
+}
+
+.k2-clue-hanzi {
+  font-size: 3.1rem;
+  font-weight: 900;
+  color: #0f172a;
+  background: #ffffff;
+  padding: 4px 18px;
+  border-radius: 20px;
+  border: 3px solid #fde047;
+  box-shadow: 0 5px 0 #eab308;
+  line-height: 1.12;
+  pointer-events: none;
+}
+
+.k2-mole-zy-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 6px 14px;
+  border-radius: 18px;
+  border: 2.5px solid #7dd3fc;
+  box-shadow: 0 4px 0 #38bdf8;
+  pointer-events: none;
+}
+
+.k2-speak-tag {
+  background: linear-gradient(180deg, #fde047 0%, #facc15 100%);
+  color: #713f12;
+  font-size: 0.9rem;
+  font-weight: 900;
+  padding: 6px 13px;
+  border-radius: 999px;
+  box-shadow: 0 3px 0 #ca8a04;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* K2 Mode 2: Phonetic Cauldron (ㄅㄆㄇ 拼音變國字) */
+.alchemy-slot.k2-zy-slot {
+  width: 92px;
+  height: 102px;
+  padding: 6px;
+}
+
+.alchemy-slot.k2-hanzi-goal {
+  min-width: 106px;
+  width: auto;
+  height: 102px;
+  padding: 6px 16px;
+  background: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+  color: #be123c;
+  font-size: 2.85rem;
+  border: 3px solid #fda4af;
+  box-shadow: 0 6px 0 #f43f5e;
+}
+
+.k2-spell-opts,
+.k2-bridge-grid {
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.option-card-btn.k2-zy-card-btn,
+.option-card-btn.k2-bridge-btn {
+  min-height: 98px;
+  border-radius: 22px;
+  border: 3px solid #e2e8f0;
+  padding: 12px 18px;
+}
+
+.k2-zy-opt-center,
+.k2-bridge-char-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* K2 Mode 3: Giant Hanzi + Right-Side Vertical Zhuyin Helper */
+.k2-char-pair .zy-han {
+  font-size: 2.65rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.k2-char-pair .zy-rt {
+  margin-left: 8px;
+}
+
+.zy-vbox.zy-k2ruby {
+  font-size: 1.08rem;
+  font-weight: 900;
+  color: #0284c7;
+}
+
+.mole-sign.k2-mole-hanzi {
+  font-size: 1.85rem;
+  padding: 4px 18px;
+}
+
+@media (max-width: 680px) {
+  .grade-switch-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .grade-tab-btn {
+    padding: 9px 6px;
+    font-size: 0.86rem;
+    white-space: nowrap;
+  }
+  .k2-step-ribbon {
+    gap: 5px;
+    padding: 7px 9px;
+  }
+  .k2-step-chip {
+    font-size: 0.76rem;
+    padding: 4px 8px;
+  }
+  .k2-hero-clue-card {
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .k2-clue-pic {
+    font-size: 2.75rem;
+  }
+  .k2-clue-pic.giant {
+    font-size: 3.3rem;
+  }
+  .k2-clue-hanzi {
+    font-size: 2.35rem;
+    padding: 3px 12px;
+  }
+  .alchemy-slot.k2-zy-slot {
+    width: 74px;
+    height: 86px;
+  }
+  .alchemy-slot.k2-hanzi-goal {
+    min-width: 86px;
+    height: 86px;
+    font-size: 2.25rem;
+    padding: 4px 12px;
+  }
+  .k2-char-pair .zy-han {
+    font-size: 2.15rem;
+  }
+  .zy-vbox.zy-k2ruby {
+    font-size: 0.92rem;
+  }
+  .option-card-btn.k2-zy-card-btn,
+  .option-card-btn.k2-bridge-btn {
+    min-height: 84px;
+    padding: 10px 12px;
+  }
+}
+
 
 
 

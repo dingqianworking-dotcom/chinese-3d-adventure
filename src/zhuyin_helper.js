@@ -165,6 +165,26 @@ const WORD_ZHUYIN_PAIRS = [
   ['去農場玩', ['ㄑㄩˋ', 'ㄋㄨㄥˊ', 'ㄔㄤˇ', 'ㄨㄢˊ']],
   ['幸福湯圓', ['ㄒㄧㄥˋ', 'ㄈㄨˊ', 'ㄊㄤ', 'ㄩㄢˊ']],
   ['到野外上課', ['ㄉㄠˋ', 'ㄧㄝˇ', 'ㄨㄞˋ', 'ㄕㄤˋ', 'ㄎㄜˋ']],
+  ['親親', ['ㄑㄧㄣ', 'ㄑㄧㄣ']],
+  ['一家人', ['ㄧˋ', 'ㄐㄧㄚ', 'ㄖㄣˊ']],
+  ['快樂', ['ㄎㄨㄞˋ', 'ㄌㄜˋ']],
+  ['動物村', ['ㄉㄨㄥˋ', 'ㄨˋ', 'ㄘㄨㄣ']],
+  ['派對', ['ㄆㄞˋ', 'ㄉㄨㄟˋ']],
+  ['小雞', ['ㄒㄧㄠˇ', 'ㄐㄧ']],
+  ['西瓜', ['ㄒㄧ', 'ㄍㄨㄚ']],
+  ['山水', ['ㄕㄢ', 'ㄕㄨㄟˇ']],
+  ['森林', ['ㄙㄣ', 'ㄌㄧㄣˊ']],
+  ['數一數', ['ㄕㄨˇ', 'ㄧˋ', 'ㄕㄨˇ']],
+  ['月亮', ['ㄩㄝˋ', '˙ㄌㄧㄤ']],
+  ['綿羊島', ['ㄇㄧㄢˊ', 'ㄧㄤˊ', 'ㄉㄠˇ']],
+  ['象形', ['ㄒㄧㄤˋ', 'ㄒㄧㄥˊ']],
+  ['識字王', ['ㄕˋ', 'ㄗˋ', 'ㄨㄤˊ']],
+  ['國字', ['ㄍㄨㄛˊ', 'ㄗˋ']],
+  ['開頭', ['ㄎㄞ', 'ㄊㄡˊ']],
+  ['拼音', ['ㄆㄧㄣ', 'ㄧㄣ']],
+  ['地鼠', ['ㄉㄧˋ', 'ㄕㄨˇ']],
+  ['聲音', ['ㄕㄥ', 'ㄧㄣ']],
+  ['戳破', ['ㄔㄨㄛ', 'ㄆㄛˋ']],
 ];
 
 function escapeHtml(str) {
@@ -205,6 +225,11 @@ function renderVerticalZhuyin(text, variant = 'hero') {
   return safe.replace(BOPOMOFO_SYL_RE, (m) => renderVerticalZhuyinSyllable(m, variant));
 }
 
+function renderCharWithZhuyin(ch, zy, rubyVariant = 'k2ruby') {
+  if (!zy) return escapeHtml(ch);
+  return `<span class="zy-char k2-char-pair"><span class="zy-han">${escapeHtml(ch)}</span><span class="zy-rt">${renderVerticalZhuyinSyllable(zy, rubyVariant)}</span></span>`;
+}
+
 function annotateZhuyin(text, enabled = true, excludeChars = '') {
   if (!text) return '';
   let out = escapeHtml(text);
@@ -239,5 +264,6 @@ function annotateZhuyin(text, enabled = true, excludeChars = '') {
   return out;
 }
 
-module.exports = { annotateZhuyin, renderVerticalZhuyin, renderVerticalZhuyinSyllable, escapeHtml };
+module.exports = { annotateZhuyin, renderVerticalZhuyin, renderVerticalZhuyinSyllable, renderCharWithZhuyin, escapeHtml };
+
 
