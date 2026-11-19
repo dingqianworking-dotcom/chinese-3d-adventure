@@ -542,6 +542,22 @@ class SoundEngine {
     return this.bgmOn;
   }
 
+  hasRealTtsVoices() {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return false;
+    const list = this.voices.length ? this.voices : window.speechSynthesis.getVoices();
+    return Boolean(list && list.length > 0);
+  }
+
+  _setSpeaking(flag) {
+    if (this.isSpeaking === flag) return;
+    this.isSpeaking = flag;
+    if (typeof this.onSpeakStateChange === 'function') {
+      try {
+        this.onSpeakStateChange(flag);
+      } catch (_) {}
+    }
+  }
+
   stopSpeak() {
     this._speakSeqId++;
     for (const src of this._activeMoeSources) {
@@ -562,6 +578,7 @@ class SoundEngine {
         window.speechSynthesis.cancel();
       } catch (_) {}
     }
+    this._setSpeaking(false);
   }
 
   tokenizeForSpeech(rawText) {
@@ -645,13 +662,13 @@ class SoundEngine {
         if (twVoice) u.voice = twVoice;
         u.lang = 'zh-TW';
         u.rate = rate;
-        u.pitch = 1.06;
+        u.pitch = 1.05;
         u.onend = finish;
         u.onerror = finish;
 
         window.speechSynthesis.speak(u);
 
-        // Safety monitor: if OS has no TTS voices or WebKit drops onend, resolve cleanly without hanging!
+        // Safety monitor: if OS has no TTS voices, resolve fast; otherwise allow full speech duration without cutting off!
         if (!voices || voices.length === 0) {
           maxTimer = setTimeout(finish, 180);
         } else {
@@ -661,11 +678,11 @@ class SoundEngine {
               finish();
               return;
             }
-            if (Date.now() - startedAt > 240 && !window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
+            if (Date.now() - startedAt > 360 && !window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
               finish();
             }
-          }, 110);
-          maxTimer = setTimeout(finish, Math.min(6000, Math.max(900, text.length * 280)));
+          }, 120);
+          maxTimer = setTimeout(finish, Math.min(18000, Math.max(2200, text.length * 380)));
         }
       } catch (_) {
         finish();
@@ -674,24 +691,40 @@ class SoundEngine {
   }
 
   speak(text, rate = 0.95) {
-    if (this.muted || !text) return Promise.resolve();
+    if (this.muted || !text) {
+      this._setSpeaking(false);
+      return Promise.resolve({ completed: true });
+    }
     this.stopSpeak();
     const seqId = this._speakSeqId;
     const segments = this.tokenizeForSpeech(text);
-    if (!segments.length) return Promise.resolve();
+    if (!segments.length) {
+      this._setSpeaking(false);
+      return Promise.resolve({ completed: true });
+    }
 
+    this._setSpeaking(true);
     return (async () => {
-      for (let i = 0; i < segments.length; i++) {
-        if (this.muted || seqId !== this._speakSeqId) return;
-        const seg = segments[i];
-        if (seg.type === 'moe') {
-          await this.playZhuyinSymbol(seg.sym);
-          if (i + 1 < segments.length && seqId === this._speakSeqId && !this.muted) {
-            const waitMs = Math.max(40, seg.pauseMs || 80);
-            await new Promise((r) => setTimeout(r, waitMs));
+      try {
+        for (let i = 0; i < segments.length; i++) {
+          if (this.muted || seqId !== this._speakSeqId) {
+            return { completed: false };
           }
-        } else if (seg.type === 'tts') {
-          await this._speakUtterance(seg.text, rate, seqId);
+          const seg = segments[i];
+          if (seg.type === 'moe') {
+            await this.playZhuyinSymbol(seg.sym);
+            if (i + 1 < segments.length && seqId === this._speakSeqId && !this.muted) {
+              const waitMs = Math.max(45, seg.pauseMs || 85);
+              await new Promise((r) => setTimeout(r, waitMs));
+            }
+          } else if (seg.type === 'tts') {
+            await this._speakUtterance(seg.text, rate, seqId);
+          }
+        }
+        return { completed: seqId === this._speakSeqId };
+      } finally {
+        if (seqId === this._speakSeqId) {
+          this._setSpeaking(false);
         }
       }
     })();

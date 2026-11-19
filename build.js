@@ -6,6 +6,7 @@ const modules = {
   './audio': fs.readFileSync(path.join(__dirname, 'src/audio.js'), 'utf8'),
   './fx': fs.readFileSync(path.join(__dirname, 'src/fx.js'), 'utf8'),
   './zhuyin_helper': fs.readFileSync(path.join(__dirname, 'src/zhuyin_helper.js'), 'utf8'),
+  './ui_icons': fs.readFileSync(path.join(__dirname, 'src/ui_icons.js'), 'utf8'),
   './webgl3d': fs.readFileSync(path.join(__dirname, 'src/webgl3d.js'), 'utf8'),
   './arcade_rigs': fs.readFileSync(path.join(__dirname, 'src/arcade_rigs.js'), 'utf8'),
   './curriculum_k2': fs.readFileSync(path.join(__dirname, 'src/curriculum_k2.js'), 'utf8'),

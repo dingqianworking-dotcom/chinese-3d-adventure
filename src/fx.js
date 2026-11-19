@@ -68,23 +68,28 @@ class FXEngine {
     });
   }
 
-  emojiBurst(x, y, emojis = ['✨', '🌟'], count = 14, floatUp = false) {
+  emojiBurst(x, y, paletteHint = null, count = 14, floatUp = false) {
     if (!this.ctx) return;
+    const colors = Array.isArray(paletteHint) && paletteHint.every((c) => typeof c === 'string' && c.startsWith('#'))
+      ? paletteHint
+      : ['#fde047', '#38bdf8', '#fb7185', '#4ade80', '#c084fc'];
     for (let i = 0; i < count; i++) {
       const ang = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
-      const spd = floatUp ? (70 + Math.random() * 140) : (120 + Math.random() * 250);
+      const spd = floatUp ? (75 + Math.random() * 145) : (125 + Math.random() * 240);
       this.particles.push({
         x: x + (Math.random() - 0.5) * 28,
         y: y + (Math.random() - 0.5) * 18,
         vx: Math.cos(ang) * spd,
-        vy: floatUp ? (-120 - Math.random() * 150) : (Math.sin(ang) * spd - 120),
+        vy: floatUp ? (-125 - Math.random() * 150) : (Math.sin(ang) * spd - 120),
         gravity: floatUp ? -35 : 380,
-        size: 22 + Math.random() * 12,
+        size: 10 + Math.random() * 8,
         rot: (Math.random() - 0.5) * 0.5,
-        vrot: (Math.random() - 0.5) * 3,
-        life: 0.95 + Math.random() * 0.45,
-        maxLife: 1.4,
-        emoji: emojis[i % emojis.length],
+        vrot: (Math.random() - 0.5) * 4,
+        life: 0.92 + Math.random() * 0.45,
+        maxLife: 1.35,
+        color: colors[i % colors.length],
+        glossyOrb: i % 2 === 0,
+        star: i % 2 === 1,
       });
     }
   }
@@ -103,8 +108,8 @@ class FXEngine {
     }, timeoutMs);
   }
 
-  // Giant 64px Custom/Emoji Flying Projectile (Food into Dino Jaws, Potion into Cauldron, Starlight Wand Pin)
-  flyItem(fromX, fromY, toX, toY, emoji = '🍩', trailColor = 'rgba(253, 224, 71, 0.88)', onArrive = null, arcHeight = 76, kind = 'emoji') {
+  // Custom 3D Vector Flying Projectile (arrow | key | treat | potion | star_orb) — Zero stock emojis
+  flyItem(fromX, fromY, toX, toY, propVariant = 'star_orb', trailColor = 'rgba(253, 224, 71, 0.88)', onArrive = null, arcHeight = 76, kind = '') {
     if (!this.ctx) {
       if (onArrive) onArrive();
       return;
@@ -115,14 +120,14 @@ class FXEngine {
       settled = true;
       if (onArrive) onArrive();
     };
+    const resolvedKind = kind || (propVariant === 'treat' || propVariant === 'potion' ? propVariant : 'star_orb');
     const item = {
       fromX, fromY, toX, toY,
-      emoji,
-      kind,
+      kind: resolvedKind,
       trailColor,
       arcHeight,
       t: 0,
-      dur: kind === 'arrow' ? 0.25 : 0.30,
+      dur: resolvedKind === 'arrow' ? 0.25 : 0.30,
       onArrive: finish,
     };
     this._withSafety(this.darts, item, 580, finish);
@@ -130,7 +135,7 @@ class FXEngine {
 
   // 1) Giant 96px 3D Golden-Tipped Crimson-Feathered Arrow!
   shootArrow(fromX, fromY, toX, toY, onArrive = null) {
-    this.flyItem(fromX, fromY, toX, toY, '🏹', 'rgba(251, 191, 36, 0.92)', onArrive, 32, 'arrow');
+    this.flyItem(fromX, fromY, toX, toY, 'arrow', 'rgba(251, 191, 36, 0.92)', onArrive, 32, 'arrow');
   }
 
   flyDart(fromX, fromY, toX, toY, onArrive = null) {
@@ -139,7 +144,7 @@ class FXEngine {
 
   // 2) Giant 84px 3D Ruby-Gold Key that flies to chest lock and twists!
   flyGoldenKey(fromX, fromY, toX, toY, onArrive = null) {
-    this.flyItem(fromX, fromY, toX, toY, '🗝️', 'rgba(250, 204, 21, 0.92)', onArrive, 68, 'key');
+    this.flyItem(fromX, fromY, toX, toY, 'key', 'rgba(250, 204, 21, 0.92)', onArrive, 68, 'key');
   }
 
   // 3) Real 2-Stage Cast-and-Reel Fishing Line + Bobber + Big Wriggling Fish!
@@ -413,15 +418,56 @@ class FXEngine {
       } else {
         ctx.save();
         ctx.translate(x, y);
-        const scale = 1 + Math.sin(p * Math.PI) * 0.25;
+        const scale = 1 + Math.sin(p * Math.PI) * 0.22;
         ctx.scale(scale, scale);
-        ctx.rotate(Math.sin(p * Math.PI * 3) * 0.28);
-        ctx.shadowColor = 'rgba(15, 23, 42, 0.35)';
-        ctx.shadowBlur = 12;
-        ctx.font = '58px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(d.emoji || '🍩', 0, 0);
+        ctx.rotate(Math.sin(p * Math.PI * 3) * 0.26);
+        if (d.kind === 'treat') {
+          // 3D Glazed Gourmet Donut Projectile
+          ctx.beginPath();
+          ctx.arc(0, 3, 24, 0, Math.PI * 2);
+          ctx.fillStyle = '#d97706';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(0, 0, 23, 0, Math.PI * 2);
+          ctx.fillStyle = '#fb7185';
+          ctx.fill();
+          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = '#ffffff';
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(0, 0, 8, 0, Math.PI * 2);
+          ctx.fillStyle = '#fffbeb';
+          ctx.fill();
+          ctx.fillStyle = '#fef08a';
+          ctx.fillRect(-14, -12, 6, 3);
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(9, -9, 6, 3);
+          ctx.fillStyle = '#4ade80';
+          ctx.fillRect(-8, 11, 6, 3);
+        } else if (d.kind === 'potion') {
+          // 3D Glowing Alchemist Flask Projectile
+          ctx.beginPath();
+          ctx.arc(0, 4, 22, 0, Math.PI * 2);
+          ctx.fillStyle = '#a855f7';
+          ctx.fill();
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = '#e9d5ff';
+          ctx.stroke();
+          ctx.fillStyle = '#d97706';
+          ctx.fillRect(-7, -25, 14, 8);
+          ctx.beginPath();
+          ctx.arc(-7, -2, 5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255,255,255,0.75)';
+          ctx.fill();
+        } else {
+          // 3D Radiant Starlight Comet Orb
+          ctx.beginPath();
+          ctx.arc(0, 0, 22, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+          ctx.fill();
+          ctx.fillStyle = '#fde047';
+          this.drawStar(ctx, 0, 0, 18, p * 4);
+        }
         ctx.restore();
       }
 
@@ -451,7 +497,7 @@ class FXEngine {
         if (!fc.splashed) {
           fc.splashed = true;
           this.multiRipple(fc.fishX, fc.fishY, ['#38bdf8', '#ffffff', '#bae6fd']);
-          this.emojiBurst(fc.fishX, fc.fishY, ['💦', '💧', '✨'], 12, false);
+          this.emojiBurst(fc.fishX, fc.fishY, ['#38bdf8', '#bae6fd', '#ffffff'], 12, false);
         }
         const k = (p - 0.42) / 0.58;
         bx = fc.fishX + (fc.rodX - fc.fishX) * k;
@@ -617,7 +663,7 @@ class FXEngine {
         if (!m.smashed) {
           m.smashed = true;
           this.shockwave(m.x, m.y, m.isOk ? '#fde047' : '#fb7185', 115);
-          this.floatText(m.x, m.y - 42, m.isOk ? '💥 咚！命中！' : '💥 咚！', m.isOk ? '#f59e0b' : '#fb7185');
+          this.floatText(m.x, m.y - 42, m.isOk ? '咚！命中！' : '咚！', m.isOk ? '#f59e0b' : '#fb7185');
         }
         const k = (p - 0.48) / 0.52;
         ang = -0.03 + k * 0.35;
@@ -648,7 +694,7 @@ class FXEngine {
       ctx.restore();
     }
 
-    // Confetti, Stars & Lesson Emoji Sprites
+    // Confetti, 3D Glossy Orbs & Star Flares
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
       p.life -= dt;
@@ -659,17 +705,22 @@ class FXEngine {
       p.rot += p.vrot * dt;
       ctx.save();
       ctx.globalAlpha = Math.min(1, p.life * 1.6);
-      if (p.emoji) {
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        ctx.font = `${Math.round(p.size)}px sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(p.emoji, 0, 0);
+      if (p.glossyOrb) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 0.72, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(p.x - p.size * 0.22, p.y - p.size * 0.24, p.size * 0.22, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.fill();
       } else {
         ctx.fillStyle = p.color;
         if (p.star) {
-          this.drawStar(ctx, p.x, p.y, p.size * 0.85, p.rot);
+          this.drawStar(ctx, p.x, p.y, p.size * 0.88, p.rot);
         } else {
           ctx.translate(p.x, p.y);
           ctx.rotate(p.rot);

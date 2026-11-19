@@ -3,45 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>幼兒中班・國小一二年級國語 3D 奇幻大冒險（ㄅㄆㄇ識字＋115南一版）</title>
-  <meta name="description" content="專為幼兒中班（ㄅㄆㄇ注音啟蒙與認識國字）、國小一年級、二年級與ADHD學童設計的3D立體國語分課闖關與總複習互動遊戲。" />
+  <title>國語奇幻冒險島｜幼兒中班注音啟蒙・國小一二年級 3D 互動闖關</title>
+  <meta name="description" content="專為幼兒中班（ㄅㄆㄇ注音啟蒙與生活識字）、國小一年級、二年級設計的商業級 3D 國語分課闖關與學習診斷遊戲。" />
   <style>/*__INLINE_CSS__*/</style>
 </head>
 <body>
-  <div class="sky-decor-layer" aria-hidden="true">
-    <span class="sky-cloud c1">☁️</span>
-    <span class="sky-cloud c2">☁️</span>
-    <span class="sky-cloud c3">☁️</span>
-    <span class="sky-star s1">✨</span>
-    <span class="sky-star s2">⭐</span>
-    <span class="sky-star s3">🌟</span>
-  </div>
+  <div class="ambient-aurora-bg" aria-hidden="true"></div>
   <canvas id="fx-canvas" aria-hidden="true"></canvas>
   <div class="app-shell">
-    <header class="hud-bar">
-      <div class="brand-cluster" id="btn-brand-home" style="cursor:pointer;" title="回首頁">
-        <span style="font-size:1.85rem;">🏰</span>
-        <div>
-          <h1 class="brand-title">國語大冒險</h1>
+    <header class="hud-bar" id="global-hud-bar">
+      <div class="brand-cluster" id="btn-brand-home" role="button" tabindex="0" title="回冒險世界地圖">
+        <span class="brand-crest-slot" id="hud-brand-crest"></span>
+        <div class="brand-text-col">
+          <h1 class="brand-title">國語奇幻冒險島</h1>
+          <span class="brand-sub">3D 互動語文素養學院</span>
         </div>
       </div>
 
       <div class="hud-stats">
-        <div class="stat-chip" id="hud-coins-chip" title="金幣">
-          🪙 <span id="hud-coins-val">60</span>
+        <div class="stat-chip coin-chip" id="hud-coins-chip" title="冒險金幣">
+          <span class="hud-icon-slot" id="hud-coin-icon"></span>
+          <span id="hud-coins-val">60</span>
         </div>
-        <div class="stat-chip gem" title="寶石">
-          💎 <span id="hud-gems-val">3</span>
+        <div class="stat-chip gem-chip" title="星光寶石">
+          <span class="hud-icon-slot" id="hud-gem-icon"></span>
+          <span id="hud-gems-val">3</span>
         </div>
-        <button id="btn-open-gacha" class="toy-btn sun sm">🎰 扭蛋</button>
-        <button id="btn-open-report" class="toy-btn sm">📊 成績</button>
-        <button id="btn-toggle-zhuyin" class="toy-btn sm active-toggle"><span class="zy-mini-stack"><span>ㄅ</span><span>ㄆ</span><span>ㄇ</span></span> 開</button>
-        <button id="btn-toggle-voice" class="toy-btn sm active-toggle">🔊 唸題</button>
-        <button id="btn-toggle-bgm" class="toy-btn sm">🎵 音樂</button>
+        <button id="btn-open-gacha" class="toy-btn sun sm hud-nav-btn"></button>
+        <button id="btn-open-report" class="toy-btn sm hud-nav-btn hud-parent-btn"></button>
+        <div class="hud-QuickToggles">
+          <button id="btn-toggle-zhuyin" class="toy-btn sm icon-pill-btn active-toggle" title="切換注音顯示"></button>
+          <button id="btn-toggle-voice" class="toy-btn sm icon-pill-btn active-toggle" title="切換語音朗讀"></button>
+          <button id="btn-toggle-bgm" class="toy-btn sm icon-pill-btn" title="切換背景配樂"></button>
+        </div>
       </div>
     </header>
 
-    <section class="stage-3d-wrap" id="stage-3d-wrap" aria-label="奇幻浮空島舞台">
+    <section class="stage-3d-wrap" id="stage-3d-wrap" aria-label="奇幻王國全景舞台">
       <div class="stage-bg-art" id="stage-bg-art"></div>
       <canvas id="world3d"></canvas>
       <div class="pixar-stage-actor" id="pixar-stage-actor"></div>
