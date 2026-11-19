@@ -2759,13 +2759,254 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   box-shadow: 0 4px 0 #d97706, 0 6px 12px rgba(245, 158, 11, 0.35);
 }
 
-/* Shared Option Layout for Claw / Fish / Dino / Chest */
-.arcade-opt-emblem {
-  font-size: 1.85rem;
-  line-height: 1;
-  flex-shrink: 0;
-  filter: drop-shadow(0 3px 4px rgba(15, 23, 42, 0.16));
+.trail-node.ready-hop {
+  animation: trailHop 0.65s ease-in-out infinite alternate;
+}
+
+@keyframes trailHop {
+  0% { transform: scale(1.15) translateY(0); }
+  100% { transform: scale(1.26) translateY(-6px); }
+}
+
+/* =========================================================
+   v11 Animated Stage-Ready Buffer Screen + Auto-Advance Bar
+   ========================================================= */
+.stage-ready-card {
+  position: relative;
+  margin-top: 8px;
+  border-radius: 30px;
+  border: 4px solid #ffffff;
+  padding: 18px 20px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  overflow: hidden;
+  box-shadow:
+    inset 0 4px 18px rgba(255, 255, 255, 0.92),
+    0 10px 0 rgba(15, 23, 42, 0.1),
+    0 18px 36px rgba(15, 23, 42, 0.18);
+  animation: bufferCardPop 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stage-ready-card.finale-mode {
+  background: linear-gradient(145deg, #fffbeb 0%, #fef08a 50%, #fed7aa 100%);
+}
+
+@keyframes bufferCardPop {
+  0% { opacity: 0; transform: scale(0.88) translateY(14px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.stage-ready-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stage-ready-step-pill,
+.stage-ready-top-pill {
+  background: #ffffff;
+  color: #0f172a;
+  border: 2.5px solid var(--ready-accent, #f59e0b);
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.96rem;
+  font-weight: 900;
+  box-shadow: 0 4px 0 rgba(15, 23, 42, 0.1);
+}
+
+.stage-ready-mode-tag {
+  background: var(--ready-accent, #8b5cf6);
+  color: #ffffff;
+  border: 2.5px solid #ffffff;
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.98rem;
+  font-weight: 900;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+}
+
+.stage-ready-hero-showcase {
+  position: relative;
+  min-height: 176px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0 2px;
   pointer-events: none;
+}
+
+.stage-ready-aura {
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(253, 224, 71, 0.45) 48%, transparent 72%);
+  animation: auraPulseSpin 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes auraPulseSpin {
+  0% { transform: scale(0.92); opacity: 0.8; }
+  100% { transform: scale(1.12); opacity: 1; }
+}
+
+.stage-ready-hero-showcase .hero-svg {
+  position: relative;
+  z-index: 2;
+  width: 228px;
+  height: auto;
+  filter: drop-shadow(0 12px 18px rgba(15, 23, 42, 0.24));
+  animation: heroBufferShowcase 0.85s ease-in-out infinite alternate;
+}
+
+@keyframes heroBufferShowcase {
+  0% { transform: translateY(3px) scale(0.97) rotate(-3deg); }
+  100% { transform: translateY(-9px) scale(1.06) rotate(3deg); }
+}
+
+/* Per-mode lively buffer hero sub-animations */
+.stage-ready-hero-showcase.anim-claw .claw-arm-left {
+  animation: bufClawL 0.55s ease-in-out infinite alternate;
+}
+.stage-ready-hero-showcase.anim-claw .claw-arm-right {
+  animation: bufClawR 0.55s ease-in-out infinite alternate;
+}
+@keyframes bufClawL { 0% { transform: rotate(-6deg); } 100% { transform: rotate(24deg); } }
+@keyframes bufClawR { 0% { transform: rotate(6deg); } 100% { transform: rotate(-24deg); } }
+
+.stage-ready-hero-showcase.anim-dart .bow-nocked-arrow {
+  animation: bufBowDraw 0.6s ease-in-out infinite alternate;
+}
+@keyframes bufBowDraw { 0% { transform: translateY(0); } 100% { transform: translateY(13px); } }
+
+.stage-ready-hero-showcase.anim-feed .dino-upper-jaw {
+  animation: bufDinoUp 0.48s ease-in-out infinite alternate;
+}
+.stage-ready-hero-showcase.anim-feed .dino-lower-jaw {
+  animation: bufDinoLow 0.48s ease-in-out infinite alternate;
+}
+@keyframes bufDinoUp { 0% { transform: rotate(0deg); } 100% { transform: rotate(-18deg); } }
+@keyframes bufDinoLow { 0% { transform: rotate(0deg); } 100% { transform: rotate(16deg); } }
+
+.stage-ready-title {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.32;
+}
+
+.stage-ready-sub {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 900;
+  color: #334155;
+  line-height: 1.38;
+}
+
+.buffer-rocket-wrap {
+  width: min(380px, 92%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.buffer-rocket-track {
+  width: min(380px, 92%);
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 2.5px solid #ffffff;
+  box-shadow: inset 0 2px 5px rgba(15, 23, 42, 0.14);
+  overflow: hidden;
+}
+
+.buffer-rocket-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8 0%, #a855f7 50%, #f59e0b 100%);
+  transform-origin: left center;
+  animation: bufferFill var(--buf-ms, 1280ms) linear forwards;
+}
+
+@keyframes bufferFill {
+  0% { transform: scaleX(0.05); }
+  100% { transform: scaleX(1); }
+}
+
+.buffer-countdown-tag {
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--ready-accent, #7c3aed);
+}
+
+.stage-ready-go-btn {
+  margin-top: 2px;
+  font-size: 1.06rem;
+  padding: 10px 24px;
+}
+
+/* Auto-advance countdown bar inside feedback-sheet */
+.auto-advance-track {
+  width: 100%;
+  max-width: 340px;
+  height: 9px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1.5px solid rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.auto-advance-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #22c55e 0%, #38bdf8 55%, #f59e0b 100%);
+  transform-origin: left center;
+  animation: autoNextFill var(--auto-ms, 1150ms) linear forwards;
+}
+
+@keyframes autoNextFill {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+.auto-advance-label {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #475569;
+}
+
+/* =========================================================
+   Shared Giant 3D Hero Rig & Option Props
+   ========================================================= */
+.hero-svg {
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 8px 14px rgba(15, 23, 42, 0.22));
+}
+
+.arcade-opt-prop {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(15, 23, 42, 0.18));
 }
 
 .arcade-opt-content {
@@ -2779,51 +3020,165 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  pointer-events: none;
 }
 
 .arcade-k2-pure-hanzi {
-  font-size: 2.35rem;
+  font-size: 2.38rem;
   font-weight: 900;
   color: #0f172a;
   line-height: 1.1;
 }
 
-.mole-sign.mole-quiz-sign {
-  font-size: 1.18rem;
-  padding: 5px 12px;
-  line-height: 1.3;
-  white-space: nowrap;
+.capsule-avatar-svg {
+  width: 58px;
+  height: 58px;
 }
 
-/* 1. 🕹️ Fantasy Claw Machine (奇幻夾娃娃機) */
+.fish-avatar-svg {
+  width: 82px;
+  height: 56px;
+}
+
+.fish-swim-btn .fish-tail-fin {
+  transform-origin: 18px 29px;
+  animation: fishTailWag 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes fishTailWag {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(10deg); }
+}
+
+.key-avatar-svg {
+  width: 72px;
+  height: 50px;
+}
+
+.food-platter-emoji {
+  font-size: 2.65rem;
+  line-height: 1;
+}
+
+.potion-flask-icon {
+  font-size: 2.15rem;
+  line-height: 1;
+  margin-right: 4px;
+  pointer-events: none;
+}
+
+/* =========================================================
+   1. 🏹 神箭手射靶 (Giant 3D Golden Winged Bow & Feathered Arrow)
+   ========================================================= */
+.archery-range-stage {
+  position: relative;
+  background: linear-gradient(180deg, #eff6ff 0%, #fef9c3 58%, #ffedd5 100%);
+  border: 3.5px solid #ffffff;
+  border-radius: 28px;
+  padding: 14px 16px 12px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(234, 88, 12, 0.18);
+}
+
+.archery-bow-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+  pointer-events: none;
+}
+
+.hero-bow-rig {
+  transform-origin: 50% 62%;
+  transform: rotate(var(--bow-angle, 0deg));
+  transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bow-hero-svg {
+  width: 242px;
+  height: auto;
+}
+
+.bow-nocked-arrow {
+  transition: transform 0.1s ease-out, opacity 0.08s ease;
+}
+
+.hero-bow-rig.bow-drawing .bow-nocked-arrow {
+  transform: translateY(16px);
+}
+
+.hero-bow-rig.bow-drawing .bow-string-path,
+.hero-bow-rig.bow-drawing .bow-string-core {
+  transform: translateY(8px);
+}
+
+.hero-bow-rig.bow-released .bow-nocked-arrow {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.archery-bow-caption {
+  margin-top: -6px;
+  background: linear-gradient(180deg, #fef3c7 0%, #fde047 100%);
+  color: #78350f;
+  border: 2px solid #d97706;
+  border-radius: 999px;
+  padding: 4px 16px;
+  font-size: 0.88rem;
+  font-weight: 900;
+  box-shadow: 0 3px 0 #b45309;
+}
+
+.dart-stuck-arrow {
+  position: absolute;
+  bottom: -6px;
+  right: -4px;
+  font-size: 2.3rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+  animation: stuckArrowQuiver 0.35s ease-out;
+}
+
+@keyframes stuckArrowQuiver {
+  0% { transform: scale(1.35) rotate(-18deg); }
+  45% { transform: scale(1) rotate(8deg); }
+  75% { transform: scale(1.04) rotate(-4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* =========================================================
+   2. 🦾 巨型夾娃娃 (Giant Articulated Chrome-Steel Claw Gantry)
+   ========================================================= */
 .claw-machine-stage {
   position: relative;
-  border-radius: 26px;
-  border: 3px solid #ffffff;
-  background: linear-gradient(180deg, #ede9fe 0%, #fae8ff 48%, #fffbeb 100%);
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #ede9fe 0%, #fae8ff 46%, #fffbeb 100%);
   padding: 12px 14px 16px;
-  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(139, 92, 246, 0.2);
+  box-shadow: inset 0 3px 14px rgba(255, 255, 255, 0.92), 0 12px 26px rgba(139, 92, 246, 0.22);
   overflow: hidden;
 }
 
 .claw-top-rail {
+  position: relative;
+  z-index: 3;
   background: linear-gradient(90deg, #7c3aed 0%, #ec4899 50%, #f59e0b 100%);
   border-radius: 999px;
-  padding: 5px 14px;
+  padding: 6px 16px;
   text-align: center;
-  box-shadow: 0 4px 0 #5b21b6;
+  box-shadow: 0 5px 0 #5b21b6;
 }
 
 .claw-rail-title {
   color: #ffffff;
-  font-size: 0.9rem;
+  font-size: 0.94rem;
   font-weight: 900;
   letter-spacing: 0.02em;
 }
 
 .claw-gantry-zone {
   position: relative;
-  height: 66px;
+  height: 158px;
   margin-bottom: 4px;
   pointer-events: none;
 }
@@ -2839,33 +3194,63 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   transition: left 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.claw-motor {
-  font-size: 1.25rem;
-  line-height: 1;
+.claw-cable-rod {
+  width: 10px;
+  height: 12px;
+  background: repeating-linear-gradient(
+    180deg,
+    #cbd5e1 0px,
+    #cbd5e1 5px,
+    #475569 5px,
+    #475569 10px
+  );
+  border-left: 2px solid #f8fafc;
+  border-right: 2px solid #334155;
+  border-radius: 4px;
+  transition: height 0.16s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.claw-cable {
-  width: 4px;
-  height: 14px;
-  background: linear-gradient(180deg, #475569, #94a3b8);
-  border-radius: 999px;
-  transition: height 0.18s ease;
+.claw-carriage.is-dropping .claw-cable-rod {
+  height: 54px;
 }
 
-.claw-prongs {
-  font-size: 1.7rem;
-  line-height: 1;
-  margin-top: -3px;
-  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.22));
-  transition: transform 0.18s ease;
+.claw-hero-svg {
+  width: 164px;
+  height: auto;
+  margin-top: -6px;
 }
 
-.claw-carriage.grabbing .claw-cable {
-  height: 36px;
+.claw-arm-left,
+.claw-arm-right {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.claw-carriage.grabbing .claw-prongs {
-  transform: scale(1.22) rotate(-8deg);
+.claw-carriage.is-open .claw-arm-left {
+  transform: rotate(28deg);
+}
+
+.claw-carriage.is-open .claw-arm-right {
+  transform: rotate(-28deg);
+}
+
+.claw-carriage.is-clamped .claw-arm-left {
+  transform: rotate(-9deg);
+}
+
+.claw-carriage.is-clamped .claw-arm-right {
+  transform: rotate(9deg);
+}
+
+.claw-held-capsule {
+  margin-top: -68px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.14s ease, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.claw-held-capsule.show {
+  opacity: 1;
+  transform: scale(1.06);
 }
 
 .claw-capsules-grid {
@@ -2876,7 +3261,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 
 .claw-capsule-btn {
   appearance: none;
-  min-height: 92px;
+  min-height: 94px;
   border-radius: 26px;
   border: 3px solid #ffffff;
   padding: 12px 14px;
@@ -2913,30 +3298,61 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 }
 
 .claw-capsule-btn.grabbed-lift {
-  transform: translateY(-12px) scale(1.05);
+  transform: translateY(-12px) scale(1.04);
 }
 
-/* 2. 🎣 Starlight Fishing Pond (星光釣魚池) */
+/* =========================================================
+   3. 🎣 小熊釣魚船 (Giant 3D Fisherman Bear, Curved Rod & Bobber)
+   ========================================================= */
 .fish-pond-stage {
   position: relative;
-  border-radius: 26px;
-  border: 3px solid #ffffff;
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
   background:
-    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.45) 0%, transparent 45%),
-    linear-gradient(180deg, #bae6fd 0%, #7dd3fc 48%, #38bdf8 100%);
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 45%),
+    linear-gradient(180deg, #e0f2fe 0%, #7dd3fc 42%, #0284c7 100%);
   padding: 12px 14px 16px;
-  box-shadow: inset 0 3px 14px rgba(255, 255, 255, 0.8), 0 10px 24px rgba(2, 132, 199, 0.24);
+  box-shadow: inset 0 3px 14px rgba(255, 255, 255, 0.85), 0 10px 24px rgba(2, 132, 199, 0.26);
+}
+
+.fish-hero-waterline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  pointer-events: none;
+}
+
+.fish-hero-rig {
+  animation: boatWaveBob 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes boatWaveBob {
+  0% { transform: translateY(0) rotate(-1.5deg); }
+  100% { transform: translateY(-6px) rotate(1.8deg); }
+}
+
+.fish-hero-svg {
+  width: 238px;
+  height: auto;
+}
+
+.fish-rod-group {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fish-hero-rig.rod-casting .fish-rod-group {
+  transform: rotate(15deg);
 }
 
 .fish-dock-bar {
-  width: fit-content;
-  margin: 0 auto 12px;
+  margin-top: -6px;
   background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
   color: #78350f;
   border: 2.5px solid #b45309;
   border-radius: 999px;
-  padding: 6px 18px;
-  font-size: 0.92rem;
+  padding: 5px 18px;
+  font-size: 0.9rem;
   font-weight: 900;
   box-shadow: 0 4px 0 #92400e;
 }
@@ -2949,7 +3365,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 
 .fish-swim-btn {
   appearance: none;
-  min-height: 92px;
+  min-height: 94px;
   border-radius: 26px;
   border: 3px solid #ffffff;
   padding: 12px 14px;
@@ -2960,8 +3376,8 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.94) 100%);
-  box-shadow: 0 6px 0 #0369a1, 0 10px 18px rgba(3, 105, 161, 0.22);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 249, 255, 0.94) 100%);
+  box-shadow: 0 6px 0 #0369a1, 0 10px 18px rgba(3, 105, 161, 0.24);
   animation: fishBobSwim 2.6s ease-in-out infinite alternate;
   transition: transform 0.14s ease, filter 0.14s ease;
 }
@@ -2984,48 +3400,80 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   transform: translateY(-10px) scale(1.05);
 }
 
-/* 3. 🦖 Hungry Baby Dino Feeder (貪吃小恐龍) */
+/* =========================================================
+   4. 🦖 貪吃大恐龍 (Giant Articulated Baby T-Rex Jaws)
+   ========================================================= */
 .dino-feeder-stage {
-  border-radius: 26px;
-  border: 3px solid #ffffff;
-  background: linear-gradient(180deg, #ecfdf5 0%, #fef9c3 55%, #ffedd5 100%);
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #ecfdf5 0%, #dcfce7 45%, #fef9c3 100%);
   padding: 12px 14px 16px;
   box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(16, 185, 129, 0.2);
 }
 
-.dino-pal-header {
+.dino-hero-spotlight {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 auto 12px;
-  width: fit-content;
-  background: #ffffff;
-  border: 2.5px solid #34d399;
-  border-radius: 999px;
-  padding: 6px 18px 6px 12px;
-  box-shadow: 0 5px 0 #10b981;
+  margin-bottom: 10px;
+  pointer-events: none;
 }
 
-.dino-avatar {
-  font-size: 2.35rem;
-  line-height: 1;
-  animation: dinoIdleBounce 1.8s ease-in-out infinite;
+.dino-hero-rig {
+  animation: dinoHeroIdle 2.1s ease-in-out infinite alternate;
 }
 
-.dino-pal-header.happy-chomp .dino-avatar {
-  animation: popBounce 0.4s ease 2;
+@keyframes dinoHeroIdle {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-5px) scale(1.03); }
 }
 
-@keyframes dinoIdleBounce {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-5px) rotate(4deg); }
+.dino-hero-svg {
+  width: 205px;
+  height: auto;
+}
+
+.dino-upper-jaw,
+.dino-lower-jaw {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dino-hero-rig.mouth-wide-open .dino-upper-jaw {
+  transform: rotate(-22deg);
+}
+
+.dino-hero-rig.mouth-wide-open .dino-lower-jaw {
+  transform: rotate(20deg);
+}
+
+.dino-hero-rig.dino-chomping .dino-upper-jaw {
+  animation: dinoChompTop 0.22s ease-in-out 3;
+}
+
+.dino-hero-rig.dino-chomping .dino-lower-jaw {
+  animation: dinoChompBot 0.22s ease-in-out 3;
+}
+
+@keyframes dinoChompTop {
+  0%, 100% { transform: rotate(2deg); }
+  50% { transform: rotate(-16deg); }
+}
+
+@keyframes dinoChompBot {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(14deg); }
 }
 
 .dino-speech-pill {
+  margin-top: -4px;
+  background: #ffffff;
+  border: 2.5px solid #22c55e;
+  border-radius: 999px;
+  padding: 5px 18px;
   font-size: 0.92rem;
   font-weight: 900;
   color: #065f46;
+  box-shadow: 0 4px 0 #16a34a;
 }
 
 .dino-food-grid {
@@ -3036,7 +3484,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 
 .dino-food-btn {
   appearance: none;
-  min-height: 92px;
+  min-height: 94px;
   border-radius: 24px;
   border: 3px solid #ffffff;
   padding: 12px 14px;
@@ -3057,44 +3505,72 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   filter: brightness(1.03);
 }
 
-/* 4. 🗝️ Golden Treasure Chest Lock (黃金寶箱鎖) */
+/* =========================================================
+   5. 🗝️ 海盜大寶箱 (Giant 3D Hinged Treasure Chest & Jeweled Keys)
+   ========================================================= */
 .chest-lock-stage {
-  border-radius: 26px;
-  border: 3px solid #ffffff;
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
   background: linear-gradient(180deg, #fef9c3 0%, #fde68a 48%, #ffedd5 100%);
   padding: 12px 14px 16px;
   box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(217, 119, 6, 0.24);
 }
 
-.golden-chest-box {
+.chest-hero-spotlight {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 auto 12px;
-  width: fit-content;
-  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
-  border: 2.5px solid #f59e0b;
-  border-radius: 999px;
-  padding: 6px 18px 6px 12px;
-  box-shadow: 0 5px 0 #d97706;
+  margin-bottom: 10px;
+  pointer-events: none;
 }
 
-.golden-chest-icon {
-  font-size: 2.2rem;
-  line-height: 1;
-  animation: chestWobble 2.2s ease-in-out infinite;
+.chest-hero-svg {
+  width: 215px;
+  height: auto;
+  animation: chestIdlePulse 2.4s ease-in-out infinite alternate;
 }
 
-@keyframes chestWobble {
-  0%, 100% { transform: rotate(-4deg) scale(1); }
-  50% { transform: rotate(4deg) scale(1.08); }
+@keyframes chestIdlePulse {
+  0% { transform: translateY(0) rotate(-1.2deg); }
+  100% { transform: translateY(-4px) rotate(1.2deg); }
+}
+
+.chest-treasure-inside {
+  opacity: 0;
+  transform: translateY(12px) scale(0.85);
+  transform-origin: 110px 76px;
+  transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.chest-lid-group,
+.chest-padlock-group {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
+}
+
+.chest-hero-svg.is-unlocked .chest-lid-group {
+  transform: translateY(-22px) rotate(-16deg);
+}
+
+.chest-hero-svg.is-unlocked .chest-padlock-group {
+  opacity: 0;
+  transform: translateY(24px) rotate(26deg) scale(0.75);
+}
+
+.chest-hero-svg.is-unlocked .chest-treasure-inside {
+  opacity: 1;
+  transform: translateY(-6px) scale(1.06);
 }
 
 .golden-chest-pill {
+  margin-top: -4px;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  border: 2.5px solid #f59e0b;
+  border-radius: 999px;
+  padding: 5px 18px;
   font-size: 0.92rem;
   font-weight: 900;
   color: #92400e;
+  box-shadow: 0 4px 0 #d97706;
 }
 
 .chest-keys-grid {
@@ -3105,7 +3581,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 
 .chest-key-btn {
   appearance: none;
-  min-height: 92px;
+  min-height: 94px;
   border-radius: 24px;
   border: 3px solid #ffffff;
   padding: 12px 14px;
@@ -3126,18 +3602,59 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   filter: brightness(1.04);
 }
 
-/* 5. 🃏 3D Magic Flip-Card Memory Arena (魔法翻翻牌 — Flat Z=0 Hit Plane for 100% Safari Clickability!) */
+/* =========================================================
+   6. 🃏 魔術帽兔兔 (3D Magician Bunny + Flat Z=0 Flip Cards)
+   ========================================================= */
 .memory-arena-stage {
-  border-radius: 26px;
-  border: 3px solid #ffffff;
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
   background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 52%, #e0f2fe 100%);
   padding: 12px 14px 16px;
   box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(124, 58, 237, 0.2);
 }
 
+.memory-hero-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  pointer-events: none;
+}
+
+.memory-hero-svg {
+  width: 194px;
+  height: auto;
+}
+
+.bunny-pop-group {
+  animation: bunnyHatBob 1.9s ease-in-out infinite alternate;
+}
+
+@keyframes bunnyHatBob {
+  0% { transform: translateY(3px); }
+  100% { transform: translateY(-5px); }
+}
+
+.bunny-wand-group {
+  animation: wandWaveIdle 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes wandWaveIdle {
+  0% { transform: rotate(-6deg); }
+  100% { transform: rotate(10deg); }
+}
+
+.memory-hero-rig.wand-casting .bunny-wand-group {
+  animation: wandZapCast 0.32s ease 2;
+}
+
+@keyframes wandZapCast {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(24deg) scale(1.12); }
+}
+
 .memory-status-bar {
-  width: fit-content;
-  margin: 0 auto 12px;
+  margin-top: -4px;
   background: #ffffff;
   color: #5b21b6;
   border: 2px solid #c4b5fd;
@@ -3239,7 +3756,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 }
 
 .mem-back-star {
-  font-size: 2.3rem;
+  font-size: 2.35rem;
   line-height: 1;
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
 }
@@ -3268,14 +3785,57 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   text-align: center;
 }
 
-/* 6. 🛸 UFO Space Crystal Laser Zapper (飛碟除蟲砲) */
+/* =========================================================
+   7. 🛸 外星飛碟砲 ＆ 🔨 巨槌打地鼠 (UFO Laser & Carnival Star Mallet)
+   ========================================================= */
+.typo-hero-top,
+.mole-hero-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ufo-hero-rig {
+  pointer-events: none;
+  animation: ufoHoverFloat 2.1s ease-in-out infinite alternate;
+}
+
+@keyframes ufoHoverFloat {
+  0% { transform: translateY(0) rotate(-2deg); }
+  100% { transform: translateY(-8px) rotate(2deg); }
+}
+
+.ufo-hero-svg {
+  width: 222px;
+  height: auto;
+}
+
+.ufo-hero-rig.ufo-firing {
+  filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.95));
+}
+
+.ufo-bulb {
+  animation: ufoBulbBlink 0.7s ease-in-out infinite alternate;
+}
+.ufo-bulb.b2 { animation-delay: 0.15s; }
+.ufo-bulb.b3 { animation-delay: 0.3s; }
+.ufo-bulb.b4 { animation-delay: 0.45s; }
+.ufo-bulb.b5 { animation-delay: 0.6s; }
+
+@keyframes ufoBulbBlink {
+  0% { opacity: 0.55; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1.12); }
+}
+
 .typo-step-banner.laser-theme {
   background: linear-gradient(90deg, #e0f2fe 0%, #ede9fe 100%);
   color: #1e3a8a;
-  border: 2px solid #7dd3fc;
+  border: 2.5px solid #38bdf8;
 }
 
 .ufo-laser-arena {
+  margin-top: 10px;
   border-radius: 26px;
   border: 3px solid #7dd3fc;
   background: radial-gradient(circle at 50% 15%, #312e81 0%, #0f172a 100%);
@@ -3286,15 +3846,14 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 .ufo-ship-header {
   width: fit-content;
   margin: 0 auto 14px;
-  background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+  background: linear-gradient(90deg, #0284c7 0%, #6366f1 100%);
   color: #ffffff;
   border: 2px solid #ffffff;
   border-radius: 999px;
   padding: 6px 18px;
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   font-weight: 900;
   box-shadow: 0 4px 14px rgba(56, 189, 248, 0.55);
-  animation: dartBob 2s ease-in-out infinite;
 }
 
 .ufo-crystals-grid {
@@ -3327,20 +3886,247 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 }
 
 .ufo-crystal-gem {
-  font-size: 1.55rem;
+  font-size: 1.6rem;
   line-height: 1;
   pointer-events: none;
 }
 
 .ufo-crystal-char {
-  font-size: 2rem;
+  font-size: 2.05rem;
   font-weight: 900;
   color: #0f172a;
   line-height: 1.1;
   pointer-events: none;
 }
 
-/* Correct / Wrong feedback states for all new arcade buttons */
+/* Giant Carnival Star Mallet & Enlarged Pixar Mole Holes */
+.mallet-hero-rig {
+  pointer-events: none;
+  animation: malletReadyBob 1.3s ease-in-out infinite alternate;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+@keyframes malletReadyBob {
+  0% { transform: rotate(-6deg) translateY(0); }
+  100% { transform: rotate(8deg) translateY(-6px); }
+}
+
+.mallet-hero-rig.mallet-swing-hide {
+  opacity: 0.15;
+  transform: scale(0.85) rotate(32deg);
+}
+
+.mallet-hero-svg {
+  width: 185px;
+  height: auto;
+}
+
+.mole-hole-btn {
+  height: 152px;
+  max-width: 162px;
+  touch-action: manipulation;
+}
+
+.mole-critter,
+.mole-mound,
+.mole-sign {
+  pointer-events: none;
+}
+
+.mole-pixar-img {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.26);
+  background: #fde68a;
+}
+
+.mole-sign.mole-quiz-sign {
+  font-size: 1.18rem;
+  padding: 5px 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   8. 🫧 泡泡小海豹, 9. 🧪 魔法煉金釜, 10. 🚂 皇家蒸汽火車, 11. ⚡ 雷神審判錘
+   ========================================================= */
+.bubble-hero-stage {
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 52%, #fae8ff 100%);
+  padding: 12px 14px 18px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(14, 165, 233, 0.18);
+}
+
+.bubble-hero-header,
+.judge-hero-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+  pointer-events: none;
+}
+
+.bubble-hero-svg {
+  width: 206px;
+  height: auto;
+  animation: sealFloatBob 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes sealFloatBob {
+  0% { transform: translateY(0) rotate(-1.5deg); }
+  100% { transform: translateY(-6px) rotate(1.5deg); }
+}
+
+.bubble-hero-caption,
+.judge-hero-caption {
+  margin-top: -4px;
+  background: #ffffff;
+  border: 2px solid #38bdf8;
+  border-radius: 999px;
+  padding: 5px 18px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #0369a1;
+  box-shadow: 0 3px 0 #0284c7;
+}
+
+/* Alchemy Cauldron Stage */
+.alchemy-hero-arena {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(145deg, #faf5ff 0%, #f3e8ff 52%, #fef3c7 100%);
+  padding: 14px 18px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.92), 0 10px 24px rgba(147, 51, 234, 0.18);
+}
+
+.cauldron-hero-rig {
+  pointer-events: none;
+}
+
+.alchemy-hero-svg {
+  width: 192px;
+  height: auto;
+}
+
+.alchemy-hero-svg .pot-bub {
+  animation: potBubbleRise 1.4s ease-in-out infinite alternate;
+}
+.alchemy-hero-svg .pot-bub.b2 { animation-delay: 0.35s; }
+.alchemy-hero-svg .pot-bub.b3 { animation-delay: 0.7s; }
+
+@keyframes potBubbleRise {
+  0% { transform: translateY(4px) scale(0.9); }
+  100% { transform: translateY(-7px) scale(1.12); }
+}
+
+.alchemy-workbench {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Royal Steam Locomotive Stage */
+.train-track-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 26px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #e0f2fe 0%, #fef9c3 78%, #cbd5e1 100%);
+  box-shadow: inset 0 3px 10px rgba(255, 255, 255, 0.9), 0 8px 20px rgba(15, 23, 42, 0.14);
+  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.train-track-box.train-departing {
+  transform: translateX(26px) scale(1.02);
+}
+
+.train-hero-engine {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.train-hero-svg {
+  width: 204px;
+  height: auto;
+}
+
+.train-hero-svg .train-steam-puffs {
+  animation: steamPuffFloat 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes steamPuffFloat {
+  0% { transform: translateY(2px) translateX(0); opacity: 0.85; }
+  100% { transform: translateY(-6px) translateX(5px); opacity: 1; }
+}
+
+.train-hero-svg .train-wheel {
+  animation: locoWheelSpin 2.4s linear infinite;
+}
+
+@keyframes locoWheelSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.train-cars-coupled {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+}
+
+.train-empty-hint {
+  color: #334155;
+  font-weight: 900;
+  font-size: 0.96rem;
+}
+
+/* Thunder Judgment Hammer Stage */
+.judge-thunder-stage {
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #fefce8 0%, #fef9c3 48%, #e0f2fe 100%);
+  padding: 12px 16px 18px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(234, 179, 8, 0.22);
+}
+
+.judge-hero-svg {
+  width: 196px;
+  height: auto;
+  animation: hammerHoverIdle 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes hammerHoverIdle {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-7px) scale(1.04); }
+}
+
+.judge-hero-rig.hammer-slamming .judge-hammer-group {
+  transform: rotate(22deg) translateY(10px);
+  transition: transform 0.14s ease-out;
+}
+
+.judge-hero-caption {
+  border-color: #eab308;
+  color: #854d0e;
+  box-shadow: 0 3px 0 #ca8a04;
+}
+
+/* Correct / Wrong feedback states for all arcade buttons */
 .claw-capsule-btn.correct-pick,
 .fish-swim-btn.correct-pick,
 .dino-food-btn.correct-pick,
@@ -3362,7 +4148,47 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   opacity: 0.78;
 }
 
+/* Compact active-play viewport so Giant 3D Hero + all 4 options sit above the fold */
+body.in-play .stage-3d-wrap {
+  height: 168px;
+}
+
+body.in-play .command-deck {
+  padding-top: 12px;
+}
+
+body.in-play .question-header {
+  margin-bottom: 6px;
+}
+
 @media (max-width: 680px) {
+  body.in-play .stage-3d-wrap {
+    height: 126px;
+  }
+  .stage-ready-hero-showcase {
+    min-height: 146px;
+  }
+  .stage-ready-hero-showcase .hero-svg {
+    width: 186px;
+  }
+  .stage-ready-title {
+    font-size: 1.3rem;
+  }
+  .bow-hero-svg { width: 196px; }
+  .claw-gantry-zone { height: 150px; }
+  .claw-hero-svg { width: 142px; }
+  .claw-carriage.is-dropping .claw-cable-rod { height: 50px; }
+  .fish-hero-svg { width: 194px; }
+  .dino-hero-svg { width: 172px; }
+  .chest-hero-svg { width: 180px; }
+  .ufo-hero-svg { width: 186px; }
+  .mallet-hero-svg { width: 154px; }
+  .bubble-hero-svg { width: 174px; }
+  .alchemy-hero-svg { width: 158px; }
+  .train-hero-svg { width: 168px; }
+  .memory-hero-svg { width: 164px; }
+  .judge-hero-svg { width: 166px; }
+
   .claw-capsules-grid,
   .fish-pond-grid,
   .dino-food-grid,
@@ -3374,7 +4200,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   .fish-swim-btn,
   .dino-food-btn,
   .chest-key-btn {
-    min-height: 76px;
+    min-height: 78px;
     padding: 10px 12px;
   }
   .arcade-opt-content {
@@ -3399,7 +4225,8 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   .mem-g-text {
     font-size: 1.08rem;
   }
-  .ufo-crystals-grid {
+  .ufo-crystals-grid,
+  .mole-holes-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
@@ -3409,4 +4236,3 @@ button.alchemy-slot.k2-hanzi-goal:hover {
     font-size: 0.85rem;
   }
 }
-

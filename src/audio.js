@@ -76,7 +76,7 @@ const ZHUYIN_SYLLABLE_TO_HANZI = {
   'ㄩˊ': '魚', 'ㄩˇ': '雨', 'ㄩㄝˋ': '月', 'ㄩㄥˇ': '泳',
 };
 
-const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣🕹️🎣🦖🃏🗝️🛸🍩🍔🍓🍕🐠🐡🐟🐬🔮🧰🦾🪝💦😋]/gu;
+const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣🕹️🎣🦖🃏🗝️🛸🍩🍔🍓🍕🐠🐡🐟🐬🔮🧰🦾🪝💦😋🏹🚀⏭️💥😵🎊🗺️🎰🪙]/gu;
 const ZHUYIN_TOKEN_RE = /(?:˙)?[\u3105-\u3129]+(?:[ˊˇˋ˙])?/g;
 const PURE_PUNCT_RE = /^[\s，。！？、；：「」『』（）()—…,.!?;:'"]+$/;
 
@@ -351,6 +351,27 @@ class SoundEngine {
   playUfoLaser() {
     this.tone(1180, 0.12, 'sawtooth', 0.11, 0, 280);
     this.tone(880, 0.11, 'sine', 0.15, 0.12, 1480);
+  }
+
+  playBowTwang() {
+    this.tone(195, 0.09, 'triangle', 0.19, 0, 340);
+    this.tone(680, 0.14, 'sine', 0.13, 0.05, 1380);
+  }
+
+  playCauldronBubble() {
+    [320, 480, 640, 880].forEach((n, i) => this.tone(n, 0.08, 'sine', 0.14, i * 0.045, n * 1.3));
+  }
+
+  playThunderStrike() {
+    this.tone(920, 0.09, 'sawtooth', 0.12, 0, 180);
+    this.tone(160, 0.22, 'triangle', 0.22, 0.06, 65);
+    this.tone(1046.5, 0.15, 'triangle', 0.14, 0.12);
+  }
+
+  playStageReady() {
+    [523.25, 659.25, 783.99, 1046.5].forEach((n, i) => {
+      this.tone(n, i === 3 ? 0.2 : 0.085, 'triangle', 0.16, i * 0.065);
+    });
   }
 
   playSparkleBurst() {

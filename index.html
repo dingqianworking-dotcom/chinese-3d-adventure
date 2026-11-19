@@ -2771,13 +2771,254 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   box-shadow: 0 4px 0 #d97706, 0 6px 12px rgba(245, 158, 11, 0.35);
 }
 
-/* Shared Option Layout for Claw / Fish / Dino / Chest */
-.arcade-opt-emblem {
-  font-size: 1.85rem;
-  line-height: 1;
-  flex-shrink: 0;
-  filter: drop-shadow(0 3px 4px rgba(15, 23, 42, 0.16));
+.trail-node.ready-hop {
+  animation: trailHop 0.65s ease-in-out infinite alternate;
+}
+
+@keyframes trailHop {
+  0% { transform: scale(1.15) translateY(0); }
+  100% { transform: scale(1.26) translateY(-6px); }
+}
+
+/* =========================================================
+   v11 Animated Stage-Ready Buffer Screen + Auto-Advance Bar
+   ========================================================= */
+.stage-ready-card {
+  position: relative;
+  margin-top: 8px;
+  border-radius: 30px;
+  border: 4px solid #ffffff;
+  padding: 18px 20px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  overflow: hidden;
+  box-shadow:
+    inset 0 4px 18px rgba(255, 255, 255, 0.92),
+    0 10px 0 rgba(15, 23, 42, 0.1),
+    0 18px 36px rgba(15, 23, 42, 0.18);
+  animation: bufferCardPop 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stage-ready-card.finale-mode {
+  background: linear-gradient(145deg, #fffbeb 0%, #fef08a 50%, #fed7aa 100%);
+}
+
+@keyframes bufferCardPop {
+  0% { opacity: 0; transform: scale(0.88) translateY(14px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.stage-ready-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stage-ready-step-pill,
+.stage-ready-top-pill {
+  background: #ffffff;
+  color: #0f172a;
+  border: 2.5px solid var(--ready-accent, #f59e0b);
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.96rem;
+  font-weight: 900;
+  box-shadow: 0 4px 0 rgba(15, 23, 42, 0.1);
+}
+
+.stage-ready-mode-tag {
+  background: var(--ready-accent, #8b5cf6);
+  color: #ffffff;
+  border: 2.5px solid #ffffff;
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.98rem;
+  font-weight: 900;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+}
+
+.stage-ready-hero-showcase {
+  position: relative;
+  min-height: 176px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0 2px;
   pointer-events: none;
+}
+
+.stage-ready-aura {
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(253, 224, 71, 0.45) 48%, transparent 72%);
+  animation: auraPulseSpin 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes auraPulseSpin {
+  0% { transform: scale(0.92); opacity: 0.8; }
+  100% { transform: scale(1.12); opacity: 1; }
+}
+
+.stage-ready-hero-showcase .hero-svg {
+  position: relative;
+  z-index: 2;
+  width: 228px;
+  height: auto;
+  filter: drop-shadow(0 12px 18px rgba(15, 23, 42, 0.24));
+  animation: heroBufferShowcase 0.85s ease-in-out infinite alternate;
+}
+
+@keyframes heroBufferShowcase {
+  0% { transform: translateY(3px) scale(0.97) rotate(-3deg); }
+  100% { transform: translateY(-9px) scale(1.06) rotate(3deg); }
+}
+
+/* Per-mode lively buffer hero sub-animations */
+.stage-ready-hero-showcase.anim-claw .claw-arm-left {
+  animation: bufClawL 0.55s ease-in-out infinite alternate;
+}
+.stage-ready-hero-showcase.anim-claw .claw-arm-right {
+  animation: bufClawR 0.55s ease-in-out infinite alternate;
+}
+@keyframes bufClawL { 0% { transform: rotate(-6deg); } 100% { transform: rotate(24deg); } }
+@keyframes bufClawR { 0% { transform: rotate(6deg); } 100% { transform: rotate(-24deg); } }
+
+.stage-ready-hero-showcase.anim-dart .bow-nocked-arrow {
+  animation: bufBowDraw 0.6s ease-in-out infinite alternate;
+}
+@keyframes bufBowDraw { 0% { transform: translateY(0); } 100% { transform: translateY(13px); } }
+
+.stage-ready-hero-showcase.anim-feed .dino-upper-jaw {
+  animation: bufDinoUp 0.48s ease-in-out infinite alternate;
+}
+.stage-ready-hero-showcase.anim-feed .dino-lower-jaw {
+  animation: bufDinoLow 0.48s ease-in-out infinite alternate;
+}
+@keyframes bufDinoUp { 0% { transform: rotate(0deg); } 100% { transform: rotate(-18deg); } }
+@keyframes bufDinoLow { 0% { transform: rotate(0deg); } 100% { transform: rotate(16deg); } }
+
+.stage-ready-title {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.32;
+}
+
+.stage-ready-sub {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 900;
+  color: #334155;
+  line-height: 1.38;
+}
+
+.buffer-rocket-wrap {
+  width: min(380px, 92%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.buffer-rocket-track {
+  width: min(380px, 92%);
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 2.5px solid #ffffff;
+  box-shadow: inset 0 2px 5px rgba(15, 23, 42, 0.14);
+  overflow: hidden;
+}
+
+.buffer-rocket-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8 0%, #a855f7 50%, #f59e0b 100%);
+  transform-origin: left center;
+  animation: bufferFill var(--buf-ms, 1280ms) linear forwards;
+}
+
+@keyframes bufferFill {
+  0% { transform: scaleX(0.05); }
+  100% { transform: scaleX(1); }
+}
+
+.buffer-countdown-tag {
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--ready-accent, #7c3aed);
+}
+
+.stage-ready-go-btn {
+  margin-top: 2px;
+  font-size: 1.06rem;
+  padding: 10px 24px;
+}
+
+/* Auto-advance countdown bar inside feedback-sheet */
+.auto-advance-track {
+  width: 100%;
+  max-width: 340px;
+  height: 9px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1.5px solid rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.auto-advance-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #22c55e 0%, #38bdf8 55%, #f59e0b 100%);
+  transform-origin: left center;
+  animation: autoNextFill var(--auto-ms, 1150ms) linear forwards;
+}
+
+@keyframes autoNextFill {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+.auto-advance-label {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #475569;
+}
+
+/* =========================================================
+   Shared Giant 3D Hero Rig & Option Props
+   ========================================================= */
+.hero-svg {
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 8px 14px rgba(15, 23, 42, 0.22));
+}
+
+.arcade-opt-prop {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(15, 23, 42, 0.18));
 }
 
 .arcade-opt-content {
@@ -2791,51 +3032,165 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  pointer-events: none;
 }
 
 .arcade-k2-pure-hanzi {
-  font-size: 2.35rem;
+  font-size: 2.38rem;
   font-weight: 900;
   color: #0f172a;
   line-height: 1.1;
 }
 
-.mole-sign.mole-quiz-sign {
-  font-size: 1.18rem;
-  padding: 5px 12px;
-  line-height: 1.3;
-  white-space: nowrap;
+.capsule-avatar-svg {
+  width: 58px;
+  height: 58px;
 }
 
-/* 1. 🕹️ Fantasy Claw Machine (奇幻夾娃娃機) */
+.fish-avatar-svg {
+  width: 82px;
+  height: 56px;
+}
+
+.fish-swim-btn .fish-tail-fin {
+  transform-origin: 18px 29px;
+  animation: fishTailWag 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes fishTailWag {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(10deg); }
+}
+
+.key-avatar-svg {
+  width: 72px;
+  height: 50px;
+}
+
+.food-platter-emoji {
+  font-size: 2.65rem;
+  line-height: 1;
+}
+
+.potion-flask-icon {
+  font-size: 2.15rem;
+  line-height: 1;
+  margin-right: 4px;
+  pointer-events: none;
+}
+
+/* =========================================================
+   1. 🏹 神箭手射靶 (Giant 3D Golden Winged Bow & Feathered Arrow)
+   ========================================================= */
+.archery-range-stage {
+  position: relative;
+  background: linear-gradient(180deg, #eff6ff 0%, #fef9c3 58%, #ffedd5 100%);
+  border: 3.5px solid #ffffff;
+  border-radius: 28px;
+  padding: 14px 16px 12px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(234, 88, 12, 0.18);
+}
+
+.archery-bow-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+  pointer-events: none;
+}
+
+.hero-bow-rig {
+  transform-origin: 50% 62%;
+  transform: rotate(var(--bow-angle, 0deg));
+  transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bow-hero-svg {
+  width: 242px;
+  height: auto;
+}
+
+.bow-nocked-arrow {
+  transition: transform 0.1s ease-out, opacity 0.08s ease;
+}
+
+.hero-bow-rig.bow-drawing .bow-nocked-arrow {
+  transform: translateY(16px);
+}
+
+.hero-bow-rig.bow-drawing .bow-string-path,
+.hero-bow-rig.bow-drawing .bow-string-core {
+  transform: translateY(8px);
+}
+
+.hero-bow-rig.bow-released .bow-nocked-arrow {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.archery-bow-caption {
+  margin-top: -6px;
+  background: linear-gradient(180deg, #fef3c7 0%, #fde047 100%);
+  color: #78350f;
+  border: 2px solid #d97706;
+  border-radius: 999px;
+  padding: 4px 16px;
+  font-size: 0.88rem;
+  font-weight: 900;
+  box-shadow: 0 3px 0 #b45309;
+}
+
+.dart-stuck-arrow {
+  position: absolute;
+  bottom: -6px;
+  right: -4px;
+  font-size: 2.3rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+  animation: stuckArrowQuiver 0.35s ease-out;
+}
+
+@keyframes stuckArrowQuiver {
+  0% { transform: scale(1.35) rotate(-18deg); }
+  45% { transform: scale(1) rotate(8deg); }
+  75% { transform: scale(1.04) rotate(-4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* =========================================================
+   2. 🦾 巨型夾娃娃 (Giant Articulated Chrome-Steel Claw Gantry)
+   ========================================================= */
 .claw-machine-stage {
   position: relative;
-  border-radius: 26px;
-  border: 3px solid #ffffff;
-  background: linear-gradient(180deg, #ede9fe 0%, #fae8ff 48%, #fffbeb 100%);
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #ede9fe 0%, #fae8ff 46%, #fffbeb 100%);
   padding: 12px 14px 16px;
-  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(139, 92, 246, 0.2);
+  box-shadow: inset 0 3px 14px rgba(255, 255, 255, 0.92), 0 12px 26px rgba(139, 92, 246, 0.22);
   overflow: hidden;
 }
 
 .claw-top-rail {
+  position: relative;
+  z-index: 3;
   background: linear-gradient(90deg, #7c3aed 0%, #ec4899 50%, #f59e0b 100%);
   border-radius: 999px;
-  padding: 5px 14px;
+  padding: 6px 16px;
   text-align: center;
-  box-shadow: 0 4px 0 #5b21b6;
+  box-shadow: 0 5px 0 #5b21b6;
 }
 
 .claw-rail-title {
   color: #ffffff;
-  font-size: 0.9rem;
+  font-size: 0.94rem;
   font-weight: 900;
   letter-spacing: 0.02em;
 }
 
 .claw-gantry-zone {
   position: relative;
-  height: 66px;
+  height: 158px;
   margin-bottom: 4px;
   pointer-events: none;
 }
@@ -2851,33 +3206,63 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   transition: left 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.claw-motor {
-  font-size: 1.25rem;
-  line-height: 1;
+.claw-cable-rod {
+  width: 10px;
+  height: 12px;
+  background: repeating-linear-gradient(
+    180deg,
+    #cbd5e1 0px,
+    #cbd5e1 5px,
+    #475569 5px,
+    #475569 10px
+  );
+  border-left: 2px solid #f8fafc;
+  border-right: 2px solid #334155;
+  border-radius: 4px;
+  transition: height 0.16s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.claw-cable {
-  width: 4px;
-  height: 14px;
-  background: linear-gradient(180deg, #475569, #94a3b8);
-  border-radius: 999px;
-  transition: height 0.18s ease;
+.claw-carriage.is-dropping .claw-cable-rod {
+  height: 54px;
 }
 
-.claw-prongs {
-  font-size: 1.7rem;
-  line-height: 1;
-  margin-top: -3px;
-  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.22));
-  transition: transform 0.18s ease;
+.claw-hero-svg {
+  width: 164px;
+  height: auto;
+  margin-top: -6px;
 }
 
-.claw-carriage.grabbing .claw-cable {
-  height: 36px;
+.claw-arm-left,
+.claw-arm-right {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.claw-carriage.grabbing .claw-prongs {
-  transform: scale(1.22) rotate(-8deg);
+.claw-carriage.is-open .claw-arm-left {
+  transform: rotate(28deg);
+}
+
+.claw-carriage.is-open .claw-arm-right {
+  transform: rotate(-28deg);
+}
+
+.claw-carriage.is-clamped .claw-arm-left {
+  transform: rotate(-9deg);
+}
+
+.claw-carriage.is-clamped .claw-arm-right {
+  transform: rotate(9deg);
+}
+
+.claw-held-capsule {
+  margin-top: -68px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.14s ease, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.claw-held-capsule.show {
+  opacity: 1;
+  transform: scale(1.06);
 }
 
 .claw-capsules-grid {
@@ -2888,7 +3273,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 
 .claw-capsule-btn {
   appearance: none;
-  min-height: 92px;
+  min-height: 94px;
   border-radius: 26px;
   border: 3px solid #ffffff;
   padding: 12px 14px;
@@ -2925,30 +3310,61 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 }
 
 .claw-capsule-btn.grabbed-lift {
-  transform: translateY(-12px) scale(1.05);
+  transform: translateY(-12px) scale(1.04);
 }
 
-/* 2. 🎣 Starlight Fishing Pond (星光釣魚池) */
+/* =========================================================
+   3. 🎣 小熊釣魚船 (Giant 3D Fisherman Bear, Curved Rod & Bobber)
+   ========================================================= */
 .fish-pond-stage {
   position: relative;
-  border-radius: 26px;
-  border: 3px solid #ffffff;
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
   background:
-    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.45) 0%, transparent 45%),
-    linear-gradient(180deg, #bae6fd 0%, #7dd3fc 48%, #38bdf8 100%);
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 45%),
+    linear-gradient(180deg, #e0f2fe 0%, #7dd3fc 42%, #0284c7 100%);
   padding: 12px 14px 16px;
-  box-shadow: inset 0 3px 14px rgba(255, 255, 255, 0.8), 0 10px 24px rgba(2, 132, 199, 0.24);
+  box-shadow: inset 0 3px 14px rgba(255, 255, 255, 0.85), 0 10px 24px rgba(2, 132, 199, 0.26);
+}
+
+.fish-hero-waterline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  pointer-events: none;
+}
+
+.fish-hero-rig {
+  animation: boatWaveBob 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes boatWaveBob {
+  0% { transform: translateY(0) rotate(-1.5deg); }
+  100% { transform: translateY(-6px) rotate(1.8deg); }
+}
+
+.fish-hero-svg {
+  width: 238px;
+  height: auto;
+}
+
+.fish-rod-group {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fish-hero-rig.rod-casting .fish-rod-group {
+  transform: rotate(15deg);
 }
 
 .fish-dock-bar {
-  width: fit-content;
-  margin: 0 auto 12px;
+  margin-top: -6px;
   background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
   color: #78350f;
   border: 2.5px solid #b45309;
   border-radius: 999px;
-  padding: 6px 18px;
-  font-size: 0.92rem;
+  padding: 5px 18px;
+  font-size: 0.9rem;
   font-weight: 900;
   box-shadow: 0 4px 0 #92400e;
 }
@@ -2961,7 +3377,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 
 .fish-swim-btn {
   appearance: none;
-  min-height: 92px;
+  min-height: 94px;
   border-radius: 26px;
   border: 3px solid #ffffff;
   padding: 12px 14px;
@@ -2972,8 +3388,8 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.94) 100%);
-  box-shadow: 0 6px 0 #0369a1, 0 10px 18px rgba(3, 105, 161, 0.22);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 249, 255, 0.94) 100%);
+  box-shadow: 0 6px 0 #0369a1, 0 10px 18px rgba(3, 105, 161, 0.24);
   animation: fishBobSwim 2.6s ease-in-out infinite alternate;
   transition: transform 0.14s ease, filter 0.14s ease;
 }
@@ -2996,48 +3412,80 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   transform: translateY(-10px) scale(1.05);
 }
 
-/* 3. 🦖 Hungry Baby Dino Feeder (貪吃小恐龍) */
+/* =========================================================
+   4. 🦖 貪吃大恐龍 (Giant Articulated Baby T-Rex Jaws)
+   ========================================================= */
 .dino-feeder-stage {
-  border-radius: 26px;
-  border: 3px solid #ffffff;
-  background: linear-gradient(180deg, #ecfdf5 0%, #fef9c3 55%, #ffedd5 100%);
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #ecfdf5 0%, #dcfce7 45%, #fef9c3 100%);
   padding: 12px 14px 16px;
   box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(16, 185, 129, 0.2);
 }
 
-.dino-pal-header {
+.dino-hero-spotlight {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 auto 12px;
-  width: fit-content;
-  background: #ffffff;
-  border: 2.5px solid #34d399;
-  border-radius: 999px;
-  padding: 6px 18px 6px 12px;
-  box-shadow: 0 5px 0 #10b981;
+  margin-bottom: 10px;
+  pointer-events: none;
 }
 
-.dino-avatar {
-  font-size: 2.35rem;
-  line-height: 1;
-  animation: dinoIdleBounce 1.8s ease-in-out infinite;
+.dino-hero-rig {
+  animation: dinoHeroIdle 2.1s ease-in-out infinite alternate;
 }
 
-.dino-pal-header.happy-chomp .dino-avatar {
-  animation: popBounce 0.4s ease 2;
+@keyframes dinoHeroIdle {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-5px) scale(1.03); }
 }
 
-@keyframes dinoIdleBounce {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-5px) rotate(4deg); }
+.dino-hero-svg {
+  width: 205px;
+  height: auto;
+}
+
+.dino-upper-jaw,
+.dino-lower-jaw {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dino-hero-rig.mouth-wide-open .dino-upper-jaw {
+  transform: rotate(-22deg);
+}
+
+.dino-hero-rig.mouth-wide-open .dino-lower-jaw {
+  transform: rotate(20deg);
+}
+
+.dino-hero-rig.dino-chomping .dino-upper-jaw {
+  animation: dinoChompTop 0.22s ease-in-out 3;
+}
+
+.dino-hero-rig.dino-chomping .dino-lower-jaw {
+  animation: dinoChompBot 0.22s ease-in-out 3;
+}
+
+@keyframes dinoChompTop {
+  0%, 100% { transform: rotate(2deg); }
+  50% { transform: rotate(-16deg); }
+}
+
+@keyframes dinoChompBot {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(14deg); }
 }
 
 .dino-speech-pill {
+  margin-top: -4px;
+  background: #ffffff;
+  border: 2.5px solid #22c55e;
+  border-radius: 999px;
+  padding: 5px 18px;
   font-size: 0.92rem;
   font-weight: 900;
   color: #065f46;
+  box-shadow: 0 4px 0 #16a34a;
 }
 
 .dino-food-grid {
@@ -3048,7 +3496,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 
 .dino-food-btn {
   appearance: none;
-  min-height: 92px;
+  min-height: 94px;
   border-radius: 24px;
   border: 3px solid #ffffff;
   padding: 12px 14px;
@@ -3069,44 +3517,72 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   filter: brightness(1.03);
 }
 
-/* 4. 🗝️ Golden Treasure Chest Lock (黃金寶箱鎖) */
+/* =========================================================
+   5. 🗝️ 海盜大寶箱 (Giant 3D Hinged Treasure Chest & Jeweled Keys)
+   ========================================================= */
 .chest-lock-stage {
-  border-radius: 26px;
-  border: 3px solid #ffffff;
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
   background: linear-gradient(180deg, #fef9c3 0%, #fde68a 48%, #ffedd5 100%);
   padding: 12px 14px 16px;
   box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(217, 119, 6, 0.24);
 }
 
-.golden-chest-box {
+.chest-hero-spotlight {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 auto 12px;
-  width: fit-content;
-  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
-  border: 2.5px solid #f59e0b;
-  border-radius: 999px;
-  padding: 6px 18px 6px 12px;
-  box-shadow: 0 5px 0 #d97706;
+  margin-bottom: 10px;
+  pointer-events: none;
 }
 
-.golden-chest-icon {
-  font-size: 2.2rem;
-  line-height: 1;
-  animation: chestWobble 2.2s ease-in-out infinite;
+.chest-hero-svg {
+  width: 215px;
+  height: auto;
+  animation: chestIdlePulse 2.4s ease-in-out infinite alternate;
 }
 
-@keyframes chestWobble {
-  0%, 100% { transform: rotate(-4deg) scale(1); }
-  50% { transform: rotate(4deg) scale(1.08); }
+@keyframes chestIdlePulse {
+  0% { transform: translateY(0) rotate(-1.2deg); }
+  100% { transform: translateY(-4px) rotate(1.2deg); }
+}
+
+.chest-treasure-inside {
+  opacity: 0;
+  transform: translateY(12px) scale(0.85);
+  transform-origin: 110px 76px;
+  transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.chest-lid-group,
+.chest-padlock-group {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
+}
+
+.chest-hero-svg.is-unlocked .chest-lid-group {
+  transform: translateY(-22px) rotate(-16deg);
+}
+
+.chest-hero-svg.is-unlocked .chest-padlock-group {
+  opacity: 0;
+  transform: translateY(24px) rotate(26deg) scale(0.75);
+}
+
+.chest-hero-svg.is-unlocked .chest-treasure-inside {
+  opacity: 1;
+  transform: translateY(-6px) scale(1.06);
 }
 
 .golden-chest-pill {
+  margin-top: -4px;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  border: 2.5px solid #f59e0b;
+  border-radius: 999px;
+  padding: 5px 18px;
   font-size: 0.92rem;
   font-weight: 900;
   color: #92400e;
+  box-shadow: 0 4px 0 #d97706;
 }
 
 .chest-keys-grid {
@@ -3117,7 +3593,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 
 .chest-key-btn {
   appearance: none;
-  min-height: 92px;
+  min-height: 94px;
   border-radius: 24px;
   border: 3px solid #ffffff;
   padding: 12px 14px;
@@ -3138,18 +3614,59 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   filter: brightness(1.04);
 }
 
-/* 5. 🃏 3D Magic Flip-Card Memory Arena (魔法翻翻牌 — Flat Z=0 Hit Plane for 100% Safari Clickability!) */
+/* =========================================================
+   6. 🃏 魔術帽兔兔 (3D Magician Bunny + Flat Z=0 Flip Cards)
+   ========================================================= */
 .memory-arena-stage {
-  border-radius: 26px;
-  border: 3px solid #ffffff;
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
   background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 52%, #e0f2fe 100%);
   padding: 12px 14px 16px;
   box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(124, 58, 237, 0.2);
 }
 
+.memory-hero-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  pointer-events: none;
+}
+
+.memory-hero-svg {
+  width: 194px;
+  height: auto;
+}
+
+.bunny-pop-group {
+  animation: bunnyHatBob 1.9s ease-in-out infinite alternate;
+}
+
+@keyframes bunnyHatBob {
+  0% { transform: translateY(3px); }
+  100% { transform: translateY(-5px); }
+}
+
+.bunny-wand-group {
+  animation: wandWaveIdle 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes wandWaveIdle {
+  0% { transform: rotate(-6deg); }
+  100% { transform: rotate(10deg); }
+}
+
+.memory-hero-rig.wand-casting .bunny-wand-group {
+  animation: wandZapCast 0.32s ease 2;
+}
+
+@keyframes wandZapCast {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(24deg) scale(1.12); }
+}
+
 .memory-status-bar {
-  width: fit-content;
-  margin: 0 auto 12px;
+  margin-top: -4px;
   background: #ffffff;
   color: #5b21b6;
   border: 2px solid #c4b5fd;
@@ -3251,7 +3768,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 }
 
 .mem-back-star {
-  font-size: 2.3rem;
+  font-size: 2.35rem;
   line-height: 1;
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
 }
@@ -3280,14 +3797,57 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   text-align: center;
 }
 
-/* 6. 🛸 UFO Space Crystal Laser Zapper (飛碟除蟲砲) */
+/* =========================================================
+   7. 🛸 外星飛碟砲 ＆ 🔨 巨槌打地鼠 (UFO Laser & Carnival Star Mallet)
+   ========================================================= */
+.typo-hero-top,
+.mole-hero-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ufo-hero-rig {
+  pointer-events: none;
+  animation: ufoHoverFloat 2.1s ease-in-out infinite alternate;
+}
+
+@keyframes ufoHoverFloat {
+  0% { transform: translateY(0) rotate(-2deg); }
+  100% { transform: translateY(-8px) rotate(2deg); }
+}
+
+.ufo-hero-svg {
+  width: 222px;
+  height: auto;
+}
+
+.ufo-hero-rig.ufo-firing {
+  filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.95));
+}
+
+.ufo-bulb {
+  animation: ufoBulbBlink 0.7s ease-in-out infinite alternate;
+}
+.ufo-bulb.b2 { animation-delay: 0.15s; }
+.ufo-bulb.b3 { animation-delay: 0.3s; }
+.ufo-bulb.b4 { animation-delay: 0.45s; }
+.ufo-bulb.b5 { animation-delay: 0.6s; }
+
+@keyframes ufoBulbBlink {
+  0% { opacity: 0.55; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1.12); }
+}
+
 .typo-step-banner.laser-theme {
   background: linear-gradient(90deg, #e0f2fe 0%, #ede9fe 100%);
   color: #1e3a8a;
-  border: 2px solid #7dd3fc;
+  border: 2.5px solid #38bdf8;
 }
 
 .ufo-laser-arena {
+  margin-top: 10px;
   border-radius: 26px;
   border: 3px solid #7dd3fc;
   background: radial-gradient(circle at 50% 15%, #312e81 0%, #0f172a 100%);
@@ -3298,15 +3858,14 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 .ufo-ship-header {
   width: fit-content;
   margin: 0 auto 14px;
-  background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+  background: linear-gradient(90deg, #0284c7 0%, #6366f1 100%);
   color: #ffffff;
   border: 2px solid #ffffff;
   border-radius: 999px;
   padding: 6px 18px;
-  font-size: 0.94rem;
+  font-size: 0.92rem;
   font-weight: 900;
   box-shadow: 0 4px 14px rgba(56, 189, 248, 0.55);
-  animation: dartBob 2s ease-in-out infinite;
 }
 
 .ufo-crystals-grid {
@@ -3339,20 +3898,247 @@ button.alchemy-slot.k2-hanzi-goal:hover {
 }
 
 .ufo-crystal-gem {
-  font-size: 1.55rem;
+  font-size: 1.6rem;
   line-height: 1;
   pointer-events: none;
 }
 
 .ufo-crystal-char {
-  font-size: 2rem;
+  font-size: 2.05rem;
   font-weight: 900;
   color: #0f172a;
   line-height: 1.1;
   pointer-events: none;
 }
 
-/* Correct / Wrong feedback states for all new arcade buttons */
+/* Giant Carnival Star Mallet & Enlarged Pixar Mole Holes */
+.mallet-hero-rig {
+  pointer-events: none;
+  animation: malletReadyBob 1.3s ease-in-out infinite alternate;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+@keyframes malletReadyBob {
+  0% { transform: rotate(-6deg) translateY(0); }
+  100% { transform: rotate(8deg) translateY(-6px); }
+}
+
+.mallet-hero-rig.mallet-swing-hide {
+  opacity: 0.15;
+  transform: scale(0.85) rotate(32deg);
+}
+
+.mallet-hero-svg {
+  width: 185px;
+  height: auto;
+}
+
+.mole-hole-btn {
+  height: 152px;
+  max-width: 162px;
+  touch-action: manipulation;
+}
+
+.mole-critter,
+.mole-mound,
+.mole-sign {
+  pointer-events: none;
+}
+
+.mole-pixar-img {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.26);
+  background: #fde68a;
+}
+
+.mole-sign.mole-quiz-sign {
+  font-size: 1.18rem;
+  padding: 5px 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   8. 🫧 泡泡小海豹, 9. 🧪 魔法煉金釜, 10. 🚂 皇家蒸汽火車, 11. ⚡ 雷神審判錘
+   ========================================================= */
+.bubble-hero-stage {
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 52%, #fae8ff 100%);
+  padding: 12px 14px 18px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(14, 165, 233, 0.18);
+}
+
+.bubble-hero-header,
+.judge-hero-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+  pointer-events: none;
+}
+
+.bubble-hero-svg {
+  width: 206px;
+  height: auto;
+  animation: sealFloatBob 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes sealFloatBob {
+  0% { transform: translateY(0) rotate(-1.5deg); }
+  100% { transform: translateY(-6px) rotate(1.5deg); }
+}
+
+.bubble-hero-caption,
+.judge-hero-caption {
+  margin-top: -4px;
+  background: #ffffff;
+  border: 2px solid #38bdf8;
+  border-radius: 999px;
+  padding: 5px 18px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #0369a1;
+  box-shadow: 0 3px 0 #0284c7;
+}
+
+/* Alchemy Cauldron Stage */
+.alchemy-hero-arena {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(145deg, #faf5ff 0%, #f3e8ff 52%, #fef3c7 100%);
+  padding: 14px 18px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.92), 0 10px 24px rgba(147, 51, 234, 0.18);
+}
+
+.cauldron-hero-rig {
+  pointer-events: none;
+}
+
+.alchemy-hero-svg {
+  width: 192px;
+  height: auto;
+}
+
+.alchemy-hero-svg .pot-bub {
+  animation: potBubbleRise 1.4s ease-in-out infinite alternate;
+}
+.alchemy-hero-svg .pot-bub.b2 { animation-delay: 0.35s; }
+.alchemy-hero-svg .pot-bub.b3 { animation-delay: 0.7s; }
+
+@keyframes potBubbleRise {
+  0% { transform: translateY(4px) scale(0.9); }
+  100% { transform: translateY(-7px) scale(1.12); }
+}
+
+.alchemy-workbench {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Royal Steam Locomotive Stage */
+.train-track-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 26px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #e0f2fe 0%, #fef9c3 78%, #cbd5e1 100%);
+  box-shadow: inset 0 3px 10px rgba(255, 255, 255, 0.9), 0 8px 20px rgba(15, 23, 42, 0.14);
+  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.train-track-box.train-departing {
+  transform: translateX(26px) scale(1.02);
+}
+
+.train-hero-engine {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.train-hero-svg {
+  width: 204px;
+  height: auto;
+}
+
+.train-hero-svg .train-steam-puffs {
+  animation: steamPuffFloat 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes steamPuffFloat {
+  0% { transform: translateY(2px) translateX(0); opacity: 0.85; }
+  100% { transform: translateY(-6px) translateX(5px); opacity: 1; }
+}
+
+.train-hero-svg .train-wheel {
+  animation: locoWheelSpin 2.4s linear infinite;
+}
+
+@keyframes locoWheelSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.train-cars-coupled {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+}
+
+.train-empty-hint {
+  color: #334155;
+  font-weight: 900;
+  font-size: 0.96rem;
+}
+
+/* Thunder Judgment Hammer Stage */
+.judge-thunder-stage {
+  border-radius: 28px;
+  border: 3.5px solid #ffffff;
+  background: linear-gradient(180deg, #fefce8 0%, #fef9c3 48%, #e0f2fe 100%);
+  padding: 12px 16px 18px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(234, 179, 8, 0.22);
+}
+
+.judge-hero-svg {
+  width: 196px;
+  height: auto;
+  animation: hammerHoverIdle 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes hammerHoverIdle {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-7px) scale(1.04); }
+}
+
+.judge-hero-rig.hammer-slamming .judge-hammer-group {
+  transform: rotate(22deg) translateY(10px);
+  transition: transform 0.14s ease-out;
+}
+
+.judge-hero-caption {
+  border-color: #eab308;
+  color: #854d0e;
+  box-shadow: 0 3px 0 #ca8a04;
+}
+
+/* Correct / Wrong feedback states for all arcade buttons */
 .claw-capsule-btn.correct-pick,
 .fish-swim-btn.correct-pick,
 .dino-food-btn.correct-pick,
@@ -3374,7 +4160,47 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   opacity: 0.78;
 }
 
+/* Compact active-play viewport so Giant 3D Hero + all 4 options sit above the fold */
+body.in-play .stage-3d-wrap {
+  height: 168px;
+}
+
+body.in-play .command-deck {
+  padding-top: 12px;
+}
+
+body.in-play .question-header {
+  margin-bottom: 6px;
+}
+
 @media (max-width: 680px) {
+  body.in-play .stage-3d-wrap {
+    height: 126px;
+  }
+  .stage-ready-hero-showcase {
+    min-height: 146px;
+  }
+  .stage-ready-hero-showcase .hero-svg {
+    width: 186px;
+  }
+  .stage-ready-title {
+    font-size: 1.3rem;
+  }
+  .bow-hero-svg { width: 196px; }
+  .claw-gantry-zone { height: 150px; }
+  .claw-hero-svg { width: 142px; }
+  .claw-carriage.is-dropping .claw-cable-rod { height: 50px; }
+  .fish-hero-svg { width: 194px; }
+  .dino-hero-svg { width: 172px; }
+  .chest-hero-svg { width: 180px; }
+  .ufo-hero-svg { width: 186px; }
+  .mallet-hero-svg { width: 154px; }
+  .bubble-hero-svg { width: 174px; }
+  .alchemy-hero-svg { width: 158px; }
+  .train-hero-svg { width: 168px; }
+  .memory-hero-svg { width: 164px; }
+  .judge-hero-svg { width: 166px; }
+
   .claw-capsules-grid,
   .fish-pond-grid,
   .dino-food-grid,
@@ -3386,7 +4212,7 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   .fish-swim-btn,
   .dino-food-btn,
   .chest-key-btn {
-    min-height: 76px;
+    min-height: 78px;
     padding: 10px 12px;
   }
   .arcade-opt-content {
@@ -3411,7 +4237,8 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   .mem-g-text {
     font-size: 1.08rem;
   }
-  .ufo-crystals-grid {
+  .ufo-crystals-grid,
+  .mole-holes-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
@@ -3421,7 +4248,6 @@ button.alchemy-slot.k2-hanzi-goal:hover {
     font-size: 0.85rem;
   }
 }
-
 </style>
 </head>
 <body>
@@ -3558,7 +4384,7 @@ const ZHUYIN_SYLLABLE_TO_HANZI = {
   'ㄩˊ': '魚', 'ㄩˇ': '雨', 'ㄩㄝˋ': '月', 'ㄩㄥˇ': '泳',
 };
 
-const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣🕹️🎣🦖🃏🗝️🛸🍩🍔🍓🍕🐠🐡🐟🐬🔮🧰🦾🪝💦😋]/gu;
+const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣🕹️🎣🦖🃏🗝️🛸🍩🍔🍓🍕🐠🐡🐟🐬🔮🧰🦾🪝💦😋🏹🚀⏭️💥😵🎊🗺️🎰🪙]/gu;
 const ZHUYIN_TOKEN_RE = /(?:˙)?[\u3105-\u3129]+(?:[ˊˇˋ˙])?/g;
 const PURE_PUNCT_RE = /^[\s，。！？、；：「」『』（）()—…,.!?;:'"]+$/;
 
@@ -3833,6 +4659,27 @@ class SoundEngine {
   playUfoLaser() {
     this.tone(1180, 0.12, 'sawtooth', 0.11, 0, 280);
     this.tone(880, 0.11, 'sine', 0.15, 0.12, 1480);
+  }
+
+  playBowTwang() {
+    this.tone(195, 0.09, 'triangle', 0.19, 0, 340);
+    this.tone(680, 0.14, 'sine', 0.13, 0.05, 1380);
+  }
+
+  playCauldronBubble() {
+    [320, 480, 640, 880].forEach((n, i) => this.tone(n, 0.08, 'sine', 0.14, i * 0.045, n * 1.3));
+  }
+
+  playThunderStrike() {
+    this.tone(920, 0.09, 'sawtooth', 0.12, 0, 180);
+    this.tone(160, 0.22, 'triangle', 0.22, 0.06, 65);
+    this.tone(1046.5, 0.15, 'triangle', 0.14, 0.12);
+  }
+
+  playStageReady() {
+    [523.25, 659.25, 783.99, 1046.5].forEach((n, i) => {
+      this.tone(n, i === 3 ? 0.2 : 0.085, 'triangle', 0.16, i * 0.065);
+    });
   }
 
   playSparkleBurst() {
@@ -4163,7 +5010,10 @@ module.exports = { SoundEngine, ZHUYIN_SYLLABLE_TO_HANZI };
 
   };
   __mods["./fx"] = function(require, module, exports) {
-// 60fps Canvas 2D Arcade Juice & Particle Engine (Confetti, Shockwaves, Flying Projectiles, Floating Text, Screen Shake)
+// 60fps Canvas 2D Arcade Juice & Giant Hero Weapon/Projectile Engine
+// Includes Giant 3D Feathered Arrows, Real Cast-&-Reel Fishing Line, Full-Stage UFO Plasma Beams,
+// Giant Carnival Toy Mallet Swings, Rotating Golden Keys, Thunderbolts, Oversized Food/Potions, Confetti & Shockwaves.
+
 class FXEngine {
   constructor(canvasId = 'fx-canvas') {
     this.canvas = typeof document !== 'undefined' ? document.getElementById(canvasId) : null;
@@ -4172,6 +5022,9 @@ class FXEngine {
     this.rings = [];
     this.texts = [];
     this.darts = [];
+    this.beams = [];
+    this.fishingCasts = [];
+    this.mallets = [];
     this.lastTime = performance.now();
     this.running = false;
     if (this.canvas && this.ctx) {
@@ -4253,7 +5106,17 @@ class FXEngine {
     this.texts.push({ x, y, vy: -95, text, color, life: 1.05, maxLife: 1.05 });
   }
 
-  flyItem(fromX, fromY, toX, toY, emoji = '🎯', trailColor = 'rgba(253, 224, 71, 0.82)', onArrive = null, arcHeight = 62) {
+  _withSafety(arr, item, timeoutMs, finish) {
+    arr.push(item);
+    setTimeout(() => {
+      const idx = arr.indexOf(item);
+      if (idx >= 0) arr.splice(idx, 1);
+      finish();
+    }, timeoutMs);
+  }
+
+  // Giant 64px Custom/Emoji Flying Projectile (Food into Dino Jaws, Potion into Cauldron, Starlight Wand Pin)
+  flyItem(fromX, fromY, toX, toY, emoji = '🍩', trailColor = 'rgba(253, 224, 71, 0.88)', onArrive = null, arcHeight = 76, kind = 'emoji') {
     if (!this.ctx) {
       if (onArrive) onArrive();
       return;
@@ -4267,23 +5130,100 @@ class FXEngine {
     const item = {
       fromX, fromY, toX, toY,
       emoji,
+      kind,
       trailColor,
       arcHeight,
       t: 0,
-      dur: 0.24,
+      dur: kind === 'arrow' ? 0.25 : 0.30,
       onArrive: finish,
     };
-    this.darts.push(item);
-    // Safety fallback if requestAnimationFrame is throttled in background tabs
-    setTimeout(() => {
-      const idx = this.darts.indexOf(item);
-      if (idx >= 0) this.darts.splice(idx, 1);
-      finish();
-    }, 480);
+    this._withSafety(this.darts, item, 580, finish);
   }
 
-  flyDart(fromX, fromY, toX, toY, onArrive) {
-    this.flyItem(fromX, fromY, toX, toY, '🎯', 'rgba(253, 224, 71, 0.82)', onArrive, 55);
+  // 1) Giant 96px 3D Golden-Tipped Crimson-Feathered Arrow!
+  shootArrow(fromX, fromY, toX, toY, onArrive = null) {
+    this.flyItem(fromX, fromY, toX, toY, '🏹', 'rgba(251, 191, 36, 0.92)', onArrive, 32, 'arrow');
+  }
+
+  flyDart(fromX, fromY, toX, toY, onArrive = null) {
+    this.shootArrow(fromX, fromY, toX, toY, onArrive);
+  }
+
+  // 2) Giant 84px 3D Ruby-Gold Key that flies to chest lock and twists!
+  flyGoldenKey(fromX, fromY, toX, toY, onArrive = null) {
+    this.flyItem(fromX, fromY, toX, toY, '🗝️', 'rgba(250, 204, 21, 0.92)', onArrive, 68, 'key');
+  }
+
+  // 3) Real 2-Stage Cast-and-Reel Fishing Line + Bobber + Big Wriggling Fish!
+  castFishingLine(rodX, rodY, fishX, fishY, fishColor = '#fb923c', onArrive = null) {
+    if (!this.ctx) {
+      if (onArrive) onArrive();
+      return;
+    }
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (onArrive) onArrive();
+    };
+    const cast = {
+      rodX, rodY, fishX, fishY, fishColor,
+      splashed: false,
+      t: 0,
+      dur: 0.44,
+      onArrive: finish,
+    };
+    this._withSafety(this.fishingCasts, cast, 720, finish);
+  }
+
+  // 4) Massive Full-Stage UFO Plasma Laser Beam / Thunder Hammer Lightning Bolt!
+  fireLaserBeam(fromX, fromY, toX, toY, color = '#38bdf8', onArrive = null, isLightning = false) {
+    if (!this.ctx) {
+      if (onArrive) onArrive();
+      return;
+    }
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (onArrive) onArrive();
+    };
+    const beam = {
+      fromX, fromY, toX, toY, color, isLightning,
+      impacted: false,
+      t: 0,
+      dur: 0.28,
+      onArrive: finish,
+    };
+    this._withSafety(this.beams, beam, 520, finish);
+  }
+
+  strikeLightning(fromX, fromY, toX, toY, onArrive = null) {
+    this.fireLaserBeam(fromX, fromY, toX, toY, '#facc15', onArrive, true);
+  }
+
+  // 5) Giant 135px 3D Red-and-Gold Carnival Star Mallet Smash!
+  swingGiantMallet(targetX, targetY, isOk = true, onArrive = null) {
+    if (!this.ctx) {
+      if (onArrive) onArrive();
+      return;
+    }
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (onArrive) onArrive();
+    };
+    const m = {
+      x: targetX,
+      y: targetY,
+      isOk,
+      smashed: false,
+      t: 0,
+      dur: 0.30,
+      onArrive: finish,
+    };
+    this._withSafety(this.mallets, m, 550, finish);
   }
 
   screenShake(px = 7) {
@@ -4317,6 +5257,132 @@ class FXEngine {
     ctx.restore();
   }
 
+  drawGiantArrow(ctx, x, y, ang) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(ang);
+    // Crimson tail feathers
+    ctx.fillStyle = '#e11d48';
+    ctx.strokeStyle = '#881337';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-46, 0);
+    ctx.lineTo(-68, -16);
+    ctx.lineTo(-54, 0);
+    ctx.lineTo(-68, 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Thick Golden-Wood Shaft
+    ctx.fillStyle = '#d97706';
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.roundRect(-52, -4.5, 82, 9, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // Giant Gleaming Golden Broadhead Tip
+    ctx.fillStyle = '#facc15';
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(48, 0);
+    ctx.lineTo(18, -17);
+    ctx.lineTo(24, 0);
+    ctx.lineTo(18, 17);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // White shine on arrowhead
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.beginPath();
+    ctx.moveTo(42, 0);
+    ctx.lineTo(22, -10);
+    ctx.lineTo(26, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  drawGiantGoldenKey(ctx, x, y, rot) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    // Shaft & Teeth
+    ctx.fillStyle = '#facc15';
+    ctx.strokeStyle = '#783509';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(-6, -6, 48, 12, 5);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillRect(22, 4, 8, 13);
+    ctx.strokeRect(22, 4, 8, 13);
+    ctx.fillRect(33, 4, 8, 16);
+    ctx.strokeRect(33, 4, 8, 16);
+    // Ornate Bow Ring + Ruby Gem
+    ctx.beginPath();
+    ctx.arc(-16, 0, 20, 0, Math.PI * 2);
+    ctx.fillStyle = '#fde047';
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(-16, 0, 10, 0, Math.PI * 2);
+    ctx.fillStyle = '#e11d48';
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawGiantCarnivalMallet(ctx, pivotX, pivotY, angleRad) {
+    ctx.save();
+    ctx.translate(pivotX, pivotY);
+    ctx.rotate(angleRad);
+    // Handle extending left-up from pivot
+    ctx.fillStyle = '#d97706';
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.roundRect(-88, -9, 86, 18, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    // Giant Red & Gold Barrel Head centered around (-92, 0)
+    ctx.save();
+    ctx.translate(-94, 0);
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.roundRect(-28, -46, 56, 92, 16);
+    ctx.fill();
+    ctx.stroke();
+
+    // Yellow Cushioned Strike Ends (Top & Bottom)
+    ctx.fillStyle = '#fde047';
+    ctx.strokeStyle = '#b45309';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(0, -46, 26, 9, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(0, 46, 26, 9, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Center Star Emblem
+    ctx.fillStyle = '#fef08a';
+    this.drawStar(ctx, 0, 0, 16, -0.3);
+    ctx.restore();
+    ctx.restore();
+  }
+
   loop(now) {
     if (!this.running) return;
     const dt = Math.min(0.05, (now - this.lastTime) * 0.001);
@@ -4324,37 +5390,255 @@ class FXEngine {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.w, this.h);
 
-    // Flying Projectiles (Darts, Treats, Magic Keys, Fish, Lasers)
+    // 1) Flying Arrows, Golden Keys & Giant Snacks/Potions
     for (let i = this.darts.length - 1; i >= 0; i--) {
       const d = this.darts[i];
       d.t += dt / d.dur;
       const p = Math.min(1, d.t);
+      const arc = d.arcHeight || 60;
       const x = d.fromX + (d.toX - d.fromX) * p;
-      const y = d.fromY + (d.toY - d.fromY) * p - Math.sin(p * Math.PI) * (d.arcHeight || 55);
-      const ang = Math.atan2(d.toY - d.fromY, d.toX - d.fromX);
+      const y = d.fromY + (d.toY - d.fromY) * p - Math.sin(p * Math.PI) * arc;
+      // Exact instantaneous tangent angle along parabola
+      const dx = d.toX - d.fromX;
+      const dy = (d.toY - d.fromY) - Math.cos(p * Math.PI) * Math.PI * arc;
+      const ang = Math.atan2(dy, dx);
 
+      // Bold Glowing Ribbon Trail
       ctx.save();
-      ctx.strokeStyle = d.trailColor || 'rgba(253, 224, 71, 0.78)';
-      ctx.lineWidth = 6;
+      ctx.strokeStyle = d.trailColor || 'rgba(253, 224, 71, 0.85)';
+      ctx.lineWidth = d.kind === 'arrow' ? 10 : 12;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(x - Math.cos(ang) * 34, y - Math.sin(ang) * 34 + 10);
+      ctx.moveTo(x - Math.cos(ang) * 58, y - Math.sin(ang) * 58);
       ctx.lineTo(x, y);
       ctx.stroke();
-
-      ctx.translate(x, y);
-      ctx.rotate(d.emoji === '🎯' ? ang + Math.PI / 4 : Math.sin(p * Math.PI * 3) * 0.25);
-      ctx.font = '36px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(d.emoji || '🎯', 0, 0);
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+      ctx.lineWidth = 4;
+      ctx.stroke();
       ctx.restore();
+
+      if (d.kind === 'arrow') {
+        this.drawGiantArrow(ctx, x, y, ang);
+      } else if (d.kind === 'key') {
+        const spin = p > 0.78 ? ((p - 0.78) / 0.22) * (Math.PI / 2) : Math.sin(p * Math.PI * 2) * 0.2;
+        this.drawGiantGoldenKey(ctx, x, y, spin);
+      } else {
+        ctx.save();
+        ctx.translate(x, y);
+        const scale = 1 + Math.sin(p * Math.PI) * 0.25;
+        ctx.scale(scale, scale);
+        ctx.rotate(Math.sin(p * Math.PI * 3) * 0.28);
+        ctx.shadowColor = 'rgba(15, 23, 42, 0.35)';
+        ctx.shadowBlur = 12;
+        ctx.font = '58px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(d.emoji || '🍩', 0, 0);
+        ctx.restore();
+      }
 
       if (p >= 1) {
         const cb = d.onArrive;
         this.darts.splice(i, 1);
-        this.shockwave(d.toX, d.toY, '#fde047', 105);
-        this.confettiBurst(d.toX, d.toY, 26);
+        this.shockwave(d.toX, d.toY, '#fde047', 115);
+        this.confettiBurst(d.toX, d.toY, 28);
+        if (cb) cb();
+      }
+    }
+
+    // 2) Real Cast-&-Reel Fishing Lines + Bobber + Caught Big Fish!
+    for (let i = this.fishingCasts.length - 1; i >= 0; i--) {
+      const fc = this.fishingCasts[i];
+      fc.t += dt / fc.dur;
+      const p = Math.min(1, fc.t);
+      let bx;
+      let by;
+      let caught = false;
+      if (p < 0.42) {
+        const k = p / 0.42;
+        bx = fc.rodX + (fc.fishX - fc.rodX) * k;
+        by = fc.rodY + (fc.fishY - fc.rodY) * k - Math.sin(k * Math.PI) * 45;
+      } else {
+        caught = true;
+        if (!fc.splashed) {
+          fc.splashed = true;
+          this.multiRipple(fc.fishX, fc.fishY, ['#38bdf8', '#ffffff', '#bae6fd']);
+          this.emojiBurst(fc.fishX, fc.fishY, ['💦', '💧', '✨'], 12, false);
+        }
+        const k = (p - 0.42) / 0.58;
+        bx = fc.fishX + (fc.rodX - fc.fishX) * k;
+        by = fc.fishY + (fc.rodY - fc.fishY) * k - Math.sin(k * Math.PI) * 65;
+      }
+
+      // Taut Fishing Line from Rod Tip to Bobber
+      ctx.save();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4.5;
+      ctx.beginPath();
+      ctx.moveTo(fc.rodX, fc.rodY);
+      ctx.quadraticCurveTo((fc.rodX + bx) / 2, Math.min(fc.rodY, by) - 18, bx, by);
+      ctx.stroke();
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Red & White 3D Bobber
+      ctx.beginPath();
+      ctx.arc(bx, by, 13, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#0f172a';
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(bx, by, 13, Math.PI, Math.PI * 2);
+      ctx.fillStyle = '#ef4444';
+      ctx.fill();
+
+      // Big Wriggling Caught 3D Fish Dangling Below Bobber!
+      if (caught) {
+        ctx.save();
+        ctx.translate(bx, by + 28);
+        ctx.rotate(Math.sin(p * 32) * 0.32 - Math.PI / 2);
+        ctx.fillStyle = fc.fishColor || '#fb923c';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 28, 17, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-24, 0);
+        ctx.lineTo(-42, -14);
+        ctx.lineTo(-42, 14);
+        ctx.closePath();
+        ctx.fillStyle = '#fde047';
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(14, -4, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(15, -4, 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.restore();
+
+      if (p >= 1) {
+        const cb = fc.onArrive;
+        this.fishingCasts.splice(i, 1);
+        this.confettiBurst(fc.rodX, fc.rodY, 26);
+        if (cb) cb();
+      }
+    }
+
+    // 3) Full-Stage UFO Plasma Laser Beams & Thunder Hammer Lightning Bolts!
+    for (let i = this.beams.length - 1; i >= 0; i--) {
+      const b = this.beams[i];
+      b.t += dt / b.dur;
+      const p = Math.min(1, b.t);
+      const alpha = p < 0.7 ? 1 : (1 - (p - 0.7) / 0.3);
+
+      if (!b.impacted && p >= 0.25) {
+        b.impacted = true;
+        this.shockwave(b.toX, b.toY, b.color, 125);
+        this.confettiBurst(b.toX, b.toY, 28);
+      }
+
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, alpha);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (b.isLightning) {
+        // Jagged 6-segment Thunder Bolt
+        const pts = [{ x: b.fromX, y: b.fromY }];
+        const segs = 6;
+        for (let s = 1; s < segs; s++) {
+          const r = s / segs;
+          const jitter = (s % 2 === 0 ? 1 : -1) * (18 + Math.sin(now * 0.08 + s) * 8);
+          pts.push({
+            x: b.fromX + (b.toX - b.fromX) * r + jitter,
+            y: b.fromY + (b.toY - b.fromY) * r,
+          });
+        }
+        pts.push({ x: b.toX, y: b.toY });
+
+        ctx.strokeStyle = 'rgba(250, 204, 21, 0.55)';
+        ctx.lineWidth = 30;
+        ctx.beginPath();
+        pts.forEach((pt, idx) => (idx === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y)));
+        ctx.stroke();
+
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 13;
+        ctx.stroke();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 5;
+        ctx.stroke();
+      } else {
+        // Thick Multi-Core UFO Plasma Cannon Beam
+        ctx.strokeStyle = b.color;
+        ctx.shadowColor = b.color;
+        ctx.shadowBlur = 24;
+        ctx.lineWidth = 28 * (1.1 - p * 0.3);
+        ctx.beginPath();
+        ctx.moveTo(b.fromX, b.fromY);
+        ctx.lineTo(b.toX, b.toY);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#bae6fd';
+        ctx.lineWidth = 14;
+        ctx.stroke();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 6;
+        ctx.stroke();
+
+        // Glowing Muzzle & Impact Flares
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(b.fromX, b.fromY, 18, 0, Math.PI * 2);
+        ctx.arc(b.toX, b.toY, 24, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      if (p >= 1) {
+        const cb = b.onArrive;
+        this.beams.splice(i, 1);
+        if (cb) cb();
+      }
+    }
+
+    // 4) Giant Carnival Star Mallet Smash!
+    for (let i = this.mallets.length - 1; i >= 0; i--) {
+      const m = this.mallets[i];
+      m.t += dt / m.dur;
+      const p = Math.min(1, m.t);
+      let ang;
+      if (p < 0.48) {
+        // Fast overhead smash down!
+        const k = p / 0.48;
+        ang = 1.15 - k * 1.18;
+      } else {
+        if (!m.smashed) {
+          m.smashed = true;
+          this.shockwave(m.x, m.y, m.isOk ? '#fde047' : '#fb7185', 115);
+          this.floatText(m.x, m.y - 42, m.isOk ? '💥 咚！命中！' : '💥 咚！', m.isOk ? '#f59e0b' : '#fb7185');
+        }
+        const k = (p - 0.48) / 0.52;
+        ang = -0.03 + k * 0.35;
+      }
+      this.drawGiantCarnivalMallet(ctx, m.x + 86, m.y - 6, ang);
+
+      if (p >= 1) {
+        const cb = m.onArrive;
+        this.mallets.splice(i, 1);
         if (cb) cb();
       }
     }
@@ -4416,9 +5700,9 @@ class FXEngine {
       t.vy *= 0.94;
       ctx.save();
       ctx.globalAlpha = Math.min(1, t.life * 1.8);
-      ctx.font = '900 24px "Nunito", "Noto Sans TC", sans-serif';
+      ctx.font = '900 26px "Nunito", "Noto Sans TC", sans-serif';
       ctx.textAlign = 'center';
-      ctx.lineWidth = 5;
+      ctx.lineWidth = 6;
       ctx.strokeStyle = '#ffffff';
       ctx.strokeText(t.text, t.x, t.y);
       ctx.fillStyle = t.color;
@@ -5901,6 +7185,795 @@ class World3DEngine {
 }
 
 module.exports = { World3DEngine };
+
+  };
+  __mods["./arcade_rigs"] = function(require, module, exports) {
+// Bespoke 3D-Shaded Multi-Part Hero Rigs for all 12 Arcade Modes + Stage Ready Buffer Previews
+// Pure graphical vector rigs (zero raw Bopomofo text nodes) with articulated sub-groups for interactive animation.
+
+const HERO_STAGE_META = {
+  dart: {
+    badge: '🏹 神箭手射靶',
+    shortName: '神箭射靶',
+    readyTitle: '神箭手準備拉弓！',
+    readyAction: '瞄準靶心，射出黃金羽箭！',
+    accent: '#ef4444',
+    bgGrad: 'linear-gradient(145deg, #fff1f2 0%, #ffe4e6 48%, #fef3c7 100%)',
+  },
+  claw: {
+    badge: '🦾 巨型夾娃娃',
+    shortName: '夾娃娃機',
+    readyTitle: '巨型鋼爪啟動！',
+    readyAction: '移動天車，下爪夾起扭蛋球！',
+    accent: '#8b5cf6',
+    bgGrad: 'linear-gradient(145deg, #f5f3ff 0%, #ede9fe 48%, #fce7f3 100%)',
+  },
+  fish: {
+    badge: '🎣 小熊釣魚船',
+    shortName: '甩竿釣魚',
+    readyTitle: '釣魚小熊出海囉！',
+    readyAction: '看準游動大魚，甩竿拉上船！',
+    accent: '#0284c7',
+    bgGrad: 'linear-gradient(145deg, #ecfeff 0%, #bae6fd 52%, #dbeafe 100%)',
+  },
+  feed: {
+    badge: '🦖 貪吃大恐龍',
+    shortName: '餵小恐龍',
+    readyTitle: '小恐龍肚子咕嚕叫！',
+    readyAction: '張開大嘴巴，丟進美味點心！',
+    accent: '#16a34a',
+    bgGrad: 'linear-gradient(145deg, #f0fdf4 0%, #dcfce7 50%, #fef9c3 100%)',
+  },
+  chest_lock: {
+    badge: '🗝️ 海盜大寶箱',
+    shortName: '開大寶箱',
+    readyTitle: '發現神秘黃金寶箱！',
+    readyAction: '射出寶石金鑰匙，轉開大鎖頭！',
+    accent: '#d97706',
+    bgGrad: 'linear-gradient(145deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%)',
+  },
+  typo_laser: {
+    badge: '🛸 外星飛碟砲',
+    shortName: '飛碟雷射',
+    readyTitle: '外星飛碟鎖定目標！',
+    readyAction: '抓出錯字蟲，發射電漿雷射砲！',
+    accent: '#06b6d4',
+    bgGrad: 'linear-gradient(145deg, #ecfeff 0%, #cffafe 48%, #e0e7ff 100%)',
+  },
+  mole: {
+    badge: '🔨 巨槌打地鼠',
+    shortName: '大槌地鼠',
+    readyTitle: '舉起黃金星星大氣槌！',
+    readyAction: '地鼠探頭啦，重槌敲下去！',
+    accent: '#ea580c',
+    bgGrad: 'linear-gradient(145deg, #fff7ed 0%, #ffedd5 50%, #dcfce7 100%)',
+  },
+  bubble_pop: {
+    badge: '🫧 泡泡小海豹',
+    shortName: '戳大泡泡',
+    readyTitle: '小海豹吹出七彩大泡泡！',
+    readyAction: '發射星光魔法針，戳破泡泡！',
+    accent: '#0ea5e9',
+    bgGrad: 'linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 50%, #fae8ff 100%)',
+  },
+  alchemy: {
+    badge: '🧪 魔法煉金釜',
+    shortName: '魔法大釜',
+    readyTitle: '點燃紫焰魔法大釜！',
+    readyAction: '投入發光魔藥瓶，煉出新文字！',
+    accent: '#9333ea',
+    bgGrad: 'linear-gradient(145deg, #faf5ff 0%, #f3e8ff 50%, #fef3c7 100%)',
+  },
+  train: {
+    badge: '🚂 皇家蒸汽火車',
+    shortName: '蒸汽火車',
+    readyTitle: '蒸汽火車頭鳴笛進站！',
+    readyAction: '依序掛上車廂，全速出發！',
+    accent: '#e11d48',
+    bgGrad: 'linear-gradient(145deg, #fff1f2 0%, #ffe4e6 50%, #e0f2fe 100%)',
+  },
+  memory: {
+    badge: '🃏 魔術帽兔兔',
+    shortName: '魔術翻牌',
+    readyTitle: '魔術兔兔揮動星光棒！',
+    readyAction: '記住位置，翻開兩張配對成功！',
+    accent: '#7c3aed',
+    bgGrad: 'linear-gradient(145deg, #f5f3ff 0%, #ede9fe 50%, #fef9c3 100%)',
+  },
+  judge: {
+    badge: '⚡ 雷神審判錘',
+    shortName: '雷霆審判',
+    readyTitle: '高舉黃金雷霆審判錘！',
+    readyAction: '召喚正義閃電，劈中對或錯！',
+    accent: '#eab308',
+    bgGrad: 'linear-gradient(145deg, #fefce8 0%, #fef08a 48%, #e0f2fe 100%)',
+  },
+};
+
+function getBowHeroSvg() {
+  return `
+  <svg class="hero-svg bow-hero-svg" viewBox="0 0 260 155" aria-hidden="true">
+    <defs>
+      <linearGradient id="bowGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fef08a"/>
+        <stop offset="45%" stop-color="#f59e0b"/>
+        <stop offset="100%" stop-color="#b45309"/>
+      </linearGradient>
+      <linearGradient id="bowRuby" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fda4af"/>
+        <stop offset="50%" stop-color="#e11d48"/>
+        <stop offset="100%" stop-color="#881337"/>
+      </linearGradient>
+      <linearGradient id="arrowShaft" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#fde68a"/>
+        <stop offset="50%" stop-color="#d97706"/>
+        <stop offset="100%" stop-color="#92400e"/>
+      </linearGradient>
+      <filter id="bowShadow" x="-15%" y="-15%" width="130%" height="130%">
+        <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#78350f" flood-opacity="0.35"/>
+      </filter>
+    </defs>
+    <g filter="url(#bowShadow)" class="bow-pivot-group">
+      <!-- Elastic Glowing Bowstring -->
+      <path class="bow-string-path" d="M 34 98 Q 130 104 226 98" fill="none" stroke="#fef9c3" stroke-width="5" stroke-linecap="round"/>
+      <path class="bow-string-core" d="M 34 98 Q 130 104 226 98" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Left & Right Winged 3D Golden Bow Limbs -->
+      <path class="bow-limb-left" d="M 130 58 C 92 42, 48 56, 26 96 C 42 104, 52 92, 68 82 C 88 70, 108 68, 130 74 Z" fill="url(#bowGold)" stroke="#78350f" stroke-width="3"/>
+      <path class="bow-limb-right" d="M 130 58 C 168 42, 212 56, 234 96 C 218 104, 208 92, 192 82 C 172 70, 152 68, 130 74 Z" fill="url(#bowGold)" stroke="#78350f" stroke-width="3"/>
+
+      <!-- Feather Wing Tips -->
+      <circle cx="30" cy="96" r="8" fill="url(#bowRuby)" stroke="#fff" stroke-width="2"/>
+      <circle cx="230" cy="96" r="8" fill="url(#bowRuby)" stroke="#fff" stroke-width="2"/>
+      <path d="M 55 62 Q 85 50 112 58" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.75"/>
+      <path d="M 205 62 Q 175 50 148 58" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.75"/>
+
+      <!-- Center Ruby Grip Emblem -->
+      <rect x="114" y="50" width="32" height="28" rx="10" fill="url(#bowRuby)" stroke="#fef08a" stroke-width="3.5"/>
+      <ellipse cx="126" cy="58" rx="7" ry="4" fill="#ffffff" opacity="0.6"/>
+
+      <!-- Nocked Giant 3D Feathered Arrow -->
+      <g class="bow-nocked-arrow">
+        <!-- Crimson Fletching Feathers -->
+        <path d="M 130 96 L 114 118 L 128 112 Z" fill="url(#bowRuby)" stroke="#881337" stroke-width="2"/>
+        <path d="M 130 96 L 146 118 L 132 112 Z" fill="url(#bowRuby)" stroke="#881337" stroke-width="2"/>
+        <!-- Wooden Golden Shaft -->
+        <rect x="126" y="24" width="8" height="88" rx="4" fill="url(#arrowShaft)" stroke="#78350f" stroke-width="2"/>
+        <!-- Giant Sparkling Diamond-Gold Arrowhead -->
+        <polygon points="130,4 111,34 125,29 135,29 149,34" fill="url(#bowGold)" stroke="#78350f" stroke-width="2.5"/>
+        <polygon points="130,8 120,28 130,25" fill="#ffffff" opacity="0.75"/>
+      </g>
+    </g>
+  </svg>`;
+}
+
+function getClawHeroSvg() {
+  return `
+  <svg class="hero-svg claw-hero-svg" viewBox="0 0 180 185" aria-hidden="true">
+    <defs>
+      <linearGradient id="clawChrome" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f8fafc"/>
+        <stop offset="48%" stop-color="#cbd5e1"/>
+        <stop offset="100%" stop-color="#475569"/>
+      </linearGradient>
+      <linearGradient id="clawDome" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#f472b6"/>
+        <stop offset="55%" stop-color="#db2777"/>
+        <stop offset="100%" stop-color="#831843"/>
+      </linearGradient>
+      <linearGradient id="clawGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fef08a"/>
+        <stop offset="60%" stop-color="#f59e0b"/>
+        <stop offset="100%" stop-color="#b45309"/>
+      </linearGradient>
+    </defs>
+    <!-- Top Trolley Motor Box -->
+    <g class="claw-trolley-head">
+      <rect x="46" y="6" width="88" height="32" rx="14" fill="url(#clawDome)" stroke="#ffffff" stroke-width="3"/>
+      <circle cx="66" cy="22" r="6" fill="#fef08a"/>
+      <circle cx="90" cy="22" r="6" fill="#38bdf8"/>
+      <circle cx="114" cy="22" r="6" fill="#4ade80"/>
+      <path d="M 58 13 L 122 13" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
+    </g>
+    <!-- Central Hub & Glowing Core -->
+    <g class="claw-jaw-assembly">
+      <rect x="78" y="36" width="24" height="18" rx="6" fill="url(#clawGold)" stroke="#78350f" stroke-width="2.5"/>
+      <!-- Left Articulated Giant Curved Steel Prong -->
+      <g class="claw-arm-left" style="transform-origin: 76px 56px;">
+        <path d="M 78 52 C 42 62, 22 96, 36 134 C 42 148, 56 156, 68 150 C 60 140, 52 126, 52 108 C 52 86, 66 70, 82 64 Z"
+          fill="url(#clawChrome)" stroke="#334155" stroke-width="3"/>
+        <path d="M 66 149 L 76 138 L 58 134 Z" fill="url(#clawGold)" stroke="#78350f" stroke-width="2"/>
+      </g>
+      <!-- Right Articulated Giant Curved Steel Prong -->
+      <g class="claw-arm-right" style="transform-origin: 104px 56px;">
+        <path d="M 102 52 C 138 62, 158 96, 144 134 C 138 148, 124 156, 112 150 C 120 140, 128 126, 128 108 C 128 86, 114 70, 98 64 Z"
+          fill="url(#clawChrome)" stroke="#334155" stroke-width="3"/>
+        <path d="M 114 149 L 104 138 L 122 134 Z" fill="url(#clawGold)" stroke="#78350f" stroke-width="2"/>
+      </g>
+      <!-- Center Power Joint -->
+      <circle cx="90" cy="58" r="18" fill="url(#clawDome)" stroke="#fde047" stroke-width="3.5"/>
+      <circle cx="90" cy="58" r="8" fill="#38bdf8"/>
+      <circle cx="86" cy="54" r="3.5" fill="#ffffff"/>
+    </g>
+  </svg>`;
+}
+
+function getFishHeroSvg() {
+  return `
+  <svg class="hero-svg fish-hero-svg" viewBox="0 0 250 150" aria-hidden="true">
+    <defs>
+      <linearGradient id="boatWood" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fbbf24"/>
+        <stop offset="55%" stop-color="#d97706"/>
+        <stop offset="100%" stop-color="#78350f"/>
+      </linearGradient>
+      <radialGradient id="bearFur" cx="40%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#fcd34d"/>
+        <stop offset="55%" stop-color="#d97706"/>
+        <stop offset="100%" stop-color="#92400e"/>
+      </radialGradient>
+    </defs>
+    <!-- Cute 3D Fisherman Bear in Wooden Boat -->
+    <g class="fish-boat-group">
+      <!-- Ears & Head -->
+      <circle cx="62" cy="42" r="12" fill="url(#bearFur)" stroke="#78350f" stroke-width="2.5"/>
+      <circle cx="106" cy="42" r="12" fill="url(#bearFur)" stroke="#78350f" stroke-width="2.5"/>
+      <circle cx="62" cy="42" r="6" fill="#fde68a"/>
+      <circle cx="106" cy="42" r="6" fill="#fde68a"/>
+      <!-- Straw Hat -->
+      <ellipse cx="84" cy="30" rx="34" ry="9" fill="#fde047" stroke="#b45309" stroke-width="2.5"/>
+      <path d="M 64 30 C 66 12, 102 12, 104 30 Z" fill="#facc15" stroke="#b45309" stroke-width="2.5"/>
+      <path d="M 65 27 L 103 27" stroke="#ef4444" stroke-width="4"/>
+      <!-- Face -->
+      <circle cx="84" cy="58" r="28" fill="url(#bearFur)" stroke="#78350f" stroke-width="2.5"/>
+      <ellipse cx="84" cy="64" rx="13" ry="10" fill="#fef3c7"/>
+      <circle cx="74" cy="53" r="4" fill="#1e293b"/>
+      <circle cx="94" cy="53" r="4" fill="#1e293b"/>
+      <circle cx="72.5" cy="51.5" r="1.5" fill="#fff"/>
+      <circle cx="92.5" cy="51.5" r="1.5" fill="#fff"/>
+      <ellipse cx="84" cy="61" rx="5" ry="3.5" fill="#451a03"/>
+      <path d="M 79 67 Q 84 72 89 67" fill="none" stroke="#451a03" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="66" cy="61" r="4.5" fill="#fb7185" opacity="0.55"/>
+      <circle cx="102" cy="61" r="4.5" fill="#fb7185" opacity="0.55"/>
+      <!-- Boat Hull -->
+      <path d="M 28 92 L 144 92 L 128 128 L 44 128 Z" fill="url(#boatWood)" stroke="#78350f" stroke-width="3"/>
+      <path d="M 36 104 L 136 104" stroke="#fef3c7" stroke-width="3" opacity="0.55"/>
+      <!-- Water Waves under boat -->
+      <path d="M 16 128 Q 42 118 68 128 T 120 128 T 168 128" fill="none" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+    </g>
+
+    <!-- Giant Curved 3D Golden Fishing Rod & Spinning Reel + Red/White Bobber -->
+    <g class="fish-rod-group" style="transform-origin: 112px 88px;">
+      <path d="M 106 92 Q 162 24 232 36" fill="none" stroke="#78350f" stroke-width="8" stroke-linecap="round"/>
+      <path d="M 106 92 Q 162 24 232 36" fill="none" stroke="#fde047" stroke-width="4.5" stroke-linecap="round"/>
+      <!-- Spinning Reel -->
+      <circle cx="126" cy="76" r="11" fill="#38bdf8" stroke="#0369a1" stroke-width="2.5"/>
+      <circle cx="126" cy="76" r="4" fill="#fef08a"/>
+      <!-- Dangling Line & Classic Red-White Bobber -->
+      <line x1="232" y1="36" x2="232" y2="88" stroke="#e0f2fe" stroke-width="2.5" stroke-dasharray="4 2"/>
+      <g class="fish-bobber-group" id="fish-rod-tip-anchor">
+        <circle cx="232" cy="96" r="13" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+        <path d="M 219 96 A 13 13 0 0 1 245 96 Z" fill="#ef4444"/>
+        <rect x="229" y="79" width="6" height="8" rx="3" fill="#fde047" stroke="#b45309" stroke-width="1.5"/>
+      </g>
+    </g>
+  </svg>`;
+}
+
+function getDinoHeroSvg(mood = 'hungry') {
+  const isHappy = mood === 'happy';
+  const isDizzy = mood === 'dizzy';
+  return `
+  <svg class="hero-svg dino-hero-svg ${isHappy ? 'is-happy' : ''} ${isDizzy ? 'is-dizzy' : ''}" viewBox="0 0 210 175" aria-hidden="true">
+    <defs>
+      <radialGradient id="dinoSkin" cx="38%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#86efac"/>
+        <stop offset="55%" stop-color="#22c55e"/>
+        <stop offset="100%" stop-color="#15803d"/>
+      </radialGradient>
+      <linearGradient id="dinoBelly" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fef9c3"/>
+        <stop offset="100%" stop-color="#fde047"/>
+      </linearGradient>
+    </defs>
+    <!-- Back Spikes -->
+    <polygon points="56,36 40,22 62,20" fill="#facc15" stroke="#b45309" stroke-width="2"/>
+    <polygon points="48,62 28,50 52,44" fill="#fb923c" stroke="#c2410c" stroke-width="2"/>
+    <polygon points="48,92 26,84 50,74" fill="#facc15" stroke="#b45309" stroke-width="2"/>
+
+    <!-- Chubby Body & Tail -->
+    <path d="M 54 115 Q 20 128 18 146 Q 42 154 68 144 Z" fill="url(#dinoSkin)" stroke="#14532d" stroke-width="3"/>
+    <ellipse cx="106" cy="126" rx="56" ry="42" fill="url(#dinoSkin)" stroke="#14532d" stroke-width="3"/>
+    <ellipse cx="114" cy="132" rx="36" ry="30" fill="url(#dinoBelly)" stroke="#ca8a04" stroke-width="2"/>
+    <path d="M 86 122 L 142 122 M 84 136 L 144 136 M 90 150 L 138 150" stroke="#eab308" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Cute Waving Little Arms -->
+    <path class="dino-arm-l" d="M 68 114 Q 48 106 52 94 Q 62 92 74 104" fill="url(#dinoSkin)" stroke="#14532d" stroke-width="2.5"/>
+    <path class="dino-arm-r" d="M 146 114 Q 168 104 164 92 Q 154 90 140 104" fill="url(#dinoSkin)" stroke="#14532d" stroke-width="2.5"/>
+
+    <!-- Deep Mouth Cavity (Target for Flying Treats!) -->
+    <ellipse class="dino-mouth-cavity" cx="122" cy="76" rx="34" ry="24" fill="#881337" stroke="#4c0519" stroke-width="2.5"/>
+    <ellipse cx="124" cy="88" rx="22" ry="10" fill="#fb7185"/>
+
+    <!-- Articulated Lower Jaw -->
+    <g class="dino-lower-jaw" style="transform-origin: 86px 80px;">
+      <path d="M 78 78 Q 124 108 164 84 Q 158 106 118 106 Q 84 104 78 78 Z" fill="url(#dinoSkin)" stroke="#14532d" stroke-width="3"/>
+      <polygon points="104,85 109,77 114,86" fill="#ffffff"/>
+      <polygon points="132,86 137,78 142,85" fill="#ffffff"/>
+    </g>
+
+    <!-- Articulated Upper Head & Snout -->
+    <g class="dino-upper-jaw" style="transform-origin: 84px 66px;">
+      <path d="M 56 68 C 54 22, 122 10, 166 42 C 178 52, 174 72, 156 74 C 132 76, 98 76, 56 68 Z" fill="url(#dinoSkin)" stroke="#14532d" stroke-width="3"/>
+      <!-- Cute White Rounded Teeth -->
+      <polygon points="106,72 112,82 118,72" fill="#ffffff"/>
+      <polygon points="128,72 134,82 140,72" fill="#ffffff"/>
+      <polygon points="148,71 153,79 158,70" fill="#ffffff"/>
+      <!-- Nostrils & Rosy Cheek -->
+      <circle cx="154" cy="48" r="3.5" fill="#14532d"/>
+      <ellipse cx="94" cy="58" rx="9" ry="5.5" fill="#fb7185" opacity="0.65"/>
+      <!-- Big Glossy Eye -->
+      <circle cx="104" cy="40" r="14" fill="#ffffff" stroke="#14532d" stroke-width="2.5"/>
+      ${isHappy ? `
+        <path d="M 96 42 Q 104 32 112 42" fill="none" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
+      ` : isDizzy ? `
+        <path d="M 97 34 L 111 46 M 111 34 L 97 46" stroke="#e11d48" stroke-width="3.5" stroke-linecap="round"/>
+      ` : `
+        <circle cx="107" cy="40" r="8" fill="#1e293b"/>
+        <circle cx="104" cy="36" r="3.5" fill="#ffffff"/>
+      `}
+    </g>
+  </svg>`;
+}
+
+function getChestHeroSvg(unlocked = false) {
+  return `
+  <svg class="hero-svg chest-hero-svg ${unlocked ? 'is-unlocked' : ''}" viewBox="0 0 220 165" aria-hidden="true">
+    <defs>
+      <linearGradient id="chestWood" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#d97706"/>
+        <stop offset="50%" stop-color="#92400e"/>
+        <stop offset="100%" stop-color="#451a03"/>
+      </linearGradient>
+      <linearGradient id="chestGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fef9c3"/>
+        <stop offset="45%" stop-color="#facc15"/>
+        <stop offset="100%" stop-color="#b45309"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Sparkling Gems & Coins Inside (Visible when lid opens!) -->
+    <g class="chest-treasure-inside">
+      <circle cx="78" cy="74" r="14" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+      <circle cx="102" cy="66" r="16" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
+      <polygon points="126,48 144,68 126,86 108,68" fill="#fb7185" stroke="#be123c" stroke-width="2"/>
+      <circle cx="146" cy="74" r="14" fill="#4ade80" stroke="#15803d" stroke-width="2"/>
+      <circle cx="92" cy="78" r="12" fill="#facc15" stroke="#b45309" stroke-width="2"/>
+      <circle cx="118" cy="78" r="13" fill="#fde047" stroke="#b45309" stroke-width="2"/>
+    </g>
+
+    <!-- Hinged Upper Domed Lid -->
+    <g class="chest-lid-group" style="transform-origin: 110px 76px;">
+      <path d="M 34 78 C 36 30, 184 30, 186 78 Z" fill="url(#chestWood)" stroke="#451a03" stroke-width="3.5"/>
+      <path d="M 34 74 L 186 74" stroke="url(#chestGold)" stroke-width="9"/>
+      <path d="M 66 78 C 68 38, 78 38, 80 78" fill="none" stroke="url(#chestGold)" stroke-width="10"/>
+      <path d="M 140 78 C 142 38, 152 38, 154 78" fill="none" stroke="url(#chestGold)" stroke-width="10"/>
+      <ellipse cx="110" cy="48" rx="34" ry="6" fill="#ffffff" opacity="0.28"/>
+    </g>
+
+    <!-- Lower Chest Base Box -->
+    <g class="chest-base-group">
+      <rect x="36" y="78" width="148" height="72" rx="12" fill="url(#chestWood)" stroke="#451a03" stroke-width="3.5"/>
+      <line x1="40" y1="102" x2="180" y2="102" stroke="#451a03" stroke-width="2.5"/>
+      <line x1="40" y1="126" x2="180" y2="126" stroke="#451a03" stroke-width="2.5"/>
+      <!-- Gold Straps & Corner Rivets -->
+      <rect x="62" y="78" width="14" height="72" fill="url(#chestGold)" stroke="#78350f" stroke-width="2"/>
+      <rect x="144" y="78" width="14" height="72" fill="url(#chestGold)" stroke="#78350f" stroke-width="2"/>
+      <rect x="36" y="76" width="148" height="10" rx="4" fill="url(#chestGold)" stroke="#78350f" stroke-width="2"/>
+    </g>
+
+    <!-- Giant Front Golden Keyhole Padlock -->
+    <g class="chest-padlock-group" style="transform-origin: 110px 96px;">
+      <path d="M 96 86 V 72 A 14 14 0 0 1 124 72 V 86" fill="none" stroke="url(#chestGold)" stroke-width="8" stroke-linecap="round"/>
+      <rect x="88" y="84" width="44" height="42" rx="11" fill="url(#chestGold)" stroke="#78350f" stroke-width="3"/>
+      <circle cx="110" cy="100" r="6.5" fill="#451a03"/>
+      <polygon points="107,102 113,102 115,116 105,116" fill="#451a03"/>
+      <circle cx="98" cy="92" r="3.5" fill="#ffffff" opacity="0.7"/>
+    </g>
+  </svg>`;
+}
+
+function getUfoHeroSvg() {
+  return `
+  <svg class="hero-svg ufo-hero-svg" viewBox="0 0 230 145" aria-hidden="true">
+    <defs>
+      <radialGradient id="ufoGlass" cx="45%" cy="32%" r="65%">
+        <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.92"/>
+        <stop offset="65%" stop-color="#38bdf8" stop-opacity="0.62"/>
+        <stop offset="100%" stop-color="#0284c7" stop-opacity="0.85"/>
+      </radialGradient>
+      <linearGradient id="ufoHull" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f8fafc"/>
+        <stop offset="48%" stop-color="#94a3b8"/>
+        <stop offset="100%" stop-color="#334155"/>
+      </linearGradient>
+    </defs>
+    <g class="ufo-hover-body">
+      <!-- Cute Little Green Alien Pilot Inside Glass Dome -->
+      <ellipse cx="115" cy="52" rx="22" ry="20" fill="#4ade80" stroke="#15803d" stroke-width="2.5"/>
+      <line x1="106" y1="34" x2="100" y2="22" stroke="#15803d" stroke-width="3"/>
+      <line x1="124" y1="34" x2="130" y2="22" stroke="#15803d" stroke-width="3"/>
+      <circle cx="100" cy="20" r="4.5" fill="#fde047"/>
+      <circle cx="130" cy="20" r="4.5" fill="#fde047"/>
+      <circle cx="106" cy="48" r="4.5" fill="#ffffff"/><circle cx="106" cy="48" r="2.2" fill="#0f172a"/>
+      <circle cx="115" cy="45" r="4.5" fill="#ffffff"/><circle cx="115" cy="45" r="2.2" fill="#0f172a"/>
+      <circle cx="124" cy="48" r="4.5" fill="#ffffff"/><circle cx="124" cy="48" r="2.2" fill="#0f172a"/>
+      <path d="M 108 57 Q 115 62 122 57" fill="none" stroke="#14532d" stroke-width="2.5" stroke-linecap="round"/>
+
+      <!-- Transparent 3D Glass Cockpit Dome -->
+      <path d="M 62 68 C 64 14, 166 14, 168 68 Z" fill="url(#ufoGlass)" stroke="#bae6fd" stroke-width="3"/>
+      <path d="M 78 52 C 84 28, 108 24, 122 26" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+
+      <!-- Metallic Flying Saucer Rim -->
+      <ellipse cx="115" cy="76" rx="96" ry="24" fill="url(#ufoHull)" stroke="#1e293b" stroke-width="3.5"/>
+      <ellipse cx="115" cy="72" rx="74" ry="13" fill="#e2e8f0" opacity="0.65"/>
+
+      <!-- Pulsing Rainbow Rim Lights -->
+      <circle class="ufo-bulb b1" cx="44" cy="76" r="6.5" fill="#fb7185" stroke="#fff" stroke-width="1.5"/>
+      <circle class="ufo-bulb b2" cx="78" cy="85" r="7" fill="#fde047" stroke="#fff" stroke-width="1.5"/>
+      <circle class="ufo-bulb b3" cx="115" cy="88" r="7.5" fill="#4ade80" stroke="#fff" stroke-width="1.5"/>
+      <circle class="ufo-bulb b4" cx="152" cy="85" r="7" fill="#38bdf8" stroke="#fff" stroke-width="1.5"/>
+      <circle class="ufo-bulb b5" cx="186" cy="76" r="6.5" fill="#c084fc" stroke="#fff" stroke-width="1.5"/>
+
+      <!-- Belly Plasma Laser Cannon Emitter -->
+      <path d="M 94 98 L 136 98 L 126 118 L 104 118 Z" fill="#0284c7" stroke="#bae6fd" stroke-width="2.5"/>
+      <circle id="ufo-cannon-core" cx="115" cy="120" r="11" fill="#38bdf8" stroke="#ffffff" stroke-width="3"/>
+      <circle cx="115" cy="120" r="5" fill="#ffffff"/>
+    </g>
+  </svg>`;
+}
+
+function getMalletHeroSvg() {
+  return `
+  <svg class="hero-svg mallet-hero-svg" viewBox="0 0 190 140" aria-hidden="true">
+    <defs>
+      <linearGradient id="malletRed" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fda4af"/>
+        <stop offset="45%" stop-color="#ef4444"/>
+        <stop offset="100%" stop-color="#991b1b"/>
+      </linearGradient>
+      <linearGradient id="malletWood" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#fde68a"/>
+        <stop offset="55%" stop-color="#d97706"/>
+        <stop offset="100%" stop-color="#78350f"/>
+      </linearGradient>
+    </defs>
+    <g class="mallet-swing-group" style="transform-origin: 145px 120px;">
+      <!-- Wooden Handle -->
+      <rect x="96" y="56" width="18" height="78" rx="9" transform="rotate(-28 105 95)" fill="url(#malletWood)" stroke="#78350f" stroke-width="3"/>
+      <!-- Giant 3D Carnival Barrel Head -->
+      <g transform="rotate(-28 76 52)">
+        <rect x="24" y="18" width="104" height="66" rx="22" fill="url(#malletRed)" stroke="#7f1d1d" stroke-width="3.5"/>
+        <!-- Cushioned Yellow Impact Caps -->
+        <ellipse cx="26" cy="51" rx="11" ry="32" fill="#fde047" stroke="#b45309" stroke-width="3"/>
+        <ellipse cx="126" cy="51" rx="11" ry="32" fill="#fde047" stroke="#b45309" stroke-width="3"/>
+        <!-- Gold Bands & Center Star -->
+        <rect x="44" y="18" width="10" height="66" fill="#facc15"/>
+        <rect x="98" y="18" width="10" height="66" fill="#facc15"/>
+        <polygon points="76,30 82,43 96,45 86,55 88,69 76,62 64,69 66,55 56,45 70,43" fill="#fef08a" stroke="#b45309" stroke-width="2"/>
+        <path d="M 40 28 L 112 28" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+      </g>
+    </g>
+  </svg>`;
+}
+
+function getBubbleHeroSvg() {
+  return `
+  <svg class="hero-svg bubble-hero-svg" viewBox="0 0 220 140" aria-hidden="true">
+    <defs>
+      <radialGradient id="sealBody" cx="40%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="65%" stop-color="#bae6fd"/>
+        <stop offset="100%" stop-color="#38bdf8"/>
+      </radialGradient>
+      <radialGradient id="soapOrb" cx="35%" cy="30%" r="68%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="55%" stop-color="#7dd3fc" stop-opacity="0.38"/>
+        <stop offset="85%" stop-color="#f472b6" stop-opacity="0.55"/>
+        <stop offset="100%" stop-color="#fde047" stop-opacity="0.8"/>
+      </radialGradient>
+    </defs>
+    <!-- Cute 3D Baby Seal Blowing Bubbles -->
+    <ellipse cx="78" cy="96" rx="46" ry="34" fill="url(#sealBody)" stroke="#0284c7" stroke-width="3"/>
+    <circle cx="78" cy="56" r="32" fill="url(#sealBody)" stroke="#0284c7" stroke-width="3"/>
+    <!-- Flippers -->
+    <ellipse cx="34" cy="98" rx="16" ry="9" transform="rotate(-20 34 98)" fill="#7dd3fc" stroke="#0284c7" stroke-width="2.5"/>
+    <ellipse cx="120" cy="88" rx="16" ry="9" transform="rotate(24 120 88)" fill="#7dd3fc" stroke="#0284c7" stroke-width="2.5"/>
+    <!-- Eyes & Cute O-Mouth -->
+    <circle cx="66" cy="50" r="4.5" fill="#0f172a"/><circle cx="64.5" cy="48.5" r="1.6" fill="#fff"/>
+    <circle cx="90" cy="50" r="4.5" fill="#0f172a"/><circle cx="88.5" cy="48.5" r="1.6" fill="#fff"/>
+    <circle cx="78" cy="58" r="4" fill="#334155"/>
+    <circle cx="78" cy="68" r="5.5" fill="#fb7185" stroke="#be123c" stroke-width="2"/>
+    <circle cx="56" cy="58" r="5" fill="#f472b6" opacity="0.45"/>
+    <circle cx="100" cy="58" r="5" fill="#f472b6" opacity="0.45"/>
+
+    <!-- Giant Golden Star Bubble Wand Held by Seal -->
+    <g class="bubble-wand-group">
+      <line x1="126" y1="108" x2="148" y2="68" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="158" cy="46" r="24" fill="none" stroke="#facc15" stroke-width="7"/>
+      <circle cx="158" cy="46" r="19" fill="url(#soapOrb)"/>
+    </g>
+
+    <!-- Floating Iridescent Bubbles -->
+    <circle class="float-b1" cx="194" cy="34" r="16" fill="url(#soapOrb)" stroke="#ffffff" stroke-width="2"/>
+    <circle class="float-b2" cx="198" cy="76" r="11" fill="url(#soapOrb)" stroke="#ffffff" stroke-width="1.5"/>
+  </svg>`;
+}
+
+function getAlchemyHeroSvg() {
+  return `
+  <svg class="hero-svg alchemy-hero-svg" viewBox="0 0 210 150" aria-hidden="true">
+    <defs>
+      <radialGradient id="potIron" cx="38%" cy="35%" r="68%">
+        <stop offset="0%" stop-color="#64748b"/>
+        <stop offset="55%" stop-color="#334155"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </radialGradient>
+      <linearGradient id="potionGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#4ade80"/>
+        <stop offset="50%" stop-color="#fde047"/>
+        <stop offset="100%" stop-color="#c084fc"/>
+      </linearGradient>
+    </defs>
+    <!-- Cozy Magical Flames Underneath -->
+    <g class="cauldron-flames">
+      <path d="M 68 142 Q 76 116 88 136 Q 105 108 118 136 Q 132 114 142 142 Z" fill="#fb923c" stroke="#ea580c" stroke-width="2"/>
+      <path d="M 80 142 Q 92 122 105 138 Q 116 120 130 142 Z" fill="#fde047"/>
+    </g>
+    <!-- Wooden Stirring Ladle -->
+    <line class="cauldron-spoon" x1="128" y1="54" x2="154" y2="14" stroke="#d97706" stroke-width="8" stroke-linecap="round"/>
+    <!-- Rising Potion Bubbles -->
+    <circle class="pot-bub b1" cx="84" cy="36" r="8" fill="#4ade80" stroke="#fff" stroke-width="2"/>
+    <circle class="pot-bub b2" cx="108" cy="24" r="10" fill="#c084fc" stroke="#fff" stroke-width="2"/>
+    <circle class="pot-bub b3" cx="128" cy="38" r="7" fill="#fde047" stroke="#fff" stroke-width="2"/>
+
+    <!-- Giant 3D Cast-Iron & Gold Cauldron -->
+    <ellipse cx="105" cy="94" rx="58" ry="42" fill="url(#potIron)" stroke="#1e293b" stroke-width="3.5"/>
+    <!-- Handles -->
+    <circle cx="44" cy="88" r="10" fill="none" stroke="#facc15" stroke-width="5"/>
+    <circle cx="166" cy="88" r="10" fill="none" stroke="#facc15" stroke-width="5"/>
+    <!-- Rim & Bubbling Liquid Surface -->
+    <ellipse cx="105" cy="56" rx="52" ry="15" fill="#1e293b" stroke="#facc15" stroke-width="4"/>
+    <ellipse id="cauldron-mouth-target" cx="105" cy="56" rx="44" ry="10" fill="url(#potionGlow)"/>
+    <path d="M 66 94 Q 68 116 92 122" fill="none" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+  </svg>`;
+}
+
+function getTrainHeroSvg() {
+  return `
+  <svg class="hero-svg train-hero-svg" viewBox="0 0 220 135" aria-hidden="true">
+    <defs>
+      <linearGradient id="locoRed" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fb7185"/>
+        <stop offset="50%" stop-color="#e11d48"/>
+        <stop offset="100%" stop-color="#881337"/>
+      </linearGradient>
+      <linearGradient id="locoBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#60a5fa"/>
+        <stop offset="100%" stop-color="#1d4ed8"/>
+      </linearGradient>
+    </defs>
+    <!-- Puffing White 3D Steam Clouds -->
+    <g class="train-steam-puffs">
+      <circle cx="62" cy="18" r="10" fill="#ffffff" opacity="0.9"/>
+      <circle cx="82" cy="12" r="13" fill="#ffffff" opacity="0.82"/>
+      <circle cx="106" cy="10" r="9" fill="#ffffff" opacity="0.7"/>
+    </g>
+    <g class="train-body-group">
+      <!-- Smokestack & Golden Dome -->
+      <path d="M 48 56 L 42 28 L 68 28 L 62 56 Z" fill="#334155" stroke="#0f172a" stroke-width="2.5"/>
+      <rect x="40" y="24" width="30" height="7" rx="3.5" fill="#facc15" stroke="#b45309" stroke-width="2"/>
+      <path d="M 82 56 A 14 14 0 0 1 110 56 Z" fill="#facc15" stroke="#b45309" stroke-width="2.5"/>
+
+      <!-- Cab & Cute Engineer Window -->
+      <rect x="122" y="30" width="66" height="66" rx="10" fill="url(#locoBlue)" stroke="#1e3a8a" stroke-width="3"/>
+      <rect x="116" y="24" width="78" height="10" rx="5" fill="#facc15" stroke="#b45309" stroke-width="2.5"/>
+      <rect x="136" y="42" width="38" height="28" rx="6" fill="#e0f2fe" stroke="#1e3a8a" stroke-width="2.5"/>
+      <!-- Little Bear Engineer Inside Window -->
+      <circle cx="155" cy="58" r="10" fill="#d97706"/>
+      <circle cx="151" cy="56" r="2" fill="#0f172a"/><circle cx="159" cy="56" r="2" fill="#0f172a"/>
+
+      <!-- Red Boiler & Headlight -->
+      <rect x="38" y="54" width="90" height="42" rx="14" fill="url(#locoRed)" stroke="#881337" stroke-width="3"/>
+      <rect x="74" y="54" width="10" height="42" fill="#facc15"/>
+      <circle cx="36" cy="70" r="9" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/>
+
+      <!-- Cowcatcher & Chassis -->
+      <polygon points="14,108 38,88 38,108" fill="#facc15" stroke="#b45309" stroke-width="2.5"/>
+      <rect x="34" y="94" width="160" height="14" rx="5" fill="#334155"/>
+
+      <!-- 3 Big Spoked Spinning Wheels -->
+      <g class="train-wheel w1" style="transform-origin: 62px 112px;">
+        <circle cx="62" cy="112" r="16" fill="#ef4444" stroke="#1e293b" stroke-width="4"/>
+        <circle cx="62" cy="112" r="5" fill="#fde047"/>
+      </g>
+      <g class="train-wheel w2" style="transform-origin: 112px 112px;">
+        <circle cx="112" cy="112" r="16" fill="#ef4444" stroke="#1e293b" stroke-width="4"/>
+        <circle cx="112" cy="112" r="5" fill="#fde047"/>
+      </g>
+      <g class="train-wheel w3" style="transform-origin: 164px 112px;">
+        <circle cx="164" cy="112" r="18" fill="#ef4444" stroke="#1e293b" stroke-width="4"/>
+        <circle cx="164" cy="112" r="6" fill="#fde047"/>
+      </g>
+      <!-- Side Coupling Rod -->
+      <rect x="58" y="109" width="108" height="6" rx="3" fill="#e2e8f0" stroke="#475569" stroke-width="1.5"/>
+    </g>
+  </svg>`;
+}
+
+function getMemoryHeroSvg() {
+  return `
+  <svg class="hero-svg memory-hero-svg" viewBox="0 0 210 140" aria-hidden="true">
+    <defs>
+      <linearGradient id="hatVelvet" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#6d28d9"/>
+        <stop offset="60%" stop-color="#4c1d95"/>
+        <stop offset="100%" stop-color="#1e1b4b"/>
+      </linearGradient>
+    </defs>
+    <!-- Cute White 3D Magician Bunny Popping out of Velvet Top Hat -->
+    <g class="bunny-pop-group">
+      <!-- Long Ears -->
+      <ellipse cx="88" cy="28" rx="10" ry="24" transform="rotate(-12 88 28)" fill="#ffffff" stroke="#cbd5e1" stroke-width="2.5"/>
+      <ellipse cx="88" cy="28" rx="5" ry="16" transform="rotate(-12 88 28)" fill="#fbcfe8"/>
+      <ellipse cx="118" cy="28" rx="10" ry="24" transform="rotate(12 118 28)" fill="#ffffff" stroke="#cbd5e1" stroke-width="2.5"/>
+      <ellipse cx="118" cy="28" rx="5" ry="16" transform="rotate(12 118 28)" fill="#fbcfe8"/>
+      <!-- Bunny Head -->
+      <circle cx="103" cy="58" r="25" fill="#ffffff" stroke="#cbd5e1" stroke-width="2.5"/>
+      <circle cx="94" cy="54" r="4" fill="#1e293b"/><circle cx="92.8" cy="52.5" r="1.5" fill="#fff"/>
+      <circle cx="112" cy="54" r="4" fill="#1e293b"/><circle cx="110.8" cy="52.5" r="1.5" fill="#fff"/>
+      <ellipse cx="103" cy="61" rx="4" ry="3" fill="#f472b6"/>
+      <circle cx="84" cy="61" r="4.5" fill="#fbcfe8"/>
+      <circle cx="122" cy="61" r="4.5" fill="#fbcfe8"/>
+      <!-- Red Bowtie -->
+      <polygon points="103,79 91,73 91,85" fill="#ef4444"/>
+      <polygon points="103,79 115,73 115,85" fill="#ef4444"/>
+      <circle cx="103" cy="79" r="4" fill="#fde047"/>
+    </g>
+
+    <!-- Starry Magician Top Hat -->
+    <ellipse cx="103" cy="88" rx="56" ry="13" fill="url(#hatVelvet)" stroke="#fde047" stroke-width="3"/>
+    <path d="M 68 88 L 74 132 L 132 132 L 138 88 Z" fill="url(#hatVelvet)" stroke="#fde047" stroke-width="3"/>
+    <rect x="70" y="92" width="66" height="9" fill="#ef4444"/>
+
+    <!-- Waving Magic Wand -->
+    <g class="bunny-wand-group" style="transform-origin: 132px 76px;">
+      <line x1="126" y1="78" x2="178" y2="36" stroke="#1e293b" stroke-width="7" stroke-linecap="round"/>
+      <line x1="166" y1="45" x2="178" y2="36" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+      <polygon id="bunny-wand-tip" points="184,20 189,30 200,32 192,40 194,51 184,45 174,51 176,40 168,32 179,30" fill="#fde047" stroke="#f59e0b" stroke-width="2"/>
+    </g>
+  </svg>`;
+}
+
+function getJudgeHeroSvg() {
+  return `
+  <svg class="hero-svg judge-hero-svg" viewBox="0 0 210 140" aria-hidden="true">
+    <defs>
+      <linearGradient id="thunderGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fef9c3"/>
+        <stop offset="50%" stop-color="#facc15"/>
+        <stop offset="100%" stop-color="#b45309"/>
+      </linearGradient>
+      <linearGradient id="thunderSteel" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#e0f2fe"/>
+        <stop offset="50%" stop-color="#38bdf8"/>
+        <stop offset="100%" stop-color="#0369a1"/>
+      </linearGradient>
+    </defs>
+    <g class="judge-hammer-group" style="transform-origin: 105px 115px;">
+      <!-- Angelic Golden Wings -->
+      <path d="M 62 56 C 28 36, 16 62, 38 78 C 26 84, 38 96, 64 82 Z" fill="url(#thunderGold)" stroke="#b45309" stroke-width="2.5"/>
+      <path d="M 148 56 C 182 36, 194 62, 172 78 C 184 84, 172 96, 146 82 Z" fill="url(#thunderGold)" stroke="#b45309" stroke-width="2.5"/>
+      <!-- Handle -->
+      <rect x="97" y="68" width="16" height="62" rx="8" fill="#78350f" stroke="#fde047" stroke-width="2.5"/>
+      <!-- Giant Crystal-Steel Thunder Hammer Head -->
+      <rect x="54" y="24" width="102" height="52" rx="14" fill="url(#thunderSteel)" stroke="url(#thunderGold)" stroke-width="4.5"/>
+      <!-- Center Lightning Bolt Crest -->
+      <polygon id="judge-bolt-origin" points="110,30 94,52 106,52 100,70 120,46 108,46" fill="#fef08a" stroke="#b45309" stroke-width="1.8"/>
+    </g>
+  </svg>`;
+}
+
+function getSwimmingFishSvg(idx = 0) {
+  const palettes = [
+    ['#fb923c', '#ef4444', '#fef08a'],
+    ['#38bdf8', '#2563eb', '#bae6fd'],
+    ['#f472b6', '#db2777', '#fbcfe8'],
+    ['#4ade80', '#059669', '#bbf7d0'],
+  ];
+  const [c1, c2, fin] = palettes[idx % palettes.length];
+  return `
+  <svg class="fish-avatar-svg" viewBox="0 0 86 58" aria-hidden="true">
+    <defs>
+      <linearGradient id="fg${idx}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${c1}"/>
+        <stop offset="100%" stop-color="${c2}"/>
+      </linearGradient>
+    </defs>
+    <polygon class="fish-tail-fin" points="18,29 2,11 6,29 2,47" fill="${fin}" stroke="${c2}" stroke-width="2"/>
+    <path d="M 36 13 Q 48 2 58 14 Z" fill="${fin}" stroke="${c2}" stroke-width="2"/>
+    <ellipse cx="48" cy="29" rx="30" ry="19" fill="url(#fg${idx})" stroke="#ffffff" stroke-width="2.5"/>
+    <circle cx="64" cy="24" r="5" fill="#ffffff"/>
+    <circle cx="65.5" cy="24" r="2.6" fill="#0f172a"/>
+    <path d="M 66 34 Q 72 37 75 33" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function getGachaCapsuleSvg(idx = 0) {
+  const tops = ['#ef4444', '#3b82f6', '#eab308', '#10b981'];
+  const topCol = tops[idx % tops.length];
+  return `
+  <svg class="capsule-avatar-svg" viewBox="0 0 64 64" aria-hidden="true">
+    <circle cx="32" cy="32" r="27" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+    <path d="M 5 32 A 27 27 0 0 1 59 32 Z" fill="${topCol}"/>
+    <rect x="5" y="29" width="54" height="6" rx="3" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/>
+    <circle cx="32" cy="32" r="7" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+    <ellipse cx="22" cy="18" rx="8" ry="4.5" transform="rotate(-25 22 18)" fill="#ffffff" opacity="0.65"/>
+  </svg>`;
+}
+
+function getJeweledKeySvg(idx = 0) {
+  const gems = ['#ef4444', '#38bdf8', '#a855f7', '#10b981'];
+  const gem = gems[idx % gems.length];
+  return `
+  <svg class="key-avatar-svg" viewBox="0 0 74 52" aria-hidden="true">
+    <g transform="rotate(-12 37 26)">
+      <rect x="28" y="22" width="38" height="8" rx="4" fill="#facc15" stroke="#b45309" stroke-width="2.2"/>
+      <rect x="50" y="29" width="6" height="10" rx="2" fill="#facc15" stroke="#b45309" stroke-width="2"/>
+      <rect x="59" y="29" width="6" height="13" rx="2" fill="#facc15" stroke="#b45309" stroke-width="2"/>
+      <circle cx="19" cy="26" r="15" fill="#fde047" stroke="#b45309" stroke-width="2.5"/>
+      <circle cx="19" cy="26" r="7.5" fill="${gem}" stroke="#ffffff" stroke-width="2"/>
+    </g>
+  </svg>`;
+}
+
+function getHeroRigByMode(mode, stateHint = '') {
+  switch (mode) {
+    case 'dart': return getBowHeroSvg();
+    case 'claw': return getClawHeroSvg();
+    case 'fish': return getFishHeroSvg();
+    case 'feed': return getDinoHeroSvg(stateHint || 'hungry');
+    case 'chest_lock': return getChestHeroSvg(stateHint === 'unlocked');
+    case 'typo_laser': return getUfoHeroSvg();
+    case 'mole': return getMalletHeroSvg();
+    case 'bubble_pop': return getBubbleHeroSvg();
+    case 'alchemy': return getAlchemyHeroSvg();
+    case 'train': return getTrainHeroSvg();
+    case 'memory': return getMemoryHeroSvg();
+    case 'judge': return getJudgeHeroSvg();
+    default: return getClawHeroSvg();
+  }
+}
+
+module.exports = {
+  HERO_STAGE_META,
+  getHeroRigByMode,
+  getBowHeroSvg,
+  getClawHeroSvg,
+  getFishHeroSvg,
+  getDinoHeroSvg,
+  getChestHeroSvg,
+  getUfoHeroSvg,
+  getMalletHeroSvg,
+  getBubbleHeroSvg,
+  getAlchemyHeroSvg,
+  getTrainHeroSvg,
+  getMemoryHeroSvg,
+  getJudgeHeroSvg,
+  getSwimmingFishSvg,
+  getGachaCapsuleSvg,
+  getJeweledKeySvg,
+};
 
   };
   __mods["./curriculum_k2"] = function(require, module, exports) {
@@ -9812,6 +11885,13 @@ const { SoundEngine } = require('./audio');
 const { FXEngine } = require('./fx');
 const { annotateZhuyin, renderVerticalZhuyin, renderCharWithZhuyin, escapeHtml } = require('./zhuyin_helper');
 const { World3DEngine } = require('./webgl3d');
+const {
+  HERO_STAGE_META,
+  getHeroRigByMode,
+  getSwimmingFishSvg,
+  getGachaCapsuleSvg,
+  getJeweledKeySvg,
+} = require('./arcade_rigs');
 const { K2_LESSONS, K2_BOSS_EXTRAS } = require('./curriculum_k2');
 const { GRADE1_LESSONS, GRADE1_BOSS_EXTRAS } = require('./curriculum_g1');
 const { GRADE2_LESSONS, GRADE2_BOSS_EXTRAS, PET_CATALOG } = require('./curriculum_g2');
@@ -9822,7 +11902,7 @@ const PUNCT_RE = /^[，。！？、：；「」『』（）…—]$/;
 const PRAISE_BADGES = [
   '🌟 神準滿分！',
   '🚀 太強了吧！',
-  '🎯 百發百中！',
+  '🏹 百發百中！',
   '⚡ 閃電學霸！',
   '🌈 超級天才！',
   '🔥 火力全開！',
@@ -9870,18 +11950,18 @@ const LESSON_FX_CONFIG = {
 };
 
 const ARCADE_META = {
-  dart:       { icon: '🎯', badge: '🎯 神準射飛鏢' },
-  bubble_pop: { icon: '🫧', badge: '🫧 奇幻戳泡泡' },
-  alchemy:    { icon: '🧪', badge: '🧪 魔法組字鍋' },
-  claw:       { icon: '🕹️', badge: '🕹️ 奇幻夾娃娃' },
-  fish:       { icon: '🎣', badge: '🎣 星光釣魚池' },
-  feed:       { icon: '🦖', badge: '🦖 貪吃小恐龍' },
-  memory:     { icon: '🃏', badge: '🃏 3D 魔法翻翻牌' },
-  mole:       { icon: '🔨', badge: '🔨 草原打地鼠' },
-  typo_laser: { icon: '🛸', badge: '🛸 飛碟除蟲砲' },
-  chest_lock: { icon: '🗝️', badge: '🗝️ 黃金寶箱鎖' },
-  train:      { icon: '🚂', badge: '🚂 彩虹語句火車' },
-  judge:      { icon: '⚡', badge: '⚡ 正義雷霆審判' },
+  dart:       { icon: '🏹', badge: '🏹 神箭手射靶' },
+  bubble_pop: { icon: '🫧', badge: '🫧 泡泡小海豹' },
+  alchemy:    { icon: '🧪', badge: '🧪 魔法煉金釜' },
+  claw:       { icon: '🦾', badge: '🦾 巨型夾娃娃' },
+  fish:       { icon: '🎣', badge: '🎣 小熊釣魚船' },
+  feed:       { icon: '🦖', badge: '🦖 貪吃大恐龍' },
+  memory:     { icon: '🃏', badge: '🃏 魔術帽兔兔' },
+  mole:       { icon: '🔨', badge: '🔨 巨槌打地鼠' },
+  typo_laser: { icon: '🛸', badge: '🛸 外星飛碟砲' },
+  chest_lock: { icon: '🗝️', badge: '🗝️ 海盜大寶箱' },
+  train:      { icon: '🚂', badge: '🚂 皇家蒸汽火車' },
+  judge:      { icon: '⚡', badge: '⚡ 雷神審判錘' },
 };
 
 const K2_TYPE_TO_MODE = {
@@ -9978,14 +12058,10 @@ function assignArcadeModes(questions) {
     const m = q._arcadeMode || 'claw';
     const meta = ARCADE_META[m] || ARCADE_META.claw;
     q._arcadeIcon = meta.icon;
-    if (q.id && q.id.startsWith('k2_') && q.modeBadge) {
-      q._arcadeBadge = q.modeBadge;
-    } else if (q.type === 'typo' && m === 'mole') {
-      q._arcadeBadge = '🔍 抓蟲打地鼠';
+    if (q.type === 'typo' && m === 'mole') {
+      q._arcadeBadge = '🔨 抓蟲巨槌地鼠';
     } else if (q.type === 'typo' && m === 'typo_laser') {
-      q._arcadeBadge = '🛸 飛碟除蟲砲';
-    } else if (q.type === 'alchemy' && m === 'alchemy') {
-      q._arcadeBadge = '🧪 魔法組字鍋';
+      q._arcadeBadge = '🛸 外星飛碟砲';
     } else {
       q._arcadeBadge = meta.badge;
     }
@@ -10007,6 +12083,8 @@ class ChineseAdventureApp {
     this.session = null;
     this.customSelectedIds = new Set();
     this._fxTimer = null;
+    this._autoAdvanceTimer = null;
+    this._bufferReadyTimer = null;
     this._lastHoverSfxAt = 0;
 
     this.canvas = document.getElementById('world3d');
@@ -10211,15 +12289,38 @@ class ChineseAdventureApp {
     });
   }
 
+  clearAutoTimers() {
+    if (this._autoAdvanceTimer) {
+      clearTimeout(this._autoAdvanceTimer);
+      this._autoAdvanceTimer = null;
+    }
+    if (this._bufferReadyTimer) {
+      clearTimeout(this._bufferReadyTimer);
+      this._bufferReadyTimer = null;
+    }
+  }
+
   bindGlobalKeys() {
     window.addEventListener('keydown', (e) => {
       if (this.view !== 'play' || !this.session) return;
-      if (this.session.answered && (e.key === 'Enter' || e.key === ' ')) {
-        e.preventDefault();
-        this.nextQuestion();
-        return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (this.session.finaleBuffer) {
+          e.preventDefault();
+          this.finishSession();
+          return;
+        }
+        if (this.session.stageBuffer) {
+          e.preventDefault();
+          this.enterActiveStage();
+          return;
+        }
+        if (this.session.answered) {
+          e.preventDefault();
+          this.nextQuestion();
+          return;
+        }
       }
-      if (!this.session.answered && ['1', '2', '3', '4'].includes(e.key)) {
+      if (!this.session.answered && !this.session.stageBuffer && ['1', '2', '3', '4'].includes(e.key)) {
         const idx = Number(e.key) - 1;
         const btns = document.querySelectorAll('[data-opt-idx]');
         if (btns[idx]) btns[idx].click();
@@ -10228,6 +12329,7 @@ class ChineseAdventureApp {
   }
 
   switchGrade(g) {
+    this.clearAutoTimers();
     this.sound.playTap();
     this.sound.stopSpeak();
     this.state.grade = g;
@@ -10242,6 +12344,7 @@ class ChineseAdventureApp {
   }
 
   goHub() {
+    this.clearAutoTimers();
     this.sound.playTap();
     this.sound.stopSpeak();
     this.view = 'hub';
@@ -10272,6 +12375,7 @@ class ChineseAdventureApp {
   openStudy(lessonId) {
     const lesson = this.findAnyLesson(lessonId);
     if (!lesson) return;
+    this.clearAutoTimers();
     this.sound.playPop();
     this.activeLesson = lesson;
     this.view = 'study';
@@ -10334,6 +12438,7 @@ class ChineseAdventureApp {
   }
 
   openCustomPicker() {
+    this.clearAutoTimers();
     this.sound.playTap();
     this.customSelectedIds = new Set(this.getLessons().map((l) => l.id));
     this.view = 'custom_picker';
@@ -10431,6 +12536,7 @@ class ChineseAdventureApp {
   }
 
   launchSession(cfg) {
+    this.clearAutoTimers();
     assignArcadeModes(cfg.questions || []);
     this.session = {
       ...cfg,
@@ -10445,6 +12551,9 @@ class ChineseAdventureApp {
       pickedValue: null,
       justOpenedChest: 0,
       chestsClaimed: {},
+      stageBuffer: true,
+      finaleBuffer: false,
+      bufferDurationMs: 1250,
     };
     this.view = 'play';
     this.syncSky(cfg.sky);
@@ -10452,13 +12561,46 @@ class ChineseAdventureApp {
     this.world.fever = false;
     document.body.classList.remove('fever-active');
     this.world.setScene(cfg.scene);
+    this.sound.playStageReady();
+    const firstQ = this.session.questions[0];
+    const firstMeta = HERO_STAGE_META[(firstQ && firstQ._arcadeMode) || 'claw'] || HERO_STAGE_META.claw;
+    if (this.state.autoRead) {
+      this.sound.speak(`第 1 關，${firstMeta.readyTitle}`);
+    }
     this.render();
     this.scrollToStage();
+    this.scheduleBufferStart(1250);
+  }
+
+  scheduleBufferStart(ms = 1280) {
+    if (this._bufferReadyTimer) {
+      clearTimeout(this._bufferReadyTimer);
+    }
+    const targetSession = this.session;
+    this._bufferReadyTimer = setTimeout(() => {
+      this._bufferReadyTimer = null;
+      if (this.view === 'play' && this.session === targetSession && targetSession.stageBuffer) {
+        this.enterActiveStage();
+      }
+    }, ms);
+  }
+
+  enterActiveStage() {
+    this.clearAutoTimers();
+    const s = this.session;
+    if (!s || this.view !== 'play') return;
+    s.stageBuffer = false;
+    this.sound.playPop();
+    this.render();
+    const deck = document.getElementById('command-deck');
+    if (deck && deck.getBoundingClientRect().top < 0) {
+      deck.scrollIntoView({ behavior: 'auto', block: 'start' });
+    }
     this.autoSpeakCurrent();
   }
 
   autoSpeakCurrent() {
-    if (!this.state.autoRead || !this.session) return;
+    if (!this.state.autoRead || !this.session || this.session.stageBuffer || this.session.finaleBuffer) return;
     const q = this.session.questions[this.session.index];
     if (q) {
       if (q.type === 'bubble') this.sound.playCensorBeep();
@@ -10469,6 +12611,7 @@ class ChineseAdventureApp {
   handleAnswer(isRight, pickedVal = null) {
     const s = this.session;
     if (!s || s.answered) return;
+    this.clearAutoTimers();
     const q = s.questions[s.index];
     s.answered = true;
     s.isCorrect = isRight;
@@ -10568,7 +12711,8 @@ class ChineseAdventureApp {
         'shuffledOptions', 'poolCarriages', 'hooked', 'trainRetries', 'trainRetryMsg',
         'caughtBug', 'wrongTaps', '_arcadeMode', '_arcadeIcon', '_arcadeBadge',
         '_dartFlying', '_moleWhacking', '_clawBusy', '_fishBusy', '_feedBusy',
-        '_chestBusy', '_laserBusy', 'memCards', 'memMatched', 'memPeeking',
+        '_chestBusy', '_laserBusy', '_alchemyBusy', '_judgeBusy', '_bubbleBusy',
+        'memCards', 'memMatched', 'memPeeking',
         '_peekTimerSet', '_memFlippedIds', '_memLock',
       ].forEach((k) => { delete cleanCopy[k]; });
       this.state.mistakes[q.id] = cleanCopy;
@@ -10578,15 +12722,25 @@ class ChineseAdventureApp {
       }
     }
 
+    const autoMs = isRight ? 1350 : 2200;
+    s._autoAdvanceMs = autoMs;
     this.saveState();
     this.render();
     this.scrollFeedbackIntoView();
+
+    // Automatically advance to the next stage's animated ready buffer!
+    this._autoAdvanceTimer = setTimeout(() => {
+      this._autoAdvanceTimer = null;
+      if (this.view === 'play' && this.session === s && s.answered) {
+        this.nextQuestion();
+      }
+    }, autoMs);
   }
 
   nextQuestion() {
+    this.clearAutoTimers();
     const s = this.session;
     if (!s) return;
-    this.sound.playTap();
     this.sound.stopSpeak();
     const layer = document.getElementById('dopamine-fx-layer');
     if (layer) layer.innerHTML = '';
@@ -10597,19 +12751,53 @@ class ChineseAdventureApp {
       s.isCorrect = false;
       s.pickedValue = null;
       s.justOpenedChest = 0;
+      s.stageBuffer = true;
+      s.finaleBuffer = false;
+      s.bufferDurationMs = 1280;
+
+      const nextQ = s.questions[s.index];
+      const nextMeta = HERO_STAGE_META[(nextQ && nextQ._arcadeMode) || 'claw'] || HERO_STAGE_META.claw;
+      this.sound.playStageReady();
+      this.fx.confettiBurst(window.innerWidth * 0.5, window.innerHeight * 0.44, 24);
+      if (this.state.autoRead) {
+        this.sound.speak(`第 ${s.index + 1} 關，${nextMeta.readyTitle}`);
+      }
+
       this.render();
       const deck = document.getElementById('command-deck');
       if (deck && deck.getBoundingClientRect().top < 0) {
         deck.scrollIntoView({ behavior: 'auto', block: 'start' });
       }
-      this.autoSpeakCurrent();
+      this.scheduleBufferStart(1280);
     } else {
-      this.finishSession();
+      // Celebratory Finale Chest-Opening Buffer before Victory screen!
+      s.stageBuffer = false;
+      s.finaleBuffer = true;
+      s.bufferDurationMs = 1050;
+      this.sound.playChest();
+      this.fx.confettiBurst(window.innerWidth * 0.5, window.innerHeight * 0.42, 46);
+      if (this.state.autoRead) {
+        this.sound.speak('太強了！全部過關，打開大寶箱！');
+      }
+      this.render();
+      const deck = document.getElementById('command-deck');
+      if (deck && deck.getBoundingClientRect().top < 0) {
+        deck.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
+      this._bufferReadyTimer = setTimeout(() => {
+        this._bufferReadyTimer = null;
+        if (this.view === 'play' && this.session === s && s.finaleBuffer) {
+          this.finishSession();
+        }
+      }, 1050);
     }
   }
 
   finishSession() {
+    this.clearAutoTimers();
     const s = this.session;
+    if (!s) return;
+    s.finaleBuffer = false;
     const ratio = s.correctCount / Math.max(1, s.questions.length);
     const stars = ratio >= 0.88 ? 3 : ratio >= 0.6 ? 2 : 1;
     const prev = this.state.stars[s.id] || 0;
@@ -10642,6 +12830,7 @@ class ChineseAdventureApp {
   }
 
   openGacha() {
+    this.clearAutoTimers();
     this.sound.playPop();
     this.sound.stopSpeak();
     this.view = 'gacha';
@@ -10709,6 +12898,7 @@ class ChineseAdventureApp {
   }
 
   openReport() {
+    this.clearAutoTimers();
     this.sound.playTap();
     this.sound.stopSpeak();
     this.view = 'report';
@@ -10956,28 +13146,28 @@ class ChineseAdventureApp {
 
       ${isK2 ? `
         <div class="k2-step-ribbon" aria-label="中班每關9種遊樂場玩法">
-          <span class="k2-step-chip">🎯 射飛鏢</span>
-          <span class="k2-step-chip">🫧 戳泡泡</span>
-          <span class="k2-step-chip">🧪 拼音鍋</span>
-          <span class="k2-step-chip">🕹️ 夾娃娃</span>
-          <span class="k2-step-chip">🎣 釣小魚</span>
-          <span class="k2-step-chip">🦖 餵恐龍</span>
-          <span class="k2-step-chip">🃏 翻翻牌</span>
-          <span class="k2-step-chip">🔨 打地鼠</span>
-          <span class="k2-step-chip">🗝️ 開寶箱</span>
+          <span class="k2-step-chip">🏹 神箭射靶</span>
+          <span class="k2-step-chip">🫧 泡泡海豹</span>
+          <span class="k2-step-chip">🧪 魔法大釜</span>
+          <span class="k2-step-chip">🦾 巨爪夾娃</span>
+          <span class="k2-step-chip">🎣 小熊釣魚</span>
+          <span class="k2-step-chip">🦖 餵大恐龍</span>
+          <span class="k2-step-chip">🃏 魔術翻牌</span>
+          <span class="k2-step-chip">🔨 巨槌地鼠</span>
+          <span class="k2-step-chip">🗝️ 海盜寶箱</span>
         </div>
       ` : `
         <div class="k2-step-ribbon grade-arcade-ribbon" aria-label="每課9種不同闖關遊戲">
-          <span class="k2-step-chip">✨ 每課 9 種不同玩法：</span>
-          <span class="k2-step-chip">🎯 飛鏢</span>
-          <span class="k2-step-chip">🕹️ 夾娃娃</span>
-          <span class="k2-step-chip">🎣 釣魚</span>
-          <span class="k2-step-chip">🦖 餵恐龍</span>
-          <span class="k2-step-chip">🃏 翻翻牌</span>
-          <span class="k2-step-chip">🔨 打地鼠</span>
-          <span class="k2-step-chip">🛸 飛碟砲</span>
-          <span class="k2-step-chip">🚂 火車</span>
-          <span class="k2-step-chip">🗝️ 寶箱鎖</span>
+          <span class="k2-step-chip">✨ 每課 9 大主角玩法：</span>
+          <span class="k2-step-chip">🏹 神箭手</span>
+          <span class="k2-step-chip">🦾 巨型鋼爪</span>
+          <span class="k2-step-chip">🎣 小熊釣魚</span>
+          <span class="k2-step-chip">🦖 貪吃恐龍</span>
+          <span class="k2-step-chip">🃏 魔術兔翻牌</span>
+          <span class="k2-step-chip">🔨 巨槌地鼠</span>
+          <span class="k2-step-chip">🛸 飛碟雷射</span>
+          <span class="k2-step-chip">🚂 蒸汽火車</span>
+          <span class="k2-step-chip">🗝️ 海盜寶箱</span>
         </div>
       `}
 
@@ -11222,17 +13412,23 @@ class ChineseAdventureApp {
   renderPlay(deck) {
     const s = this.session;
     const q = s.questions[s.index];
-    const pct = Math.round(((s.index + (s.answered ? 1 : 0)) / s.questions.length) * 100);
+    const pct = Math.round(((s.index + (s.answered || s.finaleBuffer ? 1 : 0)) / s.questions.length) * 100);
     const chest3Done = Boolean(s.chestsClaimed[3]);
     const chest6Done = Boolean(s.chestsClaimed[6]);
     const trailHtml = s.questions.map((sq, idx) => {
-      const cls = idx < s.index || (idx === s.index && s.answered)
+      const isCleared = idx < s.index || (idx === s.index && (s.answered || s.finaleBuffer));
+      const cls = isCleared
         ? 'done'
         : idx === s.index
-          ? 'current'
+          ? (s.stageBuffer ? 'current ready-hop' : 'current')
           : 'upcoming';
-      return `<span class="trail-node ${cls}" title="第 ${idx + 1} 關：${escapeHtml(sq._arcadeBadge || '')}">${sq._arcadeIcon || '🌟'}</span>`;
+      return `<span class="trail-node ${cls}" title="第 ${idx + 1} 關：${escapeHtml(sq._arcadeBadge || '')}">${isCleared ? '✅' : (sq._arcadeIcon || '🌟')}</span>`;
     }).join('');
+
+    if (s.finaleBuffer || s.stageBuffer) {
+      this.renderStageBufferView(deck, s, q, pct, chest3Done, chest6Done, trailHtml);
+      return;
+    }
 
     deck.innerHTML = `
       <div class="play-top-row">
@@ -11313,22 +13509,119 @@ class ChineseAdventureApp {
       const fb = document.getElementById('feedback-zone');
       const isLast = s.index + 1 >= s.questions.length;
       const bodyExplain = cleanExplain(q.explain);
+      const autoMs = s._autoAdvanceMs || (s.isCorrect ? 1350 : 2200);
       const chestBanner = s.justOpenedChest
         ? `<div><span class="chest-bonus-pill">🎁 第 ${s.justOpenedChest} 關里程碑寶箱打開啦！額外獲得 +15 🪙 金幣 ＆ +1 💎 寶石！</span></div>`
         : '';
       fb.innerHTML = `
-        <div class="feedback-sheet ${s.isCorrect ? 'good' : 'retry'}">
+        <div class="feedback-sheet ${s.isCorrect ? 'good' : 'retry'}" style="--auto-ms:${autoMs}ms;">
           <div class="feedback-text">
             ${chestBanner}
-            ${s.isCorrect ? '🎉 <strong>答對囉！</strong> ' : '💡 <strong>學起來就會囉！</strong> '}
+            ${s.isCorrect ? '🎉 <strong>太棒了！過關！</strong> ' : '💡 <strong>記起來就會囉！</strong> '}
             ${this.fmtText(bodyExplain)}
+            <div class="auto-advance-track">
+              <div class="auto-advance-fill"></div>
+            </div>
+            <div class="auto-advance-label">🚀 ${isLast ? '正在自動開啟過關大寶箱…' : '正在自動前往下一關預備畫面…'}</div>
           </div>
-          <button id="btn-next-q" class="toy-btn ${s.isCorrect ? 'mint' : 'orange'}" style="font-size:1.08rem;padding:11px 22px;">
-            ${isLast ? '🏆 看過關成績與領獎！' : '➡️ 下一關！'}
+          <button id="btn-next-q" class="toy-btn ${s.isCorrect ? 'mint' : 'orange'}" style="font-size:1.02rem;padding:10px 18px;">
+            ${isLast ? '🏆 立即領獎' : '⏭️ 立即下一關'}
           </button>
         </div>
       `;
       document.getElementById('btn-next-q').onclick = () => this.nextQuestion();
+    }
+  }
+
+  renderStageBufferView(deck, s, q, pct, chest3Done, chest6Done, trailHtml) {
+    if (s.finaleBuffer) {
+      deck.innerHTML = `
+        <div class="play-top-row">
+          <button id="btn-play-exit" class="toy-btn sm">⬅️ 地圖</button>
+          <div class="progress-track-wrap">
+            <div class="progress-fill-bar" style="width:100%"></div>
+            <span class="milestone-chest" style="left:36%">🎊</span>
+            <span class="milestone-chest" style="left:72%">🎊</span>
+            <span class="milestone-chest" style="left:98%">🏆</span>
+          </div>
+          <div style="font-weight:900;font-size:0.92rem;color:#334155;">全數破關！</div>
+        </div>
+        <div class="arcade-stage-trail">${trailHtml}</div>
+        <div class="stage-ready-card finale-mode" id="stage-ready-card" style="--buf-ms:${s.bufferDurationMs || 1050}ms; --ready-accent:#d97706;">
+          <div class="stage-ready-top-pill">🎊 恭喜完成全部 ${s.questions.length} 關！</div>
+          <div class="stage-ready-hero-showcase anim-chest_lock">
+            ${getHeroRigByMode('chest_lock', 'unlocked')}
+          </div>
+          <h2 class="stage-ready-title">${this.fmtText('黃金大寶箱打開啦！')}</h2>
+          <p class="stage-ready-sub">${this.fmtText('準備領取過關星星、金幣與寶石獎勵！')}</p>
+          <div class="buffer-rocket-track">
+            <div class="buffer-rocket-fill"></div>
+          </div>
+          <button type="button" id="btn-buffer-go" class="toy-btn sun stage-ready-go-btn">🏆 馬上領獎！</button>
+        </div>
+      `;
+      document.getElementById('btn-play-exit').onclick = () => this.goHub();
+      const card = document.getElementById('stage-ready-card');
+      const goBtn = document.getElementById('btn-buffer-go');
+      if (goBtn) goBtn.onclick = (e) => { e.stopPropagation(); this.finishSession(); };
+      if (card) card.onclick = () => this.finishSession();
+      return;
+    }
+
+    const mode = q._arcadeMode || 'claw';
+    const meta = HERO_STAGE_META[mode] || HERO_STAGE_META.claw;
+    const stepNo = s.index + 1;
+    const total = s.questions.length;
+
+    deck.innerHTML = `
+      <div class="play-top-row">
+        <button id="btn-play-exit" class="toy-btn sm">⬅️ 地圖</button>
+        <div class="progress-track-wrap">
+          <div class="progress-fill-bar" style="width:${pct}%"></div>
+          <span class="milestone-chest" style="left:36%">${chest3Done ? '🎊' : '🎁'}</span>
+          <span class="milestone-chest" style="left:72%">${chest6Done ? '🎊' : '🎁'}</span>
+          <span class="milestone-chest" style="left:98%">🏆</span>
+        </div>
+        <div style="font-weight:900;font-size:0.92rem;color:#334155;">第 ${stepNo} / ${total} 關</div>
+      </div>
+      <div class="arcade-stage-trail" aria-label="本課闖關玩法進度">${trailHtml}</div>
+
+      <div class="stage-ready-card" id="stage-ready-card" style="background:${meta.bgGrad}; --ready-accent:${meta.accent}; --buf-ms:${s.bufferDurationMs || 1280}ms;">
+        <div class="stage-ready-top-row">
+          <span class="stage-ready-step-pill">🎬 第 ${stepNo} / ${total} 關・預備備！</span>
+          <span class="stage-ready-mode-tag">${renderVerticalZhuyin(meta.badge, 'inline')}</span>
+        </div>
+
+        <div class="stage-ready-hero-showcase anim-${mode}">
+          <div class="stage-ready-aura"></div>
+          ${getHeroRigByMode(mode)}
+        </div>
+
+        <h2 class="stage-ready-title">${this.fmtText(meta.readyTitle)}</h2>
+        <p class="stage-ready-sub">${this.fmtText(meta.readyAction)}</p>
+
+        <div class="buffer-rocket-wrap">
+          <div class="buffer-rocket-track">
+            <div class="buffer-rocket-fill"></div>
+          </div>
+          <span class="buffer-countdown-tag">🚀 READY… GO！</span>
+        </div>
+
+        <button type="button" id="btn-buffer-go" class="toy-btn coral stage-ready-go-btn">▶️ 馬上開始！</button>
+      </div>
+    `;
+
+    document.getElementById('btn-play-exit').onclick = () => this.goHub();
+    const card = document.getElementById('stage-ready-card');
+    const goBtn = document.getElementById('btn-buffer-go');
+    if (goBtn) {
+      goBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.enterActiveStage();
+      };
+    }
+    if (card) {
+      card.onclick = () => this.enterActiveStage();
     }
   }
 
@@ -11344,7 +13637,7 @@ class ChineseAdventureApp {
       return `
         <div class="alchemy-arena k2-spell-arena" style="margin-bottom:10px;">
           <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
-            <span class="k2-clue-pic">${escapeHtml(q.pic || '🕹️')}</span>
+            <span class="k2-clue-pic">${escapeHtml(q.pic || '🦾')}</span>
             <span class="k2-speak-tag">🔊 點聽拼音</span>
           </button>
           <div class="alchemy-formula">
@@ -11362,7 +13655,7 @@ class ChineseAdventureApp {
     }
     if (isK2 && q.pic) {
       return `
-        <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點圖再聽一次！">
+        <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點圖再聽一次！">
           <span class="k2-clue-pic">${escapeHtml(q.pic)}</span>
           ${q.charFocus ? `<span class="k2-clue-hanzi">${escapeHtml(q.charFocus)}</span>` : ''}
           ${q.hintZhuyin ? `<span class="k2-mole-zy-badge">${renderVerticalZhuyin(q.hintZhuyin, 'bubble')}</span>` : ''}
@@ -11436,7 +13729,7 @@ class ChineseAdventureApp {
     }
   }
 
-  populateArcadeOption(btn, opt, q, leadEmoji = '') {
+  populateArcadeOption(btn, opt, q, leadGraphicHtml = '') {
     const isPureZhuyin = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
     const isK2 = Boolean(q.id && q.id.startsWith('k2_'));
     let bodyHtml = '';
@@ -11457,7 +13750,7 @@ class ChineseAdventureApp {
     }
 
     btn.innerHTML = `
-      ${leadEmoji ? `<span class="arcade-opt-emblem">${leadEmoji}</span>` : ''}
+      ${leadGraphicHtml ? `<span class="arcade-opt-prop">${leadGraphicHtml}</span>` : ''}
       <span class="arcade-opt-content">${bodyHtml}</span>
       ${allowSpeakChip ? `<span role="button" tabindex="0" class="opt-speak-chip" title="聽發音">🔊</span>` : ''}
     `;
@@ -11473,17 +13766,21 @@ class ChineseAdventureApp {
   }
 
   renderClawMode(arena, q, s) {
+    const pickedIdx = s.answered ? Math.max(0, q.shuffledOptions.indexOf(s.pickedValue)) : 0;
+    const initClawX = typeof q._lastClawPct === 'number' ? q._lastClawPct.toFixed(1) : '50.0';
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="claw-machine-stage" id="claw-stage">
         <div class="claw-top-rail">
-          <span class="claw-rail-title">🕹️ 點扭蛋球下爪夾起來！</span>
+          <span class="claw-rail-title">🦾 移動巨型鋼爪，下爪夾起正確扭蛋球！</span>
         </div>
         <div class="claw-gantry-zone">
-          <div class="claw-carriage" id="claw-carriage" style="--claw-x: 50%;">
-            <div class="claw-motor">🕹️</div>
-            <div class="claw-cable"></div>
-            <div class="claw-prongs">🦾</div>
+          <div class="claw-carriage ${s.answered ? 'is-clamped' : ''}" id="claw-carriage" style="--claw-x: ${initClawX}%;">
+            <div class="claw-cable-rod" id="claw-cable-rod"></div>
+            <div class="claw-rig-wrap" id="claw-rig-wrap">${getHeroRigByMode('claw')}</div>
+            <div class="claw-held-capsule ${s.answered ? 'show' : ''}" id="claw-held-capsule">
+              ${s.answered ? getGachaCapsuleSvg(pickedIdx) : ''}
+            </div>
           </div>
         </div>
         <div class="claw-capsules-grid" id="claw-grid"></div>
@@ -11493,8 +13790,8 @@ class ChineseAdventureApp {
 
     const stage = document.getElementById('claw-stage');
     const carriage = document.getElementById('claw-carriage');
+    const heldCap = document.getElementById('claw-held-capsule');
     const grid = document.getElementById('claw-grid');
-    const capIcons = ['🔴', '🔵', '🟡', '🟢'];
 
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
@@ -11505,7 +13802,7 @@ class ChineseAdventureApp {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      this.populateArcadeOption(btn, opt, q, capIcons[idx % 4]);
+      this.populateArcadeOption(btn, opt, q, getGachaCapsuleSvg(idx));
 
       btn.onpointerenter = (e) => {
         if (s.answered || q._clawBusy || (e && e.pointerType && e.pointerType !== 'mouse')) return;
@@ -11525,15 +13822,27 @@ class ChineseAdventureApp {
         if (stage && carriage) {
           const sr = stage.getBoundingClientRect();
           const pctX = Math.max(18, Math.min(82, ((br.left + br.width / 2 - sr.left) / Math.max(1, sr.width)) * 100));
+          q._lastClawPct = pctX;
           carriage.style.setProperty('--claw-x', `${pctX.toFixed(1)}%`);
-          carriage.classList.add('grabbing');
+          carriage.classList.remove('is-clamped');
+          carriage.classList.add('is-open', 'is-dropping');
         }
-        btn.classList.add('grabbed-lift');
-        this.fx.multiRipple(br.left + br.width / 2, br.top + br.height / 2, ['#fde047', '#38bdf8', '#fb7185']);
+        setTimeout(() => {
+          if (carriage) {
+            carriage.classList.remove('is-open', 'is-dropping');
+            carriage.classList.add('is-clamped');
+          }
+          if (heldCap) {
+            heldCap.innerHTML = getGachaCapsuleSvg(idx);
+            heldCap.classList.add('show');
+          }
+          btn.classList.add('grabbed-lift');
+          this.fx.multiRipple(br.left + br.width / 2, br.top + br.height / 2, ['#fde047', '#38bdf8', '#fb7185']);
+        }, 155);
         setTimeout(() => {
           q._clawBusy = false;
           this.handleAnswer(opt === q.answer, opt);
-        }, 340);
+        }, 365);
       };
       grid.appendChild(btn);
     });
@@ -11543,17 +13852,19 @@ class ChineseAdventureApp {
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="fish-pond-stage">
-        <div class="fish-dock-bar" id="fish-dock">
-          <span>🎣 點小魚甩竿釣上岸！</span>
+        <div class="fish-hero-waterline">
+          <div class="fish-hero-rig" id="fish-hero-rig">${getHeroRigByMode('fish')}</div>
+          <div class="fish-dock-bar">🎣 點池塘裡的大魚，甩竿拉上船！</div>
         </div>
         <div class="fish-pond-grid" id="fish-grid"></div>
       </div>
     `;
     this.bindArcadeContextBanner(q);
 
-    const dock = document.getElementById('fish-dock');
+    const heroRig = document.getElementById('fish-hero-rig');
+    const rodAnchor = document.getElementById('fish-rod-tip-anchor');
     const grid = document.getElementById('fish-grid');
-    const fishIcons = ['🐠', '🐡', '🐟', '🐬'];
+    const fishColors = ['#fb923c', '#38bdf8', '#f472b6', '#4ade80'];
 
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
@@ -11564,39 +13875,42 @@ class ChineseAdventureApp {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      const fEmoji = fishIcons[idx % 4];
-      this.populateArcadeOption(btn, opt, q, fEmoji);
+      this.populateArcadeOption(btn, opt, q, getSwimmingFishSvg(idx));
 
       btn.onclick = () => {
         if (s.answered || q._fishBusy) return;
         q._fishBusy = true;
         btn.classList.add('hooked');
+        if (heroRig) heroRig.classList.add('rod-casting');
         this.sound.playFishSplash();
         const br = btn.getBoundingClientRect();
-        const dr = dock ? dock.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
-        const fromX = br.left + br.width / 2;
-        const fromY = br.top + br.height / 2;
-        const toX = dr.left + dr.width / 2;
-        const toY = dr.top + dr.height / 2;
-        this.fx.multiRipple(fromX, fromY, ['#38bdf8', '#bae6fd', '#ffffff']);
-        this.fx.flyItem(fromX, fromY, toX, toY, fEmoji, '#38bdf8', () => {
+        const anchorEl = rodAnchor || heroRig;
+        const rr = anchorEl ? anchorEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 110, width: 0, height: 0 };
+        const rodX = rr.left + rr.width / 2;
+        const rodY = rr.top + rr.height / 2;
+        const fishX = br.left + br.width / 2;
+        const fishY = br.top + br.height / 2;
+        this.fx.castFishingLine(rodX, rodY, fishX, fishY, fishColors[idx % fishColors.length], () => {
           q._fishBusy = false;
           this.handleAnswer(opt === q.answer, opt);
-        }, 72);
+        });
       };
       grid.appendChild(btn);
     });
   }
 
   renderFeedMode(arena, q, s) {
+    const moodState = s.answered ? (s.isCorrect ? 'happy' : 'dizzy') : 'hungry';
     const dinoMood = s.answered
       ? (s.isCorrect ? '😋 嗷嗚～超好吃！' : '😵 咦？味道怪怪的！')
-      : '😋 肚子餓～點正確點心餵我吃！';
+      : '😋 張開大嘴巴～點正確點心餵恐龍！';
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="dino-feeder-stage">
-        <div class="dino-pal-header ${s.answered && s.isCorrect ? 'happy-chomp' : ''}" id="dino-mouth-target">
-          <span class="dino-avatar">🦖</span>
+        <div class="dino-hero-spotlight">
+          <div class="dino-hero-rig ${s.answered && s.isCorrect ? 'dino-chomping' : ''}" id="dino-hero-rig">
+            ${getHeroRigByMode('feed', moodState)}
+          </div>
           <span class="dino-speech-pill">${escapeHtml(dinoMood)}</span>
         </div>
         <div class="dino-food-grid" id="dino-grid"></div>
@@ -11604,7 +13918,8 @@ class ChineseAdventureApp {
     `;
     this.bindArcadeContextBanner(q);
 
-    const mouth = document.getElementById('dino-mouth-target');
+    const dinoRig = document.getElementById('dino-hero-rig');
+    const cavity = dinoRig ? dinoRig.querySelector('.dino-mouth-cavity') : null;
     const grid = document.getElementById('dino-grid');
     const foodIcons = ['🍩', '🍔', '🍓', '🍕'];
 
@@ -11618,29 +13933,34 @@ class ChineseAdventureApp {
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
       const foodEmoji = foodIcons[idx % 4];
-      this.populateArcadeOption(btn, opt, q, foodEmoji);
+      this.populateArcadeOption(btn, opt, q, `<span class="food-platter-emoji">${foodEmoji}</span>`);
 
       btn.onclick = () => {
         if (s.answered || q._feedBusy) return;
         q._feedBusy = true;
         this.sound.playPop();
+        if (dinoRig) dinoRig.classList.add('mouth-wide-open');
         const isOk = opt === q.answer;
         const br = btn.getBoundingClientRect();
-        const mr = mouth ? mouth.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        const targetEl = cavity || dinoRig;
+        const mr = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 100, width: 0, height: 0 };
         this.fx.flyItem(
           br.left + br.width / 2,
           br.top + br.height / 2,
-          mr.left + mr.width * 0.35,
+          mr.left + mr.width / 2,
           mr.top + mr.height / 2,
           foodEmoji,
-          '#fb923c',
+          'rgba(251, 146, 60, 0.92)',
           () => {
             q._feedBusy = false;
-            if (mouth) mouth.classList.add('happy-chomp');
+            if (dinoRig) {
+              dinoRig.classList.remove('mouth-wide-open');
+              dinoRig.classList.add('dino-chomping');
+            }
             this.sound.playDinoChomp(isOk);
             this.handleAnswer(isOk, opt);
           },
-          84
+          88
         );
       };
       grid.appendChild(btn);
@@ -11648,14 +13968,15 @@ class ChineseAdventureApp {
   }
 
   renderChestLockMode(arena, q, s) {
-    const chestLabel = s.answered && s.isCorrect
-      ? '🎊 黃金寶箱打開啦！'
-      : '🔒 選出正確魔鑰匙，打開黃金寶箱！';
+    const isUnlocked = Boolean(s.answered && s.isCorrect);
+    const chestLabel = isUnlocked
+      ? '🎊 黃金海盜寶箱打開啦！'
+      : '🗝️ 點選寶石金鑰匙，射向大鎖頭開寶箱！';
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="chest-lock-stage">
-        <div class="golden-chest-box ${s.answered && s.isCorrect ? 'unlocked' : ''}" id="golden-chest-target">
-          <span class="golden-chest-icon">${s.answered && s.isCorrect ? '🎊' : '🧰'}</span>
+        <div class="chest-hero-spotlight">
+          <div class="chest-hero-rig" id="chest-hero-rig">${getHeroRigByMode('chest_lock', isUnlocked ? 'unlocked' : '')}</div>
           <span class="golden-chest-pill">${escapeHtml(chestLabel)}</span>
         </div>
         <div class="chest-keys-grid" id="chest-keys-grid"></div>
@@ -11663,7 +13984,8 @@ class ChineseAdventureApp {
     `;
     this.bindArcadeContextBanner(q);
 
-    const chest = document.getElementById('golden-chest-target');
+    const chestRig = document.getElementById('chest-hero-rig');
+    const padlock = chestRig ? chestRig.querySelector('.chest-padlock-group') : null;
     const grid = document.getElementById('chest-keys-grid');
 
     q.shuffledOptions.forEach((opt, idx) => {
@@ -11675,7 +13997,7 @@ class ChineseAdventureApp {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      this.populateArcadeOption(btn, opt, q, '🗝️');
+      this.populateArcadeOption(btn, opt, q, getJeweledKeySvg(idx));
 
       btn.onclick = () => {
         if (s.answered || q._chestBusy) return;
@@ -11683,21 +14005,23 @@ class ChineseAdventureApp {
         this.sound.playTap();
         const isOk = opt === q.answer;
         const br = btn.getBoundingClientRect();
-        const cr = chest ? chest.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
-        this.fx.flyItem(
+        const targetEl = padlock || chestRig;
+        const cr = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 100, width: 0, height: 0 };
+        this.fx.flyGoldenKey(
           br.left + br.width / 2,
           br.top + br.height / 2,
           cr.left + cr.width / 2,
           cr.top + cr.height / 2,
-          '🗝️',
-          '#facc15',
           () => {
             q._chestBusy = false;
-            if (isOk) this.sound.playKeyUnlock();
-            this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#fde047' : '#fb7185', 95);
+            if (isOk) {
+              this.sound.playKeyUnlock();
+              const svg = chestRig ? chestRig.querySelector('.chest-hero-svg') : null;
+              if (svg) svg.classList.add('is-unlocked');
+            }
+            this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#fde047' : '#fb7185', 105);
             this.handleAnswer(isOk, opt);
-          },
-          78
+          }
         );
       };
       grid.appendChild(btn);
@@ -11708,14 +14032,17 @@ class ChineseAdventureApp {
     const totalPairs = (q.pairs && q.pairs.length) || 3;
     const matchedNow = s.answered ? totalPairs : (q.memMatched || 0);
     const statusText = s.answered
-      ? `🎉 ${totalPairs} 組魔法閃卡全部配對成功！`
+      ? `🎉 ${totalPairs} 組魔術閃卡全部配對成功！`
       : q.memPeeking
         ? `👀 先偷看記位置！（直接點卡片也能馬上翻牌喔）`
         : `🃏 點兩張配對！（已完成 ${matchedNow} / ${totalPairs} 組）`;
 
     arena.innerHTML = `
       <div class="memory-arena-stage">
-        <div class="memory-status-bar">${escapeHtml(statusText)}</div>
+        <div class="memory-hero-header">
+          <div class="memory-hero-rig" id="memory-hero-rig">${getHeroRigByMode('memory')}</div>
+          <div class="memory-status-bar">${escapeHtml(statusText)}</div>
+        </div>
         <div class="memory-grid-3x2" id="memory-grid"></div>
       </div>
     `;
@@ -11730,6 +14057,8 @@ class ChineseAdventureApp {
       }, 900);
     }
 
+    const memRig = document.getElementById('memory-hero-rig');
+    const wandTip = document.getElementById('bunny-wand-tip');
     const grid = document.getElementById('memory-grid');
     (q.memCards || []).forEach((card, idx) => {
       const isFaceUp = Boolean(s.answered || q.memPeeking || card.matched || card.flipped);
@@ -11755,7 +14084,7 @@ class ChineseAdventureApp {
       btn.innerHTML = `
         <span class="mem-card-inner">
           <span class="mem-face mem-face-back">
-            <span class="mem-back-star">🃏</span>
+            <span class="mem-back-star">🎩</span>
             <span class="mem-back-sub">✨</span>
           </span>
           <span class="mem-face mem-face-front">${frontHtml}</span>
@@ -11792,6 +14121,11 @@ class ChineseAdventureApp {
             q.memMatched = (q.memMatched || 0) + 1;
             this.sound.playPairMatch();
             const r = btn.getBoundingClientRect();
+            const wr = (wandTip || memRig) ? (wandTip || memRig).getBoundingClientRect() : null;
+            if (memRig) memRig.classList.add('wand-casting');
+            if (wr) {
+              this.fx.flyItem(wr.left + wr.width / 2, wr.top + wr.height / 2, r.left + r.width / 2, r.top + r.height / 2, '✨', 'rgba(250, 204, 21, 0.9)', null, 36);
+            }
             this.fx.confettiBurst(r.left + r.width / 2, r.top + r.height / 2, 26);
             if (q.memMatched >= totalPairs) {
               this.handleAnswer(true, 'paired_all');
@@ -11822,12 +14156,16 @@ class ChineseAdventureApp {
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="mole-meadow-arena">
-        <div class="mole-arena-title">🔨 拿木槌敲出正確答案地鼠！</div>
+        <div class="mole-hero-header">
+          <div class="mallet-hero-rig" id="mallet-hero-rig">${getHeroRigByMode('mole')}</div>
+          <div class="mole-arena-title">🔨 點選地鼠，黃金星星大氣槌重重敲下去！</div>
+        </div>
         <div class="mole-holes-grid" id="mole-holes-grid"></div>
       </div>
     `;
     this.bindArcadeContextBanner(q);
 
+    const malletRig = document.getElementById('mallet-hero-rig');
     const holes = document.getElementById('mole-holes-grid');
     const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
     q.shuffledOptions.forEach((opt, idx) => {
@@ -11842,7 +14180,6 @@ class ChineseAdventureApp {
       const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
       const signInner = isPureZy ? renderVerticalZhuyin(opt, 'inline') : this.fmtText(opt, q);
       hole.innerHTML = `
-        <span class="mole-hammer">🔨</span>
         <span class="mole-critter">
           <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
           <span class="mole-sign mole-quiz-sign">${signInner}</span>
@@ -11853,37 +14190,60 @@ class ChineseAdventureApp {
         if (s.answered || q._moleWhacking) return;
         q._moleWhacking = true;
         hole.classList.add('whacking');
+        if (malletRig) malletRig.classList.add('mallet-swing-hide');
         const isOk = opt === q.answer;
         this.sound.playHammerBonk(isOk);
         const r = hole.getBoundingClientRect();
-        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
-        this.fx.screenShake(7);
-        setTimeout(() => {
+        this.fx.screenShake(8);
+        this.fx.swingGiantMallet(r.left + r.width / 2, r.top + r.height * 0.42, isOk, () => {
           q._moleWhacking = false;
           this.handleAnswer(isOk, opt);
-        }, 220);
+        });
       };
       holes.appendChild(hole);
     });
   }
 
   renderDartMode(arena, q, s) {
+    const initDeg = typeof q._lastBowDeg === 'number' ? q._lastBowDeg.toFixed(1) : '0';
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
-      <div class="dart-arena-box">
-        <div class="dart-arena-hint">🎯 射中正確答案！</div>
+      <div class="dart-arena-box archery-range-stage" id="archery-stage">
+        <div class="dart-arena-hint">🏹 瞄準靶心，拉滿黃金神弓射出羽箭！</div>
         <div class="dart-targets-grid" id="dart-wrap"></div>
-        <div class="dart-launcher-bar" id="dart-launcher">🎯 點靶心發射！</div>
+        <div class="archery-bow-dock">
+          <div class="hero-bow-rig" id="hero-bow-rig" style="--bow-angle: ${initDeg}deg;">
+            ${getHeroRigByMode('dart')}
+          </div>
+          <div class="archery-bow-caption">🏹 點標靶拉弓發射黃金羽箭！</div>
+        </div>
       </div>
     `;
     this.bindArcadeContextBanner(q);
+
     const wrap = document.getElementById('dart-wrap');
-    const launcher = document.getElementById('dart-launcher');
+    const bowRig = document.getElementById('hero-bow-rig');
+
+    const aimBowAt = (btnEl) => {
+      if (!bowRig || !btnEl) return { bowX: window.innerWidth / 2, bowY: window.innerHeight - 90, toX: 0, toY: 0 };
+      const br = bowRig.getBoundingClientRect();
+      const tr = btnEl.getBoundingClientRect();
+      const bowX = br.left + br.width / 2;
+      const bowY = br.top + br.height * 0.45;
+      const toX = tr.left + tr.width / 2;
+      const toY = tr.top + tr.height / 2;
+      const deg = Math.max(-42, Math.min(42, (Math.atan2(toX - bowX, Math.max(40, bowY - toY)) * 180) / Math.PI));
+      q._lastBowDeg = deg;
+      bowRig.style.setProperty('--bow-angle', `${deg.toFixed(1)}deg`);
+      return { bowX, bowY, toX, toY };
+    };
+
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = `dart-target-btn d-${idx}`;
       btn.dataset.optIdx = idx;
+      const isHitTarget = Boolean(s.answered && opt === s.pickedValue);
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
@@ -11896,21 +14256,31 @@ class ChineseAdventureApp {
             <span class="dart-ring-core">${coreHtml}</span>
           </span>
         </span>
+        ${isHitTarget ? `<span class="dart-stuck-arrow" aria-hidden="true">🏹</span>` : ''}
       `;
+
+      btn.onpointerenter = (e) => {
+        if (s.answered || q._dartFlying || (e && e.pointerType && e.pointerType !== 'mouse')) return;
+        aimBowAt(btn);
+      };
+
       btn.onclick = () => {
         if (s.answered || q._dartFlying) return;
         q._dartFlying = true;
-        this.sound.playDartThrow();
-        const r = btn.getBoundingClientRect();
-        const lr = launcher ? launcher.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight - 60, width: 0, height: 0 };
-        const fromX = lr.left + lr.width / 2;
-        const fromY = lr.top + lr.height / 2;
-        const toX = r.left + r.width / 2;
-        const toY = r.top + r.height / 2;
-        this.fx.flyDart(fromX, fromY, toX, toY, () => {
-          q._dartFlying = false;
-          this.handleAnswer(opt === q.answer, opt);
-        });
+        const coords = aimBowAt(btn);
+        if (bowRig) bowRig.classList.add('bow-drawing');
+        this.sound.playBowTwang();
+        setTimeout(() => {
+          if (bowRig) {
+            bowRig.classList.remove('bow-drawing');
+            bowRig.classList.add('bow-released');
+          }
+          this.sound.playDartThrow();
+          this.fx.shootArrow(coords.bowX, coords.bowY, coords.toX, coords.toY, () => {
+            q._dartFlying = false;
+            this.handleAnswer(opt === q.answer, opt);
+          });
+        }, 85);
       };
       wrap.appendChild(btn);
     });
@@ -11919,9 +14289,18 @@ class ChineseAdventureApp {
   renderBubbleMode(arena, q, s) {
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
-      <div class="bubbles-stage" id="bubbles-wrap"></div>
+      <div class="bubble-hero-stage">
+        <div class="bubble-hero-header">
+          <div class="bubble-hero-rig" id="bubble-hero-rig">${getHeroRigByMode('bubble_pop')}</div>
+          <div class="bubble-hero-caption">🫧 點選七彩大泡泡，發射星光魔法針戳破它！</div>
+        </div>
+        <div class="bubbles-stage" id="bubbles-wrap"></div>
+      </div>
     `;
     this.bindArcadeContextBanner(q);
+
+    const sealRig = document.getElementById('bubble-hero-rig');
+    const wandGroup = sealRig ? sealRig.querySelector('.bubble-wand-group') : null;
     const wrap = document.getElementById('bubbles-wrap');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
@@ -11935,10 +14314,27 @@ class ChineseAdventureApp {
       const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
       btn.innerHTML = isPureZy ? renderVerticalZhuyin(opt, 'bubble') : this.fmtText(opt, q);
       btn.onclick = () => {
-        if (s.answered) return;
+        if (s.answered || q._bubbleBusy) return;
+        q._bubbleBusy = true;
+        this.sound.playPop();
         const r = btn.getBoundingClientRect();
-        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 90);
-        this.handleAnswer(opt === q.answer, opt);
+        const originEl = wandGroup || sealRig;
+        const wr = originEl ? originEl.getBoundingClientRect() : { left: r.left, top: r.top - 80, width: 0, height: 0 };
+        this.fx.flyItem(
+          wr.left + wr.width / 2,
+          wr.top + wr.height / 2,
+          r.left + r.width / 2,
+          r.top + r.height / 2,
+          '✨',
+          'rgba(56, 189, 248, 0.9)',
+          () => {
+            q._bubbleBusy = false;
+            this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 100);
+            this.fx.emojiBurst(r.left + r.width / 2, r.top + r.height / 2, ['🫧', '💦', '✨']);
+            this.handleAnswer(opt === q.answer, opt);
+          },
+          36
+        );
       };
       wrap.appendChild(btn);
     });
@@ -11948,32 +14344,44 @@ class ChineseAdventureApp {
     const stepText = s.answered
       ? `✅ ${q.chars.map((c, i) => (i === q.wrongIndex ? `【${q.answer}】` : c)).join('')}`
       : !q.caughtBug
-        ? (useLaser ? '🛸 雷達掃描：點出寫錯的外星蟲字！' : '🐛 點出寫錯的字！')
-        : (useLaser ? '⚡ 發射飛碟雷射，射中正確國字水晶！' : '🔨 敲對的字！');
+        ? (useLaser ? '🛸 第一步：外星飛碟雷達掃描，點出寫錯的字！' : '🔨 第一步：找出句子裡哪個字寫錯了，點它抓出來！')
+        : (useLaser ? '⚡ 第二步：點選正確國字水晶，發射飛碟電漿雷射砲！' : '🔨 第二步：點選正確的國字地鼠，大氣槌敲下去！');
 
-    // Count real (non-punctuation) character ordinal of wrongIndex for accurate kid hints
     let realWrongOrd = 0;
     for (let i = 0; i <= q.wrongIndex; i++) {
       if (!PUNCT_RE.test(q.chars[i])) realWrongOrd++;
     }
 
     arena.innerHTML = `
-      <div class="typo-step-banner ${useLaser ? 'laser-theme' : ''}" id="typo-banner">${escapeHtml(stepText)}</div>
-      <div class="typo-sentence-grid" id="typo-chars"></div>
-      ${useLaser ? `
-        <div class="ufo-laser-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
-          <div class="ufo-ship-header" id="ufo-muzzle">🛸 點能量水晶發射雷射光束！</div>
-          <div class="ufo-crystals-grid" id="ufo-crystals-grid"></div>
+      <div class="typo-hero-stage ${useLaser ? 'is-ufo-stage' : 'is-mole-stage'}">
+        <div class="typo-hero-top">
+          ${useLaser
+            ? `<div class="ufo-hero-rig" id="ufo-hero-rig">${getHeroRigByMode('typo_laser')}</div>`
+            : `<div class="mallet-hero-rig" id="mallet-hero-rig">${getHeroRigByMode('mole')}</div>`}
+          <div class="typo-step-banner ${useLaser ? 'laser-theme' : ''}" id="typo-banner">${escapeHtml(stepText)}</div>
         </div>
-      ` : `
-        <div class="mole-meadow-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
-          <div class="mole-arena-title">🔨 敲對的字！</div>
-          <div class="mole-holes-grid" id="mole-holes-grid"></div>
-        </div>
-      `}
+
+        <div class="typo-sentence-grid" id="typo-chars"></div>
+
+        ${useLaser ? `
+          <div class="ufo-laser-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
+            <div class="ufo-ship-header">⚡ 點選下方能量水晶，發射超粗電漿雷射光束！</div>
+            <div class="ufo-crystals-grid" id="ufo-crystals-grid"></div>
+          </div>
+        ` : `
+          <div class="mole-meadow-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
+            <div class="mole-arena-title">🔨 點選正確國字地鼠，大氣槌重敲修好句子！</div>
+            <div class="mole-holes-grid" id="mole-holes-grid"></div>
+          </div>
+        `}
+      </div>
     `;
 
+    const ufoRig = document.getElementById('ufo-hero-rig');
+    const ufoCore = document.getElementById('ufo-cannon-core');
+    const malletRig = document.getElementById('mallet-hero-rig');
     const charsWrap = document.getElementById('typo-chars');
+
     q.chars.forEach((ch, idx) => {
       if (PUNCT_RE.test(ch)) {
         const span = document.createElement('span');
@@ -11995,17 +14403,34 @@ class ChineseAdventureApp {
         btn.textContent = ch;
       }
       btn.onclick = () => {
-        if (s.answered || q.caughtBug) return;
+        if (s.answered || q.caughtBug || q._typoStep1Busy) return;
         if (idx === q.wrongIndex) {
-          q.caughtBug = true;
-          if (useLaser) this.sound.playUfoLaser();
-          else this.sound.playMolePop();
           const r = btn.getBoundingClientRect();
-          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, useLaser ? '#38bdf8' : '#4ade80', 85);
-          if (this.state.autoRead) {
-            this.sound.speak(useLaser ? '鎖定錯字！請發射雷射選對的字！' : '抓到了！敲對的字！');
+          if (useLaser) {
+            q._typoStep1Busy = true;
+            this.sound.playUfoLaser();
+            if (ufoRig) ufoRig.classList.add('ufo-firing');
+            const cr = (ufoCore || ufoRig) ? (ufoCore || ufoRig).getBoundingClientRect() : { left: r.left, top: r.top - 90, width: 0, height: 0 };
+            this.fx.fireLaserBeam(
+              cr.left + cr.width / 2,
+              cr.top + cr.height / 2,
+              r.left + r.width / 2,
+              r.top + r.height / 2,
+              '#38bdf8',
+              () => {
+                q._typoStep1Busy = false;
+                q.caughtBug = true;
+                if (this.state.autoRead) this.sound.speak('鎖定錯字！請發射雷射選對的字！');
+                this.render();
+              }
+            );
+          } else {
+            q.caughtBug = true;
+            this.sound.playMolePop();
+            this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#4ade80', 90);
+            if (this.state.autoRead) this.sound.speak('抓到了！敲對的字！');
+            this.render();
           }
-          this.render();
         } else {
           q.wrongTaps = (q.wrongTaps || 0) + 1;
           this.sound.playTap();
@@ -12025,7 +14450,6 @@ class ChineseAdventureApp {
 
     if ((q.caughtBug || s.answered) && useLaser) {
       const grid = document.getElementById('ufo-crystals-grid');
-      const muzzle = document.getElementById('ufo-muzzle');
       q.shuffledOptions.forEach((opt, idx) => {
         const cry = document.createElement('button');
         cry.type = 'button';
@@ -12036,7 +14460,7 @@ class ChineseAdventureApp {
           else if (opt === s.pickedValue) cry.classList.add('wrong-pick');
         }
         cry.innerHTML = `
-          <span class="ufo-crystal-gem">🔮</span>
+          <span class="ufo-crystal-gem">💎</span>
           <span class="ufo-crystal-char">${escapeHtml(opt)}</span>
         `;
         cry.onclick = () => {
@@ -12044,21 +14468,19 @@ class ChineseAdventureApp {
           q._laserBusy = true;
           const isOk = opt === q.answer;
           this.sound.playUfoLaser();
+          if (ufoRig) ufoRig.classList.add('ufo-firing');
           const cr = cry.getBoundingClientRect();
-          const mr = muzzle ? muzzle.getBoundingClientRect() : { left: window.innerWidth / 2, top: cr.top - 70, width: 0, height: 0 };
-          this.fx.flyItem(
+          const mr = (ufoCore || ufoRig) ? (ufoCore || ufoRig).getBoundingClientRect() : { left: window.innerWidth / 2, top: cr.top - 100, width: 0, height: 0 };
+          this.fx.fireLaserBeam(
             mr.left + mr.width / 2,
             mr.top + mr.height / 2,
             cr.left + cr.width / 2,
             cr.top + cr.height / 2,
-            '⚡',
-            '#38bdf8',
+            isOk ? '#38bdf8' : '#fb7185',
             () => {
               q._laserBusy = false;
-              this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#38bdf8' : '#fb7185', 95);
               this.handleAnswer(isOk, opt);
-            },
-            24
+            }
           );
         };
         grid.appendChild(cry);
@@ -12076,7 +14498,6 @@ class ChineseAdventureApp {
           else if (opt === s.pickedValue) hole.classList.add('wrong-pick');
         }
         hole.innerHTML = `
-          <span class="mole-hammer">🔨</span>
           <span class="mole-critter">
             <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
             <span class="mole-sign">${escapeHtml(opt)}</span>
@@ -12087,15 +14508,15 @@ class ChineseAdventureApp {
           if (s.answered || q._moleWhacking) return;
           q._moleWhacking = true;
           hole.classList.add('whacking');
+          if (malletRig) malletRig.classList.add('mallet-swing-hide');
           const isOk = opt === q.answer;
           this.sound.playHammerBonk(isOk);
           const r = hole.getBoundingClientRect();
-          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
-          this.fx.screenShake(7);
-          setTimeout(() => {
+          this.fx.screenShake(8);
+          this.fx.swingGiantMallet(r.left + r.width / 2, r.top + r.height * 0.42, isOk, () => {
             q._moleWhacking = false;
             this.handleAnswer(isOk, opt);
-          }, 220);
+          });
         };
         holes.appendChild(hole);
       });
@@ -12127,29 +14548,52 @@ class ChineseAdventureApp {
       `;
 
     arena.innerHTML = `
-      <div class="alchemy-arena">
-        <div style="font-weight:800;color:#475569;font-size:0.96rem;">
-          💡 造詞提示：${this.fmtText(q.wordHint, q)} ${isVertical ? '（上下疊合）' : '（左右組合）'}
+      <div class="alchemy-arena alchemy-hero-arena">
+        <div class="cauldron-hero-rig" id="cauldron-hero-rig">${getHeroRigByMode('alchemy')}</div>
+        <div class="alchemy-workbench">
+          <div style="font-weight:900;color:#475569;font-size:0.96rem;">
+            🧪 造詞提示：${this.fmtText(q.wordHint, q)} ${isVertical ? '（上下疊合）' : '（左右組合）'}
+          </div>
+          ${formulaHtml}
         </div>
-        ${formulaHtml}
       </div>
       <div class="options-grid" id="alchemy-opts"></div>
     `;
+    const potRig = document.getElementById('cauldron-hero-rig');
+    const potMouth = document.getElementById('cauldron-mouth-target');
     const wrap = document.getElementById('alchemy-opts');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'option-card-btn';
+      btn.className = 'option-card-btn alchemy-potion-btn';
       btn.dataset.optIdx = idx;
       btn.style.fontSize = '1.48rem';
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      this.attachOptionContent(btn, opt, q);
+      this.populateArcadeOption(btn, opt, q, '<span class="potion-flask-icon">🧪</span>');
       btn.onclick = () => {
-        if (s.answered) return;
-        this.handleAnswer(opt === q.answer, opt);
+        if (s.answered || q._alchemyBusy) return;
+        q._alchemyBusy = true;
+        this.sound.playCauldronBubble();
+        const br = btn.getBoundingClientRect();
+        const targetEl = potMouth || potRig;
+        const pr = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        this.fx.flyItem(
+          br.left + br.width / 2,
+          br.top + br.height / 2,
+          pr.left + pr.width / 2,
+          pr.top + pr.height / 2,
+          '🧪',
+          'rgba(192, 132, 252, 0.92)',
+          () => {
+            q._alchemyBusy = false;
+            this.fx.shockwave(pr.left + pr.width / 2, pr.top + pr.height / 2, '#c084fc', 100);
+            this.handleAnswer(opt === q.answer, opt);
+          },
+          78
+        );
       };
       wrap.appendChild(btn);
     });
@@ -12158,21 +14602,22 @@ class ChineseAdventureApp {
   renderTrainMode(arena, q, s) {
     arena.innerHTML = `
       ${q.trainRetryMsg && !s.answered ? `<div class="train-retry-banner" id="train-retry-msg">${escapeHtml(q.trainRetryMsg)}</div>` : ''}
-      <div class="train-track-box" id="train-track">
-        <span class="train-engine">🚂</span>
+      <div class="train-track-box ${s.answered && s.isCorrect ? 'train-departed' : ''}" id="train-track">
+        <div class="train-hero-engine" id="train-hero-rig">${getHeroRigByMode('train')}</div>
+        <div class="train-cars-coupled" id="train-cars-coupled"></div>
       </div>
       <div class="train-pool" id="train-pool"></div>
     `;
     const track = document.getElementById('train-track');
+    const coupled = document.getElementById('train-cars-coupled');
     const pool = document.getElementById('train-pool');
 
     const activeList = s.answered ? q.answerOrder.map((text) => ({ text })) : q.hooked;
     if (activeList.length === 0) {
       const hint = document.createElement('span');
-      hint.style.color = '#64748b';
-      hint.style.fontWeight = '800';
-      hint.textContent = '👆 依序點選下面的車廂卡片，掛上彩虹火車頭！（掛錯點車廂可取下）';
-      track.appendChild(hint);
+      hint.className = 'train-empty-hint';
+      hint.textContent = '👆 依序點選下面的車廂卡片，掛上皇家蒸汽火車頭！（掛錯點車廂可取下）';
+      coupled.appendChild(hint);
     } else {
       activeList.forEach((car, hIdx) => {
         const b = document.createElement('button');
@@ -12189,7 +14634,7 @@ class ChineseAdventureApp {
             this.render();
           };
         }
-        track.appendChild(b);
+        coupled.appendChild(b);
       });
     }
 
@@ -12198,11 +14643,12 @@ class ChineseAdventureApp {
         if (car.used) return;
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'toy-btn primary';
+        btn.className = 'toy-btn primary train-pool-car-btn';
         btn.dataset.optIdx = idx;
         btn.style.fontSize = '1.15rem';
         btn.innerHTML = `🚃 ${this.fmtText(car.text, q)}`;
         btn.onclick = () => {
+          if (q._trainBusy) return;
           car.used = true;
           q.hooked.push(car);
           q.trainRetryMsg = '';
@@ -12210,10 +14656,16 @@ class ChineseAdventureApp {
           if (q.hooked.length === q.answerOrder.length) {
             const ok = q.hooked.map((c) => c.text).join('|') === q.answerOrder.join('|');
             if (ok) {
+              q._trainBusy = true;
               this.sound.playTrainHorn();
-              this.handleAnswer(true, q.hooked.map((c) => c.text).join(''));
+              this.render();
+              const trEl = document.getElementById('train-track');
+              if (trEl) trEl.classList.add('train-departing');
+              setTimeout(() => {
+                q._trainBusy = false;
+                this.handleAnswer(true, q.hooked.map((c) => c.text).join(''));
+              }, 260);
             } else if ((q.trainRetries || 0) < 1) {
-              // Give 1 friendly retry before breaking combo!
               q.trainRetries = (q.trainRetries || 0) + 1;
               q.hooked = [];
               q.poolCarriages.forEach((c) => { c.used = false; });
@@ -12238,18 +14690,26 @@ class ChineseAdventureApp {
 
   renderJudgeMode(arena, q, s) {
     arena.innerHTML = `
-      <div class="judge-statement-box">
-        ${this.fmtText(q.statement, q)}
-        <button id="btn-read-stmt" class="toy-btn sm sun" style="margin-left:8px;vertical-align:middle;" title="聽敘述">🔊</button>
-      </div>
-      <div class="judge-buttons-row">
-        <button id="judge-yes" data-opt-idx="0" class="toy-btn mint judge-big-btn">⭕ 對！正確</button>
-        <button id="judge-no" data-opt-idx="1" class="toy-btn coral judge-big-btn">❌ 錯！不對</button>
+      <div class="judge-thunder-stage">
+        <div class="judge-hero-header">
+          <div class="judge-hero-rig" id="judge-hero-rig">${getHeroRigByMode('judge')}</div>
+          <div class="judge-hero-caption">⚡ 高舉雷神審判錘，召喚正義閃電劈中答案！</div>
+        </div>
+        <div class="judge-statement-box">
+          ${this.fmtText(q.statement, q)}
+          <button id="btn-read-stmt" class="toy-btn sm sun" style="margin-left:8px;vertical-align:middle;" title="聽敘述">🔊</button>
+        </div>
+        <div class="judge-buttons-row">
+          <button id="judge-yes" data-opt-idx="0" class="toy-btn mint judge-big-btn">⭕ 對！正確</button>
+          <button id="judge-no" data-opt-idx="1" class="toy-btn coral judge-big-btn">❌ 錯！不對</button>
+        </div>
       </div>
     `;
     const stmtBtn = document.getElementById('btn-read-stmt');
     if (stmtBtn) stmtBtn.onclick = () => this.sound.speak(q.statement);
 
+    const judgeRig = document.getElementById('judge-hero-rig');
+    const boltOrigin = document.getElementById('judge-bolt-origin');
     const yesBtn = document.getElementById('judge-yes');
     const noBtn = document.getElementById('judge-no');
     if (s.answered) {
@@ -12261,25 +14721,59 @@ class ChineseAdventureApp {
         if (s.pickedValue === '⭕') yesBtn.classList.add('wrong-pick');
       }
     }
-    yesBtn.onclick = () => { if (!s.answered) this.handleAnswer(q.answer === '⭕', '⭕'); };
-    noBtn.onclick = () => { if (!s.answered) this.handleAnswer(q.answer === '❌', '❌'); };
+
+    const triggerJudgeBolt = (picked, btnEl) => {
+      if (s.answered || q._judgeBusy) return;
+      q._judgeBusy = true;
+      if (judgeRig) judgeRig.classList.add('hammer-slamming');
+      this.sound.playThunderStrike();
+      this.fx.screenShake(7);
+      const br = btnEl.getBoundingClientRect();
+      const orEl = boltOrigin || judgeRig;
+      const hr = orEl ? orEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+      this.fx.strikeLightning(
+        hr.left + hr.width / 2,
+        hr.top + hr.height / 2,
+        br.left + br.width / 2,
+        br.top + br.height / 2,
+        () => {
+          q._judgeBusy = false;
+          this.handleAnswer(q.answer === picked, picked);
+        }
+      );
+    };
+
+    yesBtn.onclick = () => triggerJudgeBolt('⭕', yesBtn);
+    noBtn.onclick = () => triggerJudgeBolt('❌', noBtn);
   }
 
   renderK2SoundMode(arena, q, s, useDart = true) {
+    const initDeg = typeof q._lastBowDeg === 'number' ? q._lastBowDeg.toFixed(1) : '0';
     arena.innerHTML = `
-      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點我再聽一次！">
+      <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我再聽一次！">
         <span class="k2-clue-pic">${escapeHtml(q.pic || '🌟')}</span>
         <span class="k2-clue-hanzi">${escapeHtml(q.charFocus || '')}</span>
         <span class="k2-speak-tag">🔊 點聽發音</span>
       </button>
       ${useDart ? `
-        <div class="dart-arena-box">
-          <div class="dart-arena-hint">🎯 聽聲音，射中對的注音！</div>
+        <div class="dart-arena-box archery-range-stage" id="archery-stage">
+          <div class="dart-arena-hint">🏹 聽聲音，拉滿黃金神弓射中對的注音！</div>
           <div class="dart-targets-grid" id="k2-sound-wrap"></div>
-          <div class="dart-launcher-bar" id="dart-launcher">🎯 點靶心發射！</div>
+          <div class="archery-bow-dock">
+            <div class="hero-bow-rig" id="hero-bow-rig" style="--bow-angle: ${initDeg}deg;">
+              ${getHeroRigByMode('dart')}
+            </div>
+            <div class="archery-bow-caption">🏹 點標靶拉弓發射黃金羽箭！</div>
+          </div>
         </div>
       ` : `
-        <div class="bubbles-stage" id="k2-sound-wrap"></div>
+        <div class="bubble-hero-stage">
+          <div class="bubble-hero-header">
+            <div class="bubble-hero-rig" id="bubble-hero-rig">${getHeroRigByMode('bubble_pop')}</div>
+            <div class="bubble-hero-caption">🫧 聽聲音，戳破對的七彩注音泡泡！</div>
+          </div>
+          <div class="bubbles-stage" id="k2-sound-wrap"></div>
+        </div>
       `}
     `;
 
@@ -12292,13 +14786,31 @@ class ChineseAdventureApp {
     }
 
     const wrap = document.getElementById('k2-sound-wrap');
-    const launcher = document.getElementById('dart-launcher');
+    const bowRig = document.getElementById('hero-bow-rig');
+    const sealRig = document.getElementById('bubble-hero-rig');
+    const wandGroup = sealRig ? sealRig.querySelector('.bubble-wand-group') : null;
+
+    const aimBowAt = (btnEl) => {
+      if (!bowRig || !btnEl) return { bowX: window.innerWidth / 2, bowY: window.innerHeight - 90, toX: 0, toY: 0 };
+      const br = bowRig.getBoundingClientRect();
+      const tr = btnEl.getBoundingClientRect();
+      const bowX = br.left + br.width / 2;
+      const bowY = br.top + br.height * 0.45;
+      const toX = tr.left + tr.width / 2;
+      const toY = tr.top + tr.height / 2;
+      const deg = Math.max(-42, Math.min(42, (Math.atan2(toX - bowX, Math.max(40, bowY - toY)) * 180) / Math.PI));
+      q._lastBowDeg = deg;
+      bowRig.style.setProperty('--bow-angle', `${deg.toFixed(1)}deg`);
+      return { bowX, bowY, toX, toY };
+    };
+
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.dataset.optIdx = idx;
       if (useDart) {
         btn.className = `dart-target-btn d-${idx}`;
+        const isHitTarget = Boolean(s.answered && opt === s.pickedValue);
         if (s.answered) {
           if (opt === q.answer) btn.classList.add('correct-pick');
           else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
@@ -12309,17 +14821,29 @@ class ChineseAdventureApp {
               <span class="dart-ring-core">${renderVerticalZhuyin(opt, 'dart')}</span>
             </span>
           </span>
+          ${isHitTarget ? `<span class="dart-stuck-arrow" aria-hidden="true">🏹</span>` : ''}
         `;
+        btn.onpointerenter = (e) => {
+          if (s.answered || q._dartFlying || (e && e.pointerType && e.pointerType !== 'mouse')) return;
+          aimBowAt(btn);
+        };
         btn.onclick = () => {
           if (s.answered || q._dartFlying) return;
           q._dartFlying = true;
-          this.sound.playDartThrow();
-          const r = btn.getBoundingClientRect();
-          const lr = launcher ? launcher.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight - 60, width: 0, height: 0 };
-          this.fx.flyDart(lr.left + lr.width / 2, lr.top + lr.height / 2, r.left + r.width / 2, r.top + r.height / 2, () => {
-            q._dartFlying = false;
-            this.handleAnswer(opt === q.answer, opt);
-          });
+          const coords = aimBowAt(btn);
+          if (bowRig) bowRig.classList.add('bow-drawing');
+          this.sound.playBowTwang();
+          setTimeout(() => {
+            if (bowRig) {
+              bowRig.classList.remove('bow-drawing');
+              bowRig.classList.add('bow-released');
+            }
+            this.sound.playDartThrow();
+            this.fx.shootArrow(coords.bowX, coords.bowY, coords.toX, coords.toY, () => {
+              q._dartFlying = false;
+              this.handleAnswer(opt === q.answer, opt);
+            });
+          }, 85);
         };
       } else {
         btn.className = 'bubble-opt-btn';
@@ -12329,10 +14853,27 @@ class ChineseAdventureApp {
         }
         btn.innerHTML = renderVerticalZhuyin(opt, 'bubble');
         btn.onclick = () => {
-          if (s.answered) return;
+          if (s.answered || q._bubbleBusy) return;
+          q._bubbleBusy = true;
+          this.sound.playPop();
           const r = btn.getBoundingClientRect();
-          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 90);
-          this.handleAnswer(opt === q.answer, opt);
+          const originEl = wandGroup || sealRig;
+          const wr = originEl ? originEl.getBoundingClientRect() : { left: r.left, top: r.top - 80, width: 0, height: 0 };
+          this.fx.flyItem(
+            wr.left + wr.width / 2,
+            wr.top + wr.height / 2,
+            r.left + r.width / 2,
+            r.top + r.height / 2,
+            '✨',
+            'rgba(56, 189, 248, 0.9)',
+            () => {
+              q._bubbleBusy = false;
+              this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 100);
+              this.fx.emojiBurst(r.left + r.width / 2, r.top + r.height / 2, ['🫧', '💦', '✨']);
+              this.handleAnswer(opt === q.answer, opt);
+            },
+            36
+          );
         };
       }
       wrap.appendChild(btn);
@@ -12348,20 +14889,23 @@ class ChineseAdventureApp {
     const toneHtml = q.toneLabel ? `<span class="k2-tone-pill">${escapeHtml(q.toneLabel)}</span>` : '';
 
     arena.innerHTML = `
-      <div class="alchemy-arena k2-spell-arena">
-        <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
-          <span class="k2-clue-pic">${escapeHtml(q.pic || '🧪')}</span>
-          <span class="k2-speak-tag">🔊 點聽拼音</span>
-        </button>
-        <div class="alchemy-formula">
-          ${slot1Html}
-          <div class="alchemy-plus">＋</div>
-          ${slot2Html}
-          ${toneHtml}
-          <div class="alchemy-plus">＝</div>
-          <button type="button" class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}" id="btn-k2-goal-hanzi" title="點我聽國字發音">
-            ${s.answered ? renderCharWithZhuyin(q.resultChar, q.fullZhuyin, 'k2ruby') : escapeHtml(q.resultChar)}
+      <div class="alchemy-arena k2-spell-arena alchemy-hero-arena">
+        <div class="cauldron-hero-rig" id="cauldron-hero-rig">${getHeroRigByMode('alchemy')}</div>
+        <div class="alchemy-workbench">
+          <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
+            <span class="k2-clue-pic">${escapeHtml(q.pic || '🧪')}</span>
+            <span class="k2-speak-tag">🔊 點聽拼音</span>
           </button>
+          <div class="alchemy-formula">
+            ${slot1Html}
+            <div class="alchemy-plus">＋</div>
+            ${slot2Html}
+            ${toneHtml}
+            <div class="alchemy-plus">＝</div>
+            <button type="button" class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}" id="btn-k2-goal-hanzi" title="點我聽國字發音">
+              ${s.answered ? renderCharWithZhuyin(q.resultChar, q.fullZhuyin, 'k2ruby') : escapeHtml(q.resultChar)}
+            </button>
+          </div>
         </div>
       </div>
       <div class="options-grid k2-spell-opts" id="k2-spell-opts"></div>
@@ -12369,17 +14913,20 @@ class ChineseAdventureApp {
 
     this.bindArcadeContextBanner(q);
 
+    const potRig = document.getElementById('cauldron-hero-rig');
+    const potMouth = document.getElementById('cauldron-mouth-target');
     const wrap = document.getElementById('k2-spell-opts');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'option-card-btn k2-zy-card-btn';
+      btn.className = 'option-card-btn k2-zy-card-btn alchemy-potion-btn';
       btn.dataset.optIdx = idx;
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
       btn.innerHTML = `
+        <span class="potion-flask-icon">🧪</span>
         <span class="k2-zy-opt-center">${renderVerticalZhuyin(opt, 'bubble')}</span>
         <span role="button" tabindex="0" class="opt-speak-chip" title="聽注音發音">🔊</span>
       `;
@@ -12392,8 +14939,26 @@ class ChineseAdventureApp {
         };
       }
       btn.onclick = () => {
-        if (s.answered) return;
-        this.handleAnswer(opt === q.answer, opt);
+        if (s.answered || q._alchemyBusy) return;
+        q._alchemyBusy = true;
+        this.sound.playCauldronBubble();
+        const br = btn.getBoundingClientRect();
+        const targetEl = potMouth || potRig;
+        const pr = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        this.fx.flyItem(
+          br.left + br.width / 2,
+          br.top + br.height / 2,
+          pr.left + pr.width / 2,
+          pr.top + pr.height / 2,
+          '🧪',
+          'rgba(192, 132, 252, 0.92)',
+          () => {
+            q._alchemyBusy = false;
+            this.fx.shockwave(pr.left + pr.width / 2, pr.top + pr.height / 2, '#c084fc', 100);
+            this.handleAnswer(opt === q.answer, opt);
+          },
+          78
+        );
       };
       wrap.appendChild(btn);
     });
@@ -12401,13 +14966,16 @@ class ChineseAdventureApp {
 
   renderK2MoleMode(arena, q, s) {
     arena.innerHTML = `
-      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點我聽聲音提示！">
+      <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽聲音提示！">
         <span class="k2-clue-pic">${escapeHtml(q.pic || '🌟')}</span>
         ${q.hintZhuyin ? `<span class="k2-mole-zy-badge">${renderVerticalZhuyin(q.hintZhuyin, 'bubble')}</span>` : ''}
         <span class="k2-speak-tag">🔊 點聽找國字</span>
       </button>
       <div class="mole-meadow-arena">
-        <div class="mole-arena-title">🔨 敲出對的國字地鼠！</div>
+        <div class="mole-hero-header">
+          <div class="mallet-hero-rig" id="mallet-hero-rig">${getHeroRigByMode('mole')}</div>
+          <div class="mole-arena-title">🔨 點選對的國字地鼠，大氣槌敲下去！</div>
+        </div>
         <div class="mole-holes-grid" id="mole-holes-grid"></div>
       </div>
     `;
@@ -12420,6 +14988,7 @@ class ChineseAdventureApp {
       };
     }
 
+    const malletRig = document.getElementById('mallet-hero-rig');
     const holes = document.getElementById('mole-holes-grid');
     const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
     q.shuffledOptions.forEach((opt, idx) => {
@@ -12432,7 +15001,6 @@ class ChineseAdventureApp {
         else if (opt === s.pickedValue) hole.classList.add('wrong-pick');
       }
       hole.innerHTML = `
-        <span class="mole-hammer">🔨</span>
         <span class="mole-critter">
           <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
           <span class="mole-sign k2-mole-hanzi">${escapeHtml(opt)}</span>
@@ -12443,19 +15011,20 @@ class ChineseAdventureApp {
         if (s.answered || q._moleWhacking) return;
         q._moleWhacking = true;
         hole.classList.add('whacking');
+        if (malletRig) malletRig.classList.add('mallet-swing-hide');
         const isOk = opt === q.answer;
         this.sound.playHammerBonk(isOk);
         const r = hole.getBoundingClientRect();
-        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
-        this.fx.screenShake(7);
-        setTimeout(() => {
+        this.fx.screenShake(8);
+        this.fx.swingGiantMallet(r.left + r.width / 2, r.top + r.height * 0.42, isOk, () => {
           q._moleWhacking = false;
           this.handleAnswer(isOk, opt);
-        }, 220);
+        });
       };
       holes.appendChild(hole);
     });
   }
+
 
   renderVictory(deck) {
     const s = this.session;

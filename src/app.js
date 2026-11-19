@@ -2,6 +2,13 @@ const { SoundEngine } = require('./audio');
 const { FXEngine } = require('./fx');
 const { annotateZhuyin, renderVerticalZhuyin, renderCharWithZhuyin, escapeHtml } = require('./zhuyin_helper');
 const { World3DEngine } = require('./webgl3d');
+const {
+  HERO_STAGE_META,
+  getHeroRigByMode,
+  getSwimmingFishSvg,
+  getGachaCapsuleSvg,
+  getJeweledKeySvg,
+} = require('./arcade_rigs');
 const { K2_LESSONS, K2_BOSS_EXTRAS } = require('./curriculum_k2');
 const { GRADE1_LESSONS, GRADE1_BOSS_EXTRAS } = require('./curriculum_g1');
 const { GRADE2_LESSONS, GRADE2_BOSS_EXTRAS, PET_CATALOG } = require('./curriculum_g2');
@@ -12,7 +19,7 @@ const PUNCT_RE = /^[，。！？、：；「」『』（）…—]$/;
 const PRAISE_BADGES = [
   '🌟 神準滿分！',
   '🚀 太強了吧！',
-  '🎯 百發百中！',
+  '🏹 百發百中！',
   '⚡ 閃電學霸！',
   '🌈 超級天才！',
   '🔥 火力全開！',
@@ -60,18 +67,18 @@ const LESSON_FX_CONFIG = {
 };
 
 const ARCADE_META = {
-  dart:       { icon: '🎯', badge: '🎯 神準射飛鏢' },
-  bubble_pop: { icon: '🫧', badge: '🫧 奇幻戳泡泡' },
-  alchemy:    { icon: '🧪', badge: '🧪 魔法組字鍋' },
-  claw:       { icon: '🕹️', badge: '🕹️ 奇幻夾娃娃' },
-  fish:       { icon: '🎣', badge: '🎣 星光釣魚池' },
-  feed:       { icon: '🦖', badge: '🦖 貪吃小恐龍' },
-  memory:     { icon: '🃏', badge: '🃏 3D 魔法翻翻牌' },
-  mole:       { icon: '🔨', badge: '🔨 草原打地鼠' },
-  typo_laser: { icon: '🛸', badge: '🛸 飛碟除蟲砲' },
-  chest_lock: { icon: '🗝️', badge: '🗝️ 黃金寶箱鎖' },
-  train:      { icon: '🚂', badge: '🚂 彩虹語句火車' },
-  judge:      { icon: '⚡', badge: '⚡ 正義雷霆審判' },
+  dart:       { icon: '🏹', badge: '🏹 神箭手射靶' },
+  bubble_pop: { icon: '🫧', badge: '🫧 泡泡小海豹' },
+  alchemy:    { icon: '🧪', badge: '🧪 魔法煉金釜' },
+  claw:       { icon: '🦾', badge: '🦾 巨型夾娃娃' },
+  fish:       { icon: '🎣', badge: '🎣 小熊釣魚船' },
+  feed:       { icon: '🦖', badge: '🦖 貪吃大恐龍' },
+  memory:     { icon: '🃏', badge: '🃏 魔術帽兔兔' },
+  mole:       { icon: '🔨', badge: '🔨 巨槌打地鼠' },
+  typo_laser: { icon: '🛸', badge: '🛸 外星飛碟砲' },
+  chest_lock: { icon: '🗝️', badge: '🗝️ 海盜大寶箱' },
+  train:      { icon: '🚂', badge: '🚂 皇家蒸汽火車' },
+  judge:      { icon: '⚡', badge: '⚡ 雷神審判錘' },
 };
 
 const K2_TYPE_TO_MODE = {
@@ -168,14 +175,10 @@ function assignArcadeModes(questions) {
     const m = q._arcadeMode || 'claw';
     const meta = ARCADE_META[m] || ARCADE_META.claw;
     q._arcadeIcon = meta.icon;
-    if (q.id && q.id.startsWith('k2_') && q.modeBadge) {
-      q._arcadeBadge = q.modeBadge;
-    } else if (q.type === 'typo' && m === 'mole') {
-      q._arcadeBadge = '🔍 抓蟲打地鼠';
+    if (q.type === 'typo' && m === 'mole') {
+      q._arcadeBadge = '🔨 抓蟲巨槌地鼠';
     } else if (q.type === 'typo' && m === 'typo_laser') {
-      q._arcadeBadge = '🛸 飛碟除蟲砲';
-    } else if (q.type === 'alchemy' && m === 'alchemy') {
-      q._arcadeBadge = '🧪 魔法組字鍋';
+      q._arcadeBadge = '🛸 外星飛碟砲';
     } else {
       q._arcadeBadge = meta.badge;
     }
@@ -197,6 +200,8 @@ class ChineseAdventureApp {
     this.session = null;
     this.customSelectedIds = new Set();
     this._fxTimer = null;
+    this._autoAdvanceTimer = null;
+    this._bufferReadyTimer = null;
     this._lastHoverSfxAt = 0;
 
     this.canvas = document.getElementById('world3d');
@@ -401,15 +406,38 @@ class ChineseAdventureApp {
     });
   }
 
+  clearAutoTimers() {
+    if (this._autoAdvanceTimer) {
+      clearTimeout(this._autoAdvanceTimer);
+      this._autoAdvanceTimer = null;
+    }
+    if (this._bufferReadyTimer) {
+      clearTimeout(this._bufferReadyTimer);
+      this._bufferReadyTimer = null;
+    }
+  }
+
   bindGlobalKeys() {
     window.addEventListener('keydown', (e) => {
       if (this.view !== 'play' || !this.session) return;
-      if (this.session.answered && (e.key === 'Enter' || e.key === ' ')) {
-        e.preventDefault();
-        this.nextQuestion();
-        return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (this.session.finaleBuffer) {
+          e.preventDefault();
+          this.finishSession();
+          return;
+        }
+        if (this.session.stageBuffer) {
+          e.preventDefault();
+          this.enterActiveStage();
+          return;
+        }
+        if (this.session.answered) {
+          e.preventDefault();
+          this.nextQuestion();
+          return;
+        }
       }
-      if (!this.session.answered && ['1', '2', '3', '4'].includes(e.key)) {
+      if (!this.session.answered && !this.session.stageBuffer && ['1', '2', '3', '4'].includes(e.key)) {
         const idx = Number(e.key) - 1;
         const btns = document.querySelectorAll('[data-opt-idx]');
         if (btns[idx]) btns[idx].click();
@@ -418,6 +446,7 @@ class ChineseAdventureApp {
   }
 
   switchGrade(g) {
+    this.clearAutoTimers();
     this.sound.playTap();
     this.sound.stopSpeak();
     this.state.grade = g;
@@ -432,6 +461,7 @@ class ChineseAdventureApp {
   }
 
   goHub() {
+    this.clearAutoTimers();
     this.sound.playTap();
     this.sound.stopSpeak();
     this.view = 'hub';
@@ -462,6 +492,7 @@ class ChineseAdventureApp {
   openStudy(lessonId) {
     const lesson = this.findAnyLesson(lessonId);
     if (!lesson) return;
+    this.clearAutoTimers();
     this.sound.playPop();
     this.activeLesson = lesson;
     this.view = 'study';
@@ -524,6 +555,7 @@ class ChineseAdventureApp {
   }
 
   openCustomPicker() {
+    this.clearAutoTimers();
     this.sound.playTap();
     this.customSelectedIds = new Set(this.getLessons().map((l) => l.id));
     this.view = 'custom_picker';
@@ -621,6 +653,7 @@ class ChineseAdventureApp {
   }
 
   launchSession(cfg) {
+    this.clearAutoTimers();
     assignArcadeModes(cfg.questions || []);
     this.session = {
       ...cfg,
@@ -635,6 +668,9 @@ class ChineseAdventureApp {
       pickedValue: null,
       justOpenedChest: 0,
       chestsClaimed: {},
+      stageBuffer: true,
+      finaleBuffer: false,
+      bufferDurationMs: 1250,
     };
     this.view = 'play';
     this.syncSky(cfg.sky);
@@ -642,13 +678,46 @@ class ChineseAdventureApp {
     this.world.fever = false;
     document.body.classList.remove('fever-active');
     this.world.setScene(cfg.scene);
+    this.sound.playStageReady();
+    const firstQ = this.session.questions[0];
+    const firstMeta = HERO_STAGE_META[(firstQ && firstQ._arcadeMode) || 'claw'] || HERO_STAGE_META.claw;
+    if (this.state.autoRead) {
+      this.sound.speak(`第 1 關，${firstMeta.readyTitle}`);
+    }
     this.render();
     this.scrollToStage();
+    this.scheduleBufferStart(1250);
+  }
+
+  scheduleBufferStart(ms = 1280) {
+    if (this._bufferReadyTimer) {
+      clearTimeout(this._bufferReadyTimer);
+    }
+    const targetSession = this.session;
+    this._bufferReadyTimer = setTimeout(() => {
+      this._bufferReadyTimer = null;
+      if (this.view === 'play' && this.session === targetSession && targetSession.stageBuffer) {
+        this.enterActiveStage();
+      }
+    }, ms);
+  }
+
+  enterActiveStage() {
+    this.clearAutoTimers();
+    const s = this.session;
+    if (!s || this.view !== 'play') return;
+    s.stageBuffer = false;
+    this.sound.playPop();
+    this.render();
+    const deck = document.getElementById('command-deck');
+    if (deck && deck.getBoundingClientRect().top < 0) {
+      deck.scrollIntoView({ behavior: 'auto', block: 'start' });
+    }
     this.autoSpeakCurrent();
   }
 
   autoSpeakCurrent() {
-    if (!this.state.autoRead || !this.session) return;
+    if (!this.state.autoRead || !this.session || this.session.stageBuffer || this.session.finaleBuffer) return;
     const q = this.session.questions[this.session.index];
     if (q) {
       if (q.type === 'bubble') this.sound.playCensorBeep();
@@ -659,6 +728,7 @@ class ChineseAdventureApp {
   handleAnswer(isRight, pickedVal = null) {
     const s = this.session;
     if (!s || s.answered) return;
+    this.clearAutoTimers();
     const q = s.questions[s.index];
     s.answered = true;
     s.isCorrect = isRight;
@@ -758,7 +828,8 @@ class ChineseAdventureApp {
         'shuffledOptions', 'poolCarriages', 'hooked', 'trainRetries', 'trainRetryMsg',
         'caughtBug', 'wrongTaps', '_arcadeMode', '_arcadeIcon', '_arcadeBadge',
         '_dartFlying', '_moleWhacking', '_clawBusy', '_fishBusy', '_feedBusy',
-        '_chestBusy', '_laserBusy', 'memCards', 'memMatched', 'memPeeking',
+        '_chestBusy', '_laserBusy', '_alchemyBusy', '_judgeBusy', '_bubbleBusy',
+        'memCards', 'memMatched', 'memPeeking',
         '_peekTimerSet', '_memFlippedIds', '_memLock',
       ].forEach((k) => { delete cleanCopy[k]; });
       this.state.mistakes[q.id] = cleanCopy;
@@ -768,15 +839,25 @@ class ChineseAdventureApp {
       }
     }
 
+    const autoMs = isRight ? 1350 : 2200;
+    s._autoAdvanceMs = autoMs;
     this.saveState();
     this.render();
     this.scrollFeedbackIntoView();
+
+    // Automatically advance to the next stage's animated ready buffer!
+    this._autoAdvanceTimer = setTimeout(() => {
+      this._autoAdvanceTimer = null;
+      if (this.view === 'play' && this.session === s && s.answered) {
+        this.nextQuestion();
+      }
+    }, autoMs);
   }
 
   nextQuestion() {
+    this.clearAutoTimers();
     const s = this.session;
     if (!s) return;
-    this.sound.playTap();
     this.sound.stopSpeak();
     const layer = document.getElementById('dopamine-fx-layer');
     if (layer) layer.innerHTML = '';
@@ -787,19 +868,53 @@ class ChineseAdventureApp {
       s.isCorrect = false;
       s.pickedValue = null;
       s.justOpenedChest = 0;
+      s.stageBuffer = true;
+      s.finaleBuffer = false;
+      s.bufferDurationMs = 1280;
+
+      const nextQ = s.questions[s.index];
+      const nextMeta = HERO_STAGE_META[(nextQ && nextQ._arcadeMode) || 'claw'] || HERO_STAGE_META.claw;
+      this.sound.playStageReady();
+      this.fx.confettiBurst(window.innerWidth * 0.5, window.innerHeight * 0.44, 24);
+      if (this.state.autoRead) {
+        this.sound.speak(`第 ${s.index + 1} 關，${nextMeta.readyTitle}`);
+      }
+
       this.render();
       const deck = document.getElementById('command-deck');
       if (deck && deck.getBoundingClientRect().top < 0) {
         deck.scrollIntoView({ behavior: 'auto', block: 'start' });
       }
-      this.autoSpeakCurrent();
+      this.scheduleBufferStart(1280);
     } else {
-      this.finishSession();
+      // Celebratory Finale Chest-Opening Buffer before Victory screen!
+      s.stageBuffer = false;
+      s.finaleBuffer = true;
+      s.bufferDurationMs = 1050;
+      this.sound.playChest();
+      this.fx.confettiBurst(window.innerWidth * 0.5, window.innerHeight * 0.42, 46);
+      if (this.state.autoRead) {
+        this.sound.speak('太強了！全部過關，打開大寶箱！');
+      }
+      this.render();
+      const deck = document.getElementById('command-deck');
+      if (deck && deck.getBoundingClientRect().top < 0) {
+        deck.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
+      this._bufferReadyTimer = setTimeout(() => {
+        this._bufferReadyTimer = null;
+        if (this.view === 'play' && this.session === s && s.finaleBuffer) {
+          this.finishSession();
+        }
+      }, 1050);
     }
   }
 
   finishSession() {
+    this.clearAutoTimers();
     const s = this.session;
+    if (!s) return;
+    s.finaleBuffer = false;
     const ratio = s.correctCount / Math.max(1, s.questions.length);
     const stars = ratio >= 0.88 ? 3 : ratio >= 0.6 ? 2 : 1;
     const prev = this.state.stars[s.id] || 0;
@@ -832,6 +947,7 @@ class ChineseAdventureApp {
   }
 
   openGacha() {
+    this.clearAutoTimers();
     this.sound.playPop();
     this.sound.stopSpeak();
     this.view = 'gacha';
@@ -899,6 +1015,7 @@ class ChineseAdventureApp {
   }
 
   openReport() {
+    this.clearAutoTimers();
     this.sound.playTap();
     this.sound.stopSpeak();
     this.view = 'report';
@@ -1146,28 +1263,28 @@ class ChineseAdventureApp {
 
       ${isK2 ? `
         <div class="k2-step-ribbon" aria-label="中班每關9種遊樂場玩法">
-          <span class="k2-step-chip">🎯 射飛鏢</span>
-          <span class="k2-step-chip">🫧 戳泡泡</span>
-          <span class="k2-step-chip">🧪 拼音鍋</span>
-          <span class="k2-step-chip">🕹️ 夾娃娃</span>
-          <span class="k2-step-chip">🎣 釣小魚</span>
-          <span class="k2-step-chip">🦖 餵恐龍</span>
-          <span class="k2-step-chip">🃏 翻翻牌</span>
-          <span class="k2-step-chip">🔨 打地鼠</span>
-          <span class="k2-step-chip">🗝️ 開寶箱</span>
+          <span class="k2-step-chip">🏹 神箭射靶</span>
+          <span class="k2-step-chip">🫧 泡泡海豹</span>
+          <span class="k2-step-chip">🧪 魔法大釜</span>
+          <span class="k2-step-chip">🦾 巨爪夾娃</span>
+          <span class="k2-step-chip">🎣 小熊釣魚</span>
+          <span class="k2-step-chip">🦖 餵大恐龍</span>
+          <span class="k2-step-chip">🃏 魔術翻牌</span>
+          <span class="k2-step-chip">🔨 巨槌地鼠</span>
+          <span class="k2-step-chip">🗝️ 海盜寶箱</span>
         </div>
       ` : `
         <div class="k2-step-ribbon grade-arcade-ribbon" aria-label="每課9種不同闖關遊戲">
-          <span class="k2-step-chip">✨ 每課 9 種不同玩法：</span>
-          <span class="k2-step-chip">🎯 飛鏢</span>
-          <span class="k2-step-chip">🕹️ 夾娃娃</span>
-          <span class="k2-step-chip">🎣 釣魚</span>
-          <span class="k2-step-chip">🦖 餵恐龍</span>
-          <span class="k2-step-chip">🃏 翻翻牌</span>
-          <span class="k2-step-chip">🔨 打地鼠</span>
-          <span class="k2-step-chip">🛸 飛碟砲</span>
-          <span class="k2-step-chip">🚂 火車</span>
-          <span class="k2-step-chip">🗝️ 寶箱鎖</span>
+          <span class="k2-step-chip">✨ 每課 9 大主角玩法：</span>
+          <span class="k2-step-chip">🏹 神箭手</span>
+          <span class="k2-step-chip">🦾 巨型鋼爪</span>
+          <span class="k2-step-chip">🎣 小熊釣魚</span>
+          <span class="k2-step-chip">🦖 貪吃恐龍</span>
+          <span class="k2-step-chip">🃏 魔術兔翻牌</span>
+          <span class="k2-step-chip">🔨 巨槌地鼠</span>
+          <span class="k2-step-chip">🛸 飛碟雷射</span>
+          <span class="k2-step-chip">🚂 蒸汽火車</span>
+          <span class="k2-step-chip">🗝️ 海盜寶箱</span>
         </div>
       `}
 
@@ -1412,17 +1529,23 @@ class ChineseAdventureApp {
   renderPlay(deck) {
     const s = this.session;
     const q = s.questions[s.index];
-    const pct = Math.round(((s.index + (s.answered ? 1 : 0)) / s.questions.length) * 100);
+    const pct = Math.round(((s.index + (s.answered || s.finaleBuffer ? 1 : 0)) / s.questions.length) * 100);
     const chest3Done = Boolean(s.chestsClaimed[3]);
     const chest6Done = Boolean(s.chestsClaimed[6]);
     const trailHtml = s.questions.map((sq, idx) => {
-      const cls = idx < s.index || (idx === s.index && s.answered)
+      const isCleared = idx < s.index || (idx === s.index && (s.answered || s.finaleBuffer));
+      const cls = isCleared
         ? 'done'
         : idx === s.index
-          ? 'current'
+          ? (s.stageBuffer ? 'current ready-hop' : 'current')
           : 'upcoming';
-      return `<span class="trail-node ${cls}" title="第 ${idx + 1} 關：${escapeHtml(sq._arcadeBadge || '')}">${sq._arcadeIcon || '🌟'}</span>`;
+      return `<span class="trail-node ${cls}" title="第 ${idx + 1} 關：${escapeHtml(sq._arcadeBadge || '')}">${isCleared ? '✅' : (sq._arcadeIcon || '🌟')}</span>`;
     }).join('');
+
+    if (s.finaleBuffer || s.stageBuffer) {
+      this.renderStageBufferView(deck, s, q, pct, chest3Done, chest6Done, trailHtml);
+      return;
+    }
 
     deck.innerHTML = `
       <div class="play-top-row">
@@ -1503,22 +1626,119 @@ class ChineseAdventureApp {
       const fb = document.getElementById('feedback-zone');
       const isLast = s.index + 1 >= s.questions.length;
       const bodyExplain = cleanExplain(q.explain);
+      const autoMs = s._autoAdvanceMs || (s.isCorrect ? 1350 : 2200);
       const chestBanner = s.justOpenedChest
         ? `<div><span class="chest-bonus-pill">🎁 第 ${s.justOpenedChest} 關里程碑寶箱打開啦！額外獲得 +15 🪙 金幣 ＆ +1 💎 寶石！</span></div>`
         : '';
       fb.innerHTML = `
-        <div class="feedback-sheet ${s.isCorrect ? 'good' : 'retry'}">
+        <div class="feedback-sheet ${s.isCorrect ? 'good' : 'retry'}" style="--auto-ms:${autoMs}ms;">
           <div class="feedback-text">
             ${chestBanner}
-            ${s.isCorrect ? '🎉 <strong>答對囉！</strong> ' : '💡 <strong>學起來就會囉！</strong> '}
+            ${s.isCorrect ? '🎉 <strong>太棒了！過關！</strong> ' : '💡 <strong>記起來就會囉！</strong> '}
             ${this.fmtText(bodyExplain)}
+            <div class="auto-advance-track">
+              <div class="auto-advance-fill"></div>
+            </div>
+            <div class="auto-advance-label">🚀 ${isLast ? '正在自動開啟過關大寶箱…' : '正在自動前往下一關預備畫面…'}</div>
           </div>
-          <button id="btn-next-q" class="toy-btn ${s.isCorrect ? 'mint' : 'orange'}" style="font-size:1.08rem;padding:11px 22px;">
-            ${isLast ? '🏆 看過關成績與領獎！' : '➡️ 下一關！'}
+          <button id="btn-next-q" class="toy-btn ${s.isCorrect ? 'mint' : 'orange'}" style="font-size:1.02rem;padding:10px 18px;">
+            ${isLast ? '🏆 立即領獎' : '⏭️ 立即下一關'}
           </button>
         </div>
       `;
       document.getElementById('btn-next-q').onclick = () => this.nextQuestion();
+    }
+  }
+
+  renderStageBufferView(deck, s, q, pct, chest3Done, chest6Done, trailHtml) {
+    if (s.finaleBuffer) {
+      deck.innerHTML = `
+        <div class="play-top-row">
+          <button id="btn-play-exit" class="toy-btn sm">⬅️ 地圖</button>
+          <div class="progress-track-wrap">
+            <div class="progress-fill-bar" style="width:100%"></div>
+            <span class="milestone-chest" style="left:36%">🎊</span>
+            <span class="milestone-chest" style="left:72%">🎊</span>
+            <span class="milestone-chest" style="left:98%">🏆</span>
+          </div>
+          <div style="font-weight:900;font-size:0.92rem;color:#334155;">全數破關！</div>
+        </div>
+        <div class="arcade-stage-trail">${trailHtml}</div>
+        <div class="stage-ready-card finale-mode" id="stage-ready-card" style="--buf-ms:${s.bufferDurationMs || 1050}ms; --ready-accent:#d97706;">
+          <div class="stage-ready-top-pill">🎊 恭喜完成全部 ${s.questions.length} 關！</div>
+          <div class="stage-ready-hero-showcase anim-chest_lock">
+            ${getHeroRigByMode('chest_lock', 'unlocked')}
+          </div>
+          <h2 class="stage-ready-title">${this.fmtText('黃金大寶箱打開啦！')}</h2>
+          <p class="stage-ready-sub">${this.fmtText('準備領取過關星星、金幣與寶石獎勵！')}</p>
+          <div class="buffer-rocket-track">
+            <div class="buffer-rocket-fill"></div>
+          </div>
+          <button type="button" id="btn-buffer-go" class="toy-btn sun stage-ready-go-btn">🏆 馬上領獎！</button>
+        </div>
+      `;
+      document.getElementById('btn-play-exit').onclick = () => this.goHub();
+      const card = document.getElementById('stage-ready-card');
+      const goBtn = document.getElementById('btn-buffer-go');
+      if (goBtn) goBtn.onclick = (e) => { e.stopPropagation(); this.finishSession(); };
+      if (card) card.onclick = () => this.finishSession();
+      return;
+    }
+
+    const mode = q._arcadeMode || 'claw';
+    const meta = HERO_STAGE_META[mode] || HERO_STAGE_META.claw;
+    const stepNo = s.index + 1;
+    const total = s.questions.length;
+
+    deck.innerHTML = `
+      <div class="play-top-row">
+        <button id="btn-play-exit" class="toy-btn sm">⬅️ 地圖</button>
+        <div class="progress-track-wrap">
+          <div class="progress-fill-bar" style="width:${pct}%"></div>
+          <span class="milestone-chest" style="left:36%">${chest3Done ? '🎊' : '🎁'}</span>
+          <span class="milestone-chest" style="left:72%">${chest6Done ? '🎊' : '🎁'}</span>
+          <span class="milestone-chest" style="left:98%">🏆</span>
+        </div>
+        <div style="font-weight:900;font-size:0.92rem;color:#334155;">第 ${stepNo} / ${total} 關</div>
+      </div>
+      <div class="arcade-stage-trail" aria-label="本課闖關玩法進度">${trailHtml}</div>
+
+      <div class="stage-ready-card" id="stage-ready-card" style="background:${meta.bgGrad}; --ready-accent:${meta.accent}; --buf-ms:${s.bufferDurationMs || 1280}ms;">
+        <div class="stage-ready-top-row">
+          <span class="stage-ready-step-pill">🎬 第 ${stepNo} / ${total} 關・預備備！</span>
+          <span class="stage-ready-mode-tag">${renderVerticalZhuyin(meta.badge, 'inline')}</span>
+        </div>
+
+        <div class="stage-ready-hero-showcase anim-${mode}">
+          <div class="stage-ready-aura"></div>
+          ${getHeroRigByMode(mode)}
+        </div>
+
+        <h2 class="stage-ready-title">${this.fmtText(meta.readyTitle)}</h2>
+        <p class="stage-ready-sub">${this.fmtText(meta.readyAction)}</p>
+
+        <div class="buffer-rocket-wrap">
+          <div class="buffer-rocket-track">
+            <div class="buffer-rocket-fill"></div>
+          </div>
+          <span class="buffer-countdown-tag">🚀 READY… GO！</span>
+        </div>
+
+        <button type="button" id="btn-buffer-go" class="toy-btn coral stage-ready-go-btn">▶️ 馬上開始！</button>
+      </div>
+    `;
+
+    document.getElementById('btn-play-exit').onclick = () => this.goHub();
+    const card = document.getElementById('stage-ready-card');
+    const goBtn = document.getElementById('btn-buffer-go');
+    if (goBtn) {
+      goBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.enterActiveStage();
+      };
+    }
+    if (card) {
+      card.onclick = () => this.enterActiveStage();
     }
   }
 
@@ -1534,7 +1754,7 @@ class ChineseAdventureApp {
       return `
         <div class="alchemy-arena k2-spell-arena" style="margin-bottom:10px;">
           <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
-            <span class="k2-clue-pic">${escapeHtml(q.pic || '🕹️')}</span>
+            <span class="k2-clue-pic">${escapeHtml(q.pic || '🦾')}</span>
             <span class="k2-speak-tag">🔊 點聽拼音</span>
           </button>
           <div class="alchemy-formula">
@@ -1552,7 +1772,7 @@ class ChineseAdventureApp {
     }
     if (isK2 && q.pic) {
       return `
-        <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點圖再聽一次！">
+        <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點圖再聽一次！">
           <span class="k2-clue-pic">${escapeHtml(q.pic)}</span>
           ${q.charFocus ? `<span class="k2-clue-hanzi">${escapeHtml(q.charFocus)}</span>` : ''}
           ${q.hintZhuyin ? `<span class="k2-mole-zy-badge">${renderVerticalZhuyin(q.hintZhuyin, 'bubble')}</span>` : ''}
@@ -1626,7 +1846,7 @@ class ChineseAdventureApp {
     }
   }
 
-  populateArcadeOption(btn, opt, q, leadEmoji = '') {
+  populateArcadeOption(btn, opt, q, leadGraphicHtml = '') {
     const isPureZhuyin = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
     const isK2 = Boolean(q.id && q.id.startsWith('k2_'));
     let bodyHtml = '';
@@ -1647,7 +1867,7 @@ class ChineseAdventureApp {
     }
 
     btn.innerHTML = `
-      ${leadEmoji ? `<span class="arcade-opt-emblem">${leadEmoji}</span>` : ''}
+      ${leadGraphicHtml ? `<span class="arcade-opt-prop">${leadGraphicHtml}</span>` : ''}
       <span class="arcade-opt-content">${bodyHtml}</span>
       ${allowSpeakChip ? `<span role="button" tabindex="0" class="opt-speak-chip" title="聽發音">🔊</span>` : ''}
     `;
@@ -1663,17 +1883,21 @@ class ChineseAdventureApp {
   }
 
   renderClawMode(arena, q, s) {
+    const pickedIdx = s.answered ? Math.max(0, q.shuffledOptions.indexOf(s.pickedValue)) : 0;
+    const initClawX = typeof q._lastClawPct === 'number' ? q._lastClawPct.toFixed(1) : '50.0';
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="claw-machine-stage" id="claw-stage">
         <div class="claw-top-rail">
-          <span class="claw-rail-title">🕹️ 點扭蛋球下爪夾起來！</span>
+          <span class="claw-rail-title">🦾 移動巨型鋼爪，下爪夾起正確扭蛋球！</span>
         </div>
         <div class="claw-gantry-zone">
-          <div class="claw-carriage" id="claw-carriage" style="--claw-x: 50%;">
-            <div class="claw-motor">🕹️</div>
-            <div class="claw-cable"></div>
-            <div class="claw-prongs">🦾</div>
+          <div class="claw-carriage ${s.answered ? 'is-clamped' : ''}" id="claw-carriage" style="--claw-x: ${initClawX}%;">
+            <div class="claw-cable-rod" id="claw-cable-rod"></div>
+            <div class="claw-rig-wrap" id="claw-rig-wrap">${getHeroRigByMode('claw')}</div>
+            <div class="claw-held-capsule ${s.answered ? 'show' : ''}" id="claw-held-capsule">
+              ${s.answered ? getGachaCapsuleSvg(pickedIdx) : ''}
+            </div>
           </div>
         </div>
         <div class="claw-capsules-grid" id="claw-grid"></div>
@@ -1683,8 +1907,8 @@ class ChineseAdventureApp {
 
     const stage = document.getElementById('claw-stage');
     const carriage = document.getElementById('claw-carriage');
+    const heldCap = document.getElementById('claw-held-capsule');
     const grid = document.getElementById('claw-grid');
-    const capIcons = ['🔴', '🔵', '🟡', '🟢'];
 
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
@@ -1695,7 +1919,7 @@ class ChineseAdventureApp {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      this.populateArcadeOption(btn, opt, q, capIcons[idx % 4]);
+      this.populateArcadeOption(btn, opt, q, getGachaCapsuleSvg(idx));
 
       btn.onpointerenter = (e) => {
         if (s.answered || q._clawBusy || (e && e.pointerType && e.pointerType !== 'mouse')) return;
@@ -1715,15 +1939,27 @@ class ChineseAdventureApp {
         if (stage && carriage) {
           const sr = stage.getBoundingClientRect();
           const pctX = Math.max(18, Math.min(82, ((br.left + br.width / 2 - sr.left) / Math.max(1, sr.width)) * 100));
+          q._lastClawPct = pctX;
           carriage.style.setProperty('--claw-x', `${pctX.toFixed(1)}%`);
-          carriage.classList.add('grabbing');
+          carriage.classList.remove('is-clamped');
+          carriage.classList.add('is-open', 'is-dropping');
         }
-        btn.classList.add('grabbed-lift');
-        this.fx.multiRipple(br.left + br.width / 2, br.top + br.height / 2, ['#fde047', '#38bdf8', '#fb7185']);
+        setTimeout(() => {
+          if (carriage) {
+            carriage.classList.remove('is-open', 'is-dropping');
+            carriage.classList.add('is-clamped');
+          }
+          if (heldCap) {
+            heldCap.innerHTML = getGachaCapsuleSvg(idx);
+            heldCap.classList.add('show');
+          }
+          btn.classList.add('grabbed-lift');
+          this.fx.multiRipple(br.left + br.width / 2, br.top + br.height / 2, ['#fde047', '#38bdf8', '#fb7185']);
+        }, 155);
         setTimeout(() => {
           q._clawBusy = false;
           this.handleAnswer(opt === q.answer, opt);
-        }, 340);
+        }, 365);
       };
       grid.appendChild(btn);
     });
@@ -1733,17 +1969,19 @@ class ChineseAdventureApp {
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="fish-pond-stage">
-        <div class="fish-dock-bar" id="fish-dock">
-          <span>🎣 點小魚甩竿釣上岸！</span>
+        <div class="fish-hero-waterline">
+          <div class="fish-hero-rig" id="fish-hero-rig">${getHeroRigByMode('fish')}</div>
+          <div class="fish-dock-bar">🎣 點池塘裡的大魚，甩竿拉上船！</div>
         </div>
         <div class="fish-pond-grid" id="fish-grid"></div>
       </div>
     `;
     this.bindArcadeContextBanner(q);
 
-    const dock = document.getElementById('fish-dock');
+    const heroRig = document.getElementById('fish-hero-rig');
+    const rodAnchor = document.getElementById('fish-rod-tip-anchor');
     const grid = document.getElementById('fish-grid');
-    const fishIcons = ['🐠', '🐡', '🐟', '🐬'];
+    const fishColors = ['#fb923c', '#38bdf8', '#f472b6', '#4ade80'];
 
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
@@ -1754,39 +1992,42 @@ class ChineseAdventureApp {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      const fEmoji = fishIcons[idx % 4];
-      this.populateArcadeOption(btn, opt, q, fEmoji);
+      this.populateArcadeOption(btn, opt, q, getSwimmingFishSvg(idx));
 
       btn.onclick = () => {
         if (s.answered || q._fishBusy) return;
         q._fishBusy = true;
         btn.classList.add('hooked');
+        if (heroRig) heroRig.classList.add('rod-casting');
         this.sound.playFishSplash();
         const br = btn.getBoundingClientRect();
-        const dr = dock ? dock.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
-        const fromX = br.left + br.width / 2;
-        const fromY = br.top + br.height / 2;
-        const toX = dr.left + dr.width / 2;
-        const toY = dr.top + dr.height / 2;
-        this.fx.multiRipple(fromX, fromY, ['#38bdf8', '#bae6fd', '#ffffff']);
-        this.fx.flyItem(fromX, fromY, toX, toY, fEmoji, '#38bdf8', () => {
+        const anchorEl = rodAnchor || heroRig;
+        const rr = anchorEl ? anchorEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 110, width: 0, height: 0 };
+        const rodX = rr.left + rr.width / 2;
+        const rodY = rr.top + rr.height / 2;
+        const fishX = br.left + br.width / 2;
+        const fishY = br.top + br.height / 2;
+        this.fx.castFishingLine(rodX, rodY, fishX, fishY, fishColors[idx % fishColors.length], () => {
           q._fishBusy = false;
           this.handleAnswer(opt === q.answer, opt);
-        }, 72);
+        });
       };
       grid.appendChild(btn);
     });
   }
 
   renderFeedMode(arena, q, s) {
+    const moodState = s.answered ? (s.isCorrect ? 'happy' : 'dizzy') : 'hungry';
     const dinoMood = s.answered
       ? (s.isCorrect ? '😋 嗷嗚～超好吃！' : '😵 咦？味道怪怪的！')
-      : '😋 肚子餓～點正確點心餵我吃！';
+      : '😋 張開大嘴巴～點正確點心餵恐龍！';
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="dino-feeder-stage">
-        <div class="dino-pal-header ${s.answered && s.isCorrect ? 'happy-chomp' : ''}" id="dino-mouth-target">
-          <span class="dino-avatar">🦖</span>
+        <div class="dino-hero-spotlight">
+          <div class="dino-hero-rig ${s.answered && s.isCorrect ? 'dino-chomping' : ''}" id="dino-hero-rig">
+            ${getHeroRigByMode('feed', moodState)}
+          </div>
           <span class="dino-speech-pill">${escapeHtml(dinoMood)}</span>
         </div>
         <div class="dino-food-grid" id="dino-grid"></div>
@@ -1794,7 +2035,8 @@ class ChineseAdventureApp {
     `;
     this.bindArcadeContextBanner(q);
 
-    const mouth = document.getElementById('dino-mouth-target');
+    const dinoRig = document.getElementById('dino-hero-rig');
+    const cavity = dinoRig ? dinoRig.querySelector('.dino-mouth-cavity') : null;
     const grid = document.getElementById('dino-grid');
     const foodIcons = ['🍩', '🍔', '🍓', '🍕'];
 
@@ -1808,29 +2050,34 @@ class ChineseAdventureApp {
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
       const foodEmoji = foodIcons[idx % 4];
-      this.populateArcadeOption(btn, opt, q, foodEmoji);
+      this.populateArcadeOption(btn, opt, q, `<span class="food-platter-emoji">${foodEmoji}</span>`);
 
       btn.onclick = () => {
         if (s.answered || q._feedBusy) return;
         q._feedBusy = true;
         this.sound.playPop();
+        if (dinoRig) dinoRig.classList.add('mouth-wide-open');
         const isOk = opt === q.answer;
         const br = btn.getBoundingClientRect();
-        const mr = mouth ? mouth.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        const targetEl = cavity || dinoRig;
+        const mr = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 100, width: 0, height: 0 };
         this.fx.flyItem(
           br.left + br.width / 2,
           br.top + br.height / 2,
-          mr.left + mr.width * 0.35,
+          mr.left + mr.width / 2,
           mr.top + mr.height / 2,
           foodEmoji,
-          '#fb923c',
+          'rgba(251, 146, 60, 0.92)',
           () => {
             q._feedBusy = false;
-            if (mouth) mouth.classList.add('happy-chomp');
+            if (dinoRig) {
+              dinoRig.classList.remove('mouth-wide-open');
+              dinoRig.classList.add('dino-chomping');
+            }
             this.sound.playDinoChomp(isOk);
             this.handleAnswer(isOk, opt);
           },
-          84
+          88
         );
       };
       grid.appendChild(btn);
@@ -1838,14 +2085,15 @@ class ChineseAdventureApp {
   }
 
   renderChestLockMode(arena, q, s) {
-    const chestLabel = s.answered && s.isCorrect
-      ? '🎊 黃金寶箱打開啦！'
-      : '🔒 選出正確魔鑰匙，打開黃金寶箱！';
+    const isUnlocked = Boolean(s.answered && s.isCorrect);
+    const chestLabel = isUnlocked
+      ? '🎊 黃金海盜寶箱打開啦！'
+      : '🗝️ 點選寶石金鑰匙，射向大鎖頭開寶箱！';
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="chest-lock-stage">
-        <div class="golden-chest-box ${s.answered && s.isCorrect ? 'unlocked' : ''}" id="golden-chest-target">
-          <span class="golden-chest-icon">${s.answered && s.isCorrect ? '🎊' : '🧰'}</span>
+        <div class="chest-hero-spotlight">
+          <div class="chest-hero-rig" id="chest-hero-rig">${getHeroRigByMode('chest_lock', isUnlocked ? 'unlocked' : '')}</div>
           <span class="golden-chest-pill">${escapeHtml(chestLabel)}</span>
         </div>
         <div class="chest-keys-grid" id="chest-keys-grid"></div>
@@ -1853,7 +2101,8 @@ class ChineseAdventureApp {
     `;
     this.bindArcadeContextBanner(q);
 
-    const chest = document.getElementById('golden-chest-target');
+    const chestRig = document.getElementById('chest-hero-rig');
+    const padlock = chestRig ? chestRig.querySelector('.chest-padlock-group') : null;
     const grid = document.getElementById('chest-keys-grid');
 
     q.shuffledOptions.forEach((opt, idx) => {
@@ -1865,7 +2114,7 @@ class ChineseAdventureApp {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      this.populateArcadeOption(btn, opt, q, '🗝️');
+      this.populateArcadeOption(btn, opt, q, getJeweledKeySvg(idx));
 
       btn.onclick = () => {
         if (s.answered || q._chestBusy) return;
@@ -1873,21 +2122,23 @@ class ChineseAdventureApp {
         this.sound.playTap();
         const isOk = opt === q.answer;
         const br = btn.getBoundingClientRect();
-        const cr = chest ? chest.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
-        this.fx.flyItem(
+        const targetEl = padlock || chestRig;
+        const cr = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 100, width: 0, height: 0 };
+        this.fx.flyGoldenKey(
           br.left + br.width / 2,
           br.top + br.height / 2,
           cr.left + cr.width / 2,
           cr.top + cr.height / 2,
-          '🗝️',
-          '#facc15',
           () => {
             q._chestBusy = false;
-            if (isOk) this.sound.playKeyUnlock();
-            this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#fde047' : '#fb7185', 95);
+            if (isOk) {
+              this.sound.playKeyUnlock();
+              const svg = chestRig ? chestRig.querySelector('.chest-hero-svg') : null;
+              if (svg) svg.classList.add('is-unlocked');
+            }
+            this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#fde047' : '#fb7185', 105);
             this.handleAnswer(isOk, opt);
-          },
-          78
+          }
         );
       };
       grid.appendChild(btn);
@@ -1898,14 +2149,17 @@ class ChineseAdventureApp {
     const totalPairs = (q.pairs && q.pairs.length) || 3;
     const matchedNow = s.answered ? totalPairs : (q.memMatched || 0);
     const statusText = s.answered
-      ? `🎉 ${totalPairs} 組魔法閃卡全部配對成功！`
+      ? `🎉 ${totalPairs} 組魔術閃卡全部配對成功！`
       : q.memPeeking
         ? `👀 先偷看記位置！（直接點卡片也能馬上翻牌喔）`
         : `🃏 點兩張配對！（已完成 ${matchedNow} / ${totalPairs} 組）`;
 
     arena.innerHTML = `
       <div class="memory-arena-stage">
-        <div class="memory-status-bar">${escapeHtml(statusText)}</div>
+        <div class="memory-hero-header">
+          <div class="memory-hero-rig" id="memory-hero-rig">${getHeroRigByMode('memory')}</div>
+          <div class="memory-status-bar">${escapeHtml(statusText)}</div>
+        </div>
         <div class="memory-grid-3x2" id="memory-grid"></div>
       </div>
     `;
@@ -1920,6 +2174,8 @@ class ChineseAdventureApp {
       }, 900);
     }
 
+    const memRig = document.getElementById('memory-hero-rig');
+    const wandTip = document.getElementById('bunny-wand-tip');
     const grid = document.getElementById('memory-grid');
     (q.memCards || []).forEach((card, idx) => {
       const isFaceUp = Boolean(s.answered || q.memPeeking || card.matched || card.flipped);
@@ -1945,7 +2201,7 @@ class ChineseAdventureApp {
       btn.innerHTML = `
         <span class="mem-card-inner">
           <span class="mem-face mem-face-back">
-            <span class="mem-back-star">🃏</span>
+            <span class="mem-back-star">🎩</span>
             <span class="mem-back-sub">✨</span>
           </span>
           <span class="mem-face mem-face-front">${frontHtml}</span>
@@ -1982,6 +2238,11 @@ class ChineseAdventureApp {
             q.memMatched = (q.memMatched || 0) + 1;
             this.sound.playPairMatch();
             const r = btn.getBoundingClientRect();
+            const wr = (wandTip || memRig) ? (wandTip || memRig).getBoundingClientRect() : null;
+            if (memRig) memRig.classList.add('wand-casting');
+            if (wr) {
+              this.fx.flyItem(wr.left + wr.width / 2, wr.top + wr.height / 2, r.left + r.width / 2, r.top + r.height / 2, '✨', 'rgba(250, 204, 21, 0.9)', null, 36);
+            }
             this.fx.confettiBurst(r.left + r.width / 2, r.top + r.height / 2, 26);
             if (q.memMatched >= totalPairs) {
               this.handleAnswer(true, 'paired_all');
@@ -2012,12 +2273,16 @@ class ChineseAdventureApp {
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
       <div class="mole-meadow-arena">
-        <div class="mole-arena-title">🔨 拿木槌敲出正確答案地鼠！</div>
+        <div class="mole-hero-header">
+          <div class="mallet-hero-rig" id="mallet-hero-rig">${getHeroRigByMode('mole')}</div>
+          <div class="mole-arena-title">🔨 點選地鼠，黃金星星大氣槌重重敲下去！</div>
+        </div>
         <div class="mole-holes-grid" id="mole-holes-grid"></div>
       </div>
     `;
     this.bindArcadeContextBanner(q);
 
+    const malletRig = document.getElementById('mallet-hero-rig');
     const holes = document.getElementById('mole-holes-grid');
     const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
     q.shuffledOptions.forEach((opt, idx) => {
@@ -2032,7 +2297,6 @@ class ChineseAdventureApp {
       const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
       const signInner = isPureZy ? renderVerticalZhuyin(opt, 'inline') : this.fmtText(opt, q);
       hole.innerHTML = `
-        <span class="mole-hammer">🔨</span>
         <span class="mole-critter">
           <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
           <span class="mole-sign mole-quiz-sign">${signInner}</span>
@@ -2043,37 +2307,60 @@ class ChineseAdventureApp {
         if (s.answered || q._moleWhacking) return;
         q._moleWhacking = true;
         hole.classList.add('whacking');
+        if (malletRig) malletRig.classList.add('mallet-swing-hide');
         const isOk = opt === q.answer;
         this.sound.playHammerBonk(isOk);
         const r = hole.getBoundingClientRect();
-        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
-        this.fx.screenShake(7);
-        setTimeout(() => {
+        this.fx.screenShake(8);
+        this.fx.swingGiantMallet(r.left + r.width / 2, r.top + r.height * 0.42, isOk, () => {
           q._moleWhacking = false;
           this.handleAnswer(isOk, opt);
-        }, 220);
+        });
       };
       holes.appendChild(hole);
     });
   }
 
   renderDartMode(arena, q, s) {
+    const initDeg = typeof q._lastBowDeg === 'number' ? q._lastBowDeg.toFixed(1) : '0';
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
-      <div class="dart-arena-box">
-        <div class="dart-arena-hint">🎯 射中正確答案！</div>
+      <div class="dart-arena-box archery-range-stage" id="archery-stage">
+        <div class="dart-arena-hint">🏹 瞄準靶心，拉滿黃金神弓射出羽箭！</div>
         <div class="dart-targets-grid" id="dart-wrap"></div>
-        <div class="dart-launcher-bar" id="dart-launcher">🎯 點靶心發射！</div>
+        <div class="archery-bow-dock">
+          <div class="hero-bow-rig" id="hero-bow-rig" style="--bow-angle: ${initDeg}deg;">
+            ${getHeroRigByMode('dart')}
+          </div>
+          <div class="archery-bow-caption">🏹 點標靶拉弓發射黃金羽箭！</div>
+        </div>
       </div>
     `;
     this.bindArcadeContextBanner(q);
+
     const wrap = document.getElementById('dart-wrap');
-    const launcher = document.getElementById('dart-launcher');
+    const bowRig = document.getElementById('hero-bow-rig');
+
+    const aimBowAt = (btnEl) => {
+      if (!bowRig || !btnEl) return { bowX: window.innerWidth / 2, bowY: window.innerHeight - 90, toX: 0, toY: 0 };
+      const br = bowRig.getBoundingClientRect();
+      const tr = btnEl.getBoundingClientRect();
+      const bowX = br.left + br.width / 2;
+      const bowY = br.top + br.height * 0.45;
+      const toX = tr.left + tr.width / 2;
+      const toY = tr.top + tr.height / 2;
+      const deg = Math.max(-42, Math.min(42, (Math.atan2(toX - bowX, Math.max(40, bowY - toY)) * 180) / Math.PI));
+      q._lastBowDeg = deg;
+      bowRig.style.setProperty('--bow-angle', `${deg.toFixed(1)}deg`);
+      return { bowX, bowY, toX, toY };
+    };
+
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = `dart-target-btn d-${idx}`;
       btn.dataset.optIdx = idx;
+      const isHitTarget = Boolean(s.answered && opt === s.pickedValue);
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
@@ -2086,21 +2373,31 @@ class ChineseAdventureApp {
             <span class="dart-ring-core">${coreHtml}</span>
           </span>
         </span>
+        ${isHitTarget ? `<span class="dart-stuck-arrow" aria-hidden="true">🏹</span>` : ''}
       `;
+
+      btn.onpointerenter = (e) => {
+        if (s.answered || q._dartFlying || (e && e.pointerType && e.pointerType !== 'mouse')) return;
+        aimBowAt(btn);
+      };
+
       btn.onclick = () => {
         if (s.answered || q._dartFlying) return;
         q._dartFlying = true;
-        this.sound.playDartThrow();
-        const r = btn.getBoundingClientRect();
-        const lr = launcher ? launcher.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight - 60, width: 0, height: 0 };
-        const fromX = lr.left + lr.width / 2;
-        const fromY = lr.top + lr.height / 2;
-        const toX = r.left + r.width / 2;
-        const toY = r.top + r.height / 2;
-        this.fx.flyDart(fromX, fromY, toX, toY, () => {
-          q._dartFlying = false;
-          this.handleAnswer(opt === q.answer, opt);
-        });
+        const coords = aimBowAt(btn);
+        if (bowRig) bowRig.classList.add('bow-drawing');
+        this.sound.playBowTwang();
+        setTimeout(() => {
+          if (bowRig) {
+            bowRig.classList.remove('bow-drawing');
+            bowRig.classList.add('bow-released');
+          }
+          this.sound.playDartThrow();
+          this.fx.shootArrow(coords.bowX, coords.bowY, coords.toX, coords.toY, () => {
+            q._dartFlying = false;
+            this.handleAnswer(opt === q.answer, opt);
+          });
+        }, 85);
       };
       wrap.appendChild(btn);
     });
@@ -2109,9 +2406,18 @@ class ChineseAdventureApp {
   renderBubbleMode(arena, q, s) {
     arena.innerHTML = `
       ${this.renderArcadeContextBanner(q, s)}
-      <div class="bubbles-stage" id="bubbles-wrap"></div>
+      <div class="bubble-hero-stage">
+        <div class="bubble-hero-header">
+          <div class="bubble-hero-rig" id="bubble-hero-rig">${getHeroRigByMode('bubble_pop')}</div>
+          <div class="bubble-hero-caption">🫧 點選七彩大泡泡，發射星光魔法針戳破它！</div>
+        </div>
+        <div class="bubbles-stage" id="bubbles-wrap"></div>
+      </div>
     `;
     this.bindArcadeContextBanner(q);
+
+    const sealRig = document.getElementById('bubble-hero-rig');
+    const wandGroup = sealRig ? sealRig.querySelector('.bubble-wand-group') : null;
     const wrap = document.getElementById('bubbles-wrap');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
@@ -2125,10 +2431,27 @@ class ChineseAdventureApp {
       const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
       btn.innerHTML = isPureZy ? renderVerticalZhuyin(opt, 'bubble') : this.fmtText(opt, q);
       btn.onclick = () => {
-        if (s.answered) return;
+        if (s.answered || q._bubbleBusy) return;
+        q._bubbleBusy = true;
+        this.sound.playPop();
         const r = btn.getBoundingClientRect();
-        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 90);
-        this.handleAnswer(opt === q.answer, opt);
+        const originEl = wandGroup || sealRig;
+        const wr = originEl ? originEl.getBoundingClientRect() : { left: r.left, top: r.top - 80, width: 0, height: 0 };
+        this.fx.flyItem(
+          wr.left + wr.width / 2,
+          wr.top + wr.height / 2,
+          r.left + r.width / 2,
+          r.top + r.height / 2,
+          '✨',
+          'rgba(56, 189, 248, 0.9)',
+          () => {
+            q._bubbleBusy = false;
+            this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 100);
+            this.fx.emojiBurst(r.left + r.width / 2, r.top + r.height / 2, ['🫧', '💦', '✨']);
+            this.handleAnswer(opt === q.answer, opt);
+          },
+          36
+        );
       };
       wrap.appendChild(btn);
     });
@@ -2138,32 +2461,44 @@ class ChineseAdventureApp {
     const stepText = s.answered
       ? `✅ ${q.chars.map((c, i) => (i === q.wrongIndex ? `【${q.answer}】` : c)).join('')}`
       : !q.caughtBug
-        ? (useLaser ? '🛸 雷達掃描：點出寫錯的外星蟲字！' : '🐛 點出寫錯的字！')
-        : (useLaser ? '⚡ 發射飛碟雷射，射中正確國字水晶！' : '🔨 敲對的字！');
+        ? (useLaser ? '🛸 第一步：外星飛碟雷達掃描，點出寫錯的字！' : '🔨 第一步：找出句子裡哪個字寫錯了，點它抓出來！')
+        : (useLaser ? '⚡ 第二步：點選正確國字水晶，發射飛碟電漿雷射砲！' : '🔨 第二步：點選正確的國字地鼠，大氣槌敲下去！');
 
-    // Count real (non-punctuation) character ordinal of wrongIndex for accurate kid hints
     let realWrongOrd = 0;
     for (let i = 0; i <= q.wrongIndex; i++) {
       if (!PUNCT_RE.test(q.chars[i])) realWrongOrd++;
     }
 
     arena.innerHTML = `
-      <div class="typo-step-banner ${useLaser ? 'laser-theme' : ''}" id="typo-banner">${escapeHtml(stepText)}</div>
-      <div class="typo-sentence-grid" id="typo-chars"></div>
-      ${useLaser ? `
-        <div class="ufo-laser-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
-          <div class="ufo-ship-header" id="ufo-muzzle">🛸 點能量水晶發射雷射光束！</div>
-          <div class="ufo-crystals-grid" id="ufo-crystals-grid"></div>
+      <div class="typo-hero-stage ${useLaser ? 'is-ufo-stage' : 'is-mole-stage'}">
+        <div class="typo-hero-top">
+          ${useLaser
+            ? `<div class="ufo-hero-rig" id="ufo-hero-rig">${getHeroRigByMode('typo_laser')}</div>`
+            : `<div class="mallet-hero-rig" id="mallet-hero-rig">${getHeroRigByMode('mole')}</div>`}
+          <div class="typo-step-banner ${useLaser ? 'laser-theme' : ''}" id="typo-banner">${escapeHtml(stepText)}</div>
         </div>
-      ` : `
-        <div class="mole-meadow-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
-          <div class="mole-arena-title">🔨 敲對的字！</div>
-          <div class="mole-holes-grid" id="mole-holes-grid"></div>
-        </div>
-      `}
+
+        <div class="typo-sentence-grid" id="typo-chars"></div>
+
+        ${useLaser ? `
+          <div class="ufo-laser-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
+            <div class="ufo-ship-header">⚡ 點選下方能量水晶，發射超粗電漿雷射光束！</div>
+            <div class="ufo-crystals-grid" id="ufo-crystals-grid"></div>
+          </div>
+        ` : `
+          <div class="mole-meadow-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
+            <div class="mole-arena-title">🔨 點選正確國字地鼠，大氣槌重敲修好句子！</div>
+            <div class="mole-holes-grid" id="mole-holes-grid"></div>
+          </div>
+        `}
+      </div>
     `;
 
+    const ufoRig = document.getElementById('ufo-hero-rig');
+    const ufoCore = document.getElementById('ufo-cannon-core');
+    const malletRig = document.getElementById('mallet-hero-rig');
     const charsWrap = document.getElementById('typo-chars');
+
     q.chars.forEach((ch, idx) => {
       if (PUNCT_RE.test(ch)) {
         const span = document.createElement('span');
@@ -2185,17 +2520,34 @@ class ChineseAdventureApp {
         btn.textContent = ch;
       }
       btn.onclick = () => {
-        if (s.answered || q.caughtBug) return;
+        if (s.answered || q.caughtBug || q._typoStep1Busy) return;
         if (idx === q.wrongIndex) {
-          q.caughtBug = true;
-          if (useLaser) this.sound.playUfoLaser();
-          else this.sound.playMolePop();
           const r = btn.getBoundingClientRect();
-          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, useLaser ? '#38bdf8' : '#4ade80', 85);
-          if (this.state.autoRead) {
-            this.sound.speak(useLaser ? '鎖定錯字！請發射雷射選對的字！' : '抓到了！敲對的字！');
+          if (useLaser) {
+            q._typoStep1Busy = true;
+            this.sound.playUfoLaser();
+            if (ufoRig) ufoRig.classList.add('ufo-firing');
+            const cr = (ufoCore || ufoRig) ? (ufoCore || ufoRig).getBoundingClientRect() : { left: r.left, top: r.top - 90, width: 0, height: 0 };
+            this.fx.fireLaserBeam(
+              cr.left + cr.width / 2,
+              cr.top + cr.height / 2,
+              r.left + r.width / 2,
+              r.top + r.height / 2,
+              '#38bdf8',
+              () => {
+                q._typoStep1Busy = false;
+                q.caughtBug = true;
+                if (this.state.autoRead) this.sound.speak('鎖定錯字！請發射雷射選對的字！');
+                this.render();
+              }
+            );
+          } else {
+            q.caughtBug = true;
+            this.sound.playMolePop();
+            this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#4ade80', 90);
+            if (this.state.autoRead) this.sound.speak('抓到了！敲對的字！');
+            this.render();
           }
-          this.render();
         } else {
           q.wrongTaps = (q.wrongTaps || 0) + 1;
           this.sound.playTap();
@@ -2215,7 +2567,6 @@ class ChineseAdventureApp {
 
     if ((q.caughtBug || s.answered) && useLaser) {
       const grid = document.getElementById('ufo-crystals-grid');
-      const muzzle = document.getElementById('ufo-muzzle');
       q.shuffledOptions.forEach((opt, idx) => {
         const cry = document.createElement('button');
         cry.type = 'button';
@@ -2226,7 +2577,7 @@ class ChineseAdventureApp {
           else if (opt === s.pickedValue) cry.classList.add('wrong-pick');
         }
         cry.innerHTML = `
-          <span class="ufo-crystal-gem">🔮</span>
+          <span class="ufo-crystal-gem">💎</span>
           <span class="ufo-crystal-char">${escapeHtml(opt)}</span>
         `;
         cry.onclick = () => {
@@ -2234,21 +2585,19 @@ class ChineseAdventureApp {
           q._laserBusy = true;
           const isOk = opt === q.answer;
           this.sound.playUfoLaser();
+          if (ufoRig) ufoRig.classList.add('ufo-firing');
           const cr = cry.getBoundingClientRect();
-          const mr = muzzle ? muzzle.getBoundingClientRect() : { left: window.innerWidth / 2, top: cr.top - 70, width: 0, height: 0 };
-          this.fx.flyItem(
+          const mr = (ufoCore || ufoRig) ? (ufoCore || ufoRig).getBoundingClientRect() : { left: window.innerWidth / 2, top: cr.top - 100, width: 0, height: 0 };
+          this.fx.fireLaserBeam(
             mr.left + mr.width / 2,
             mr.top + mr.height / 2,
             cr.left + cr.width / 2,
             cr.top + cr.height / 2,
-            '⚡',
-            '#38bdf8',
+            isOk ? '#38bdf8' : '#fb7185',
             () => {
               q._laserBusy = false;
-              this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#38bdf8' : '#fb7185', 95);
               this.handleAnswer(isOk, opt);
-            },
-            24
+            }
           );
         };
         grid.appendChild(cry);
@@ -2266,7 +2615,6 @@ class ChineseAdventureApp {
           else if (opt === s.pickedValue) hole.classList.add('wrong-pick');
         }
         hole.innerHTML = `
-          <span class="mole-hammer">🔨</span>
           <span class="mole-critter">
             <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
             <span class="mole-sign">${escapeHtml(opt)}</span>
@@ -2277,15 +2625,15 @@ class ChineseAdventureApp {
           if (s.answered || q._moleWhacking) return;
           q._moleWhacking = true;
           hole.classList.add('whacking');
+          if (malletRig) malletRig.classList.add('mallet-swing-hide');
           const isOk = opt === q.answer;
           this.sound.playHammerBonk(isOk);
           const r = hole.getBoundingClientRect();
-          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
-          this.fx.screenShake(7);
-          setTimeout(() => {
+          this.fx.screenShake(8);
+          this.fx.swingGiantMallet(r.left + r.width / 2, r.top + r.height * 0.42, isOk, () => {
             q._moleWhacking = false;
             this.handleAnswer(isOk, opt);
-          }, 220);
+          });
         };
         holes.appendChild(hole);
       });
@@ -2317,29 +2665,52 @@ class ChineseAdventureApp {
       `;
 
     arena.innerHTML = `
-      <div class="alchemy-arena">
-        <div style="font-weight:800;color:#475569;font-size:0.96rem;">
-          💡 造詞提示：${this.fmtText(q.wordHint, q)} ${isVertical ? '（上下疊合）' : '（左右組合）'}
+      <div class="alchemy-arena alchemy-hero-arena">
+        <div class="cauldron-hero-rig" id="cauldron-hero-rig">${getHeroRigByMode('alchemy')}</div>
+        <div class="alchemy-workbench">
+          <div style="font-weight:900;color:#475569;font-size:0.96rem;">
+            🧪 造詞提示：${this.fmtText(q.wordHint, q)} ${isVertical ? '（上下疊合）' : '（左右組合）'}
+          </div>
+          ${formulaHtml}
         </div>
-        ${formulaHtml}
       </div>
       <div class="options-grid" id="alchemy-opts"></div>
     `;
+    const potRig = document.getElementById('cauldron-hero-rig');
+    const potMouth = document.getElementById('cauldron-mouth-target');
     const wrap = document.getElementById('alchemy-opts');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'option-card-btn';
+      btn.className = 'option-card-btn alchemy-potion-btn';
       btn.dataset.optIdx = idx;
       btn.style.fontSize = '1.48rem';
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      this.attachOptionContent(btn, opt, q);
+      this.populateArcadeOption(btn, opt, q, '<span class="potion-flask-icon">🧪</span>');
       btn.onclick = () => {
-        if (s.answered) return;
-        this.handleAnswer(opt === q.answer, opt);
+        if (s.answered || q._alchemyBusy) return;
+        q._alchemyBusy = true;
+        this.sound.playCauldronBubble();
+        const br = btn.getBoundingClientRect();
+        const targetEl = potMouth || potRig;
+        const pr = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        this.fx.flyItem(
+          br.left + br.width / 2,
+          br.top + br.height / 2,
+          pr.left + pr.width / 2,
+          pr.top + pr.height / 2,
+          '🧪',
+          'rgba(192, 132, 252, 0.92)',
+          () => {
+            q._alchemyBusy = false;
+            this.fx.shockwave(pr.left + pr.width / 2, pr.top + pr.height / 2, '#c084fc', 100);
+            this.handleAnswer(opt === q.answer, opt);
+          },
+          78
+        );
       };
       wrap.appendChild(btn);
     });
@@ -2348,21 +2719,22 @@ class ChineseAdventureApp {
   renderTrainMode(arena, q, s) {
     arena.innerHTML = `
       ${q.trainRetryMsg && !s.answered ? `<div class="train-retry-banner" id="train-retry-msg">${escapeHtml(q.trainRetryMsg)}</div>` : ''}
-      <div class="train-track-box" id="train-track">
-        <span class="train-engine">🚂</span>
+      <div class="train-track-box ${s.answered && s.isCorrect ? 'train-departed' : ''}" id="train-track">
+        <div class="train-hero-engine" id="train-hero-rig">${getHeroRigByMode('train')}</div>
+        <div class="train-cars-coupled" id="train-cars-coupled"></div>
       </div>
       <div class="train-pool" id="train-pool"></div>
     `;
     const track = document.getElementById('train-track');
+    const coupled = document.getElementById('train-cars-coupled');
     const pool = document.getElementById('train-pool');
 
     const activeList = s.answered ? q.answerOrder.map((text) => ({ text })) : q.hooked;
     if (activeList.length === 0) {
       const hint = document.createElement('span');
-      hint.style.color = '#64748b';
-      hint.style.fontWeight = '800';
-      hint.textContent = '👆 依序點選下面的車廂卡片，掛上彩虹火車頭！（掛錯點車廂可取下）';
-      track.appendChild(hint);
+      hint.className = 'train-empty-hint';
+      hint.textContent = '👆 依序點選下面的車廂卡片，掛上皇家蒸汽火車頭！（掛錯點車廂可取下）';
+      coupled.appendChild(hint);
     } else {
       activeList.forEach((car, hIdx) => {
         const b = document.createElement('button');
@@ -2379,7 +2751,7 @@ class ChineseAdventureApp {
             this.render();
           };
         }
-        track.appendChild(b);
+        coupled.appendChild(b);
       });
     }
 
@@ -2388,11 +2760,12 @@ class ChineseAdventureApp {
         if (car.used) return;
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'toy-btn primary';
+        btn.className = 'toy-btn primary train-pool-car-btn';
         btn.dataset.optIdx = idx;
         btn.style.fontSize = '1.15rem';
         btn.innerHTML = `🚃 ${this.fmtText(car.text, q)}`;
         btn.onclick = () => {
+          if (q._trainBusy) return;
           car.used = true;
           q.hooked.push(car);
           q.trainRetryMsg = '';
@@ -2400,10 +2773,16 @@ class ChineseAdventureApp {
           if (q.hooked.length === q.answerOrder.length) {
             const ok = q.hooked.map((c) => c.text).join('|') === q.answerOrder.join('|');
             if (ok) {
+              q._trainBusy = true;
               this.sound.playTrainHorn();
-              this.handleAnswer(true, q.hooked.map((c) => c.text).join(''));
+              this.render();
+              const trEl = document.getElementById('train-track');
+              if (trEl) trEl.classList.add('train-departing');
+              setTimeout(() => {
+                q._trainBusy = false;
+                this.handleAnswer(true, q.hooked.map((c) => c.text).join(''));
+              }, 260);
             } else if ((q.trainRetries || 0) < 1) {
-              // Give 1 friendly retry before breaking combo!
               q.trainRetries = (q.trainRetries || 0) + 1;
               q.hooked = [];
               q.poolCarriages.forEach((c) => { c.used = false; });
@@ -2428,18 +2807,26 @@ class ChineseAdventureApp {
 
   renderJudgeMode(arena, q, s) {
     arena.innerHTML = `
-      <div class="judge-statement-box">
-        ${this.fmtText(q.statement, q)}
-        <button id="btn-read-stmt" class="toy-btn sm sun" style="margin-left:8px;vertical-align:middle;" title="聽敘述">🔊</button>
-      </div>
-      <div class="judge-buttons-row">
-        <button id="judge-yes" data-opt-idx="0" class="toy-btn mint judge-big-btn">⭕ 對！正確</button>
-        <button id="judge-no" data-opt-idx="1" class="toy-btn coral judge-big-btn">❌ 錯！不對</button>
+      <div class="judge-thunder-stage">
+        <div class="judge-hero-header">
+          <div class="judge-hero-rig" id="judge-hero-rig">${getHeroRigByMode('judge')}</div>
+          <div class="judge-hero-caption">⚡ 高舉雷神審判錘，召喚正義閃電劈中答案！</div>
+        </div>
+        <div class="judge-statement-box">
+          ${this.fmtText(q.statement, q)}
+          <button id="btn-read-stmt" class="toy-btn sm sun" style="margin-left:8px;vertical-align:middle;" title="聽敘述">🔊</button>
+        </div>
+        <div class="judge-buttons-row">
+          <button id="judge-yes" data-opt-idx="0" class="toy-btn mint judge-big-btn">⭕ 對！正確</button>
+          <button id="judge-no" data-opt-idx="1" class="toy-btn coral judge-big-btn">❌ 錯！不對</button>
+        </div>
       </div>
     `;
     const stmtBtn = document.getElementById('btn-read-stmt');
     if (stmtBtn) stmtBtn.onclick = () => this.sound.speak(q.statement);
 
+    const judgeRig = document.getElementById('judge-hero-rig');
+    const boltOrigin = document.getElementById('judge-bolt-origin');
     const yesBtn = document.getElementById('judge-yes');
     const noBtn = document.getElementById('judge-no');
     if (s.answered) {
@@ -2451,25 +2838,59 @@ class ChineseAdventureApp {
         if (s.pickedValue === '⭕') yesBtn.classList.add('wrong-pick');
       }
     }
-    yesBtn.onclick = () => { if (!s.answered) this.handleAnswer(q.answer === '⭕', '⭕'); };
-    noBtn.onclick = () => { if (!s.answered) this.handleAnswer(q.answer === '❌', '❌'); };
+
+    const triggerJudgeBolt = (picked, btnEl) => {
+      if (s.answered || q._judgeBusy) return;
+      q._judgeBusy = true;
+      if (judgeRig) judgeRig.classList.add('hammer-slamming');
+      this.sound.playThunderStrike();
+      this.fx.screenShake(7);
+      const br = btnEl.getBoundingClientRect();
+      const orEl = boltOrigin || judgeRig;
+      const hr = orEl ? orEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+      this.fx.strikeLightning(
+        hr.left + hr.width / 2,
+        hr.top + hr.height / 2,
+        br.left + br.width / 2,
+        br.top + br.height / 2,
+        () => {
+          q._judgeBusy = false;
+          this.handleAnswer(q.answer === picked, picked);
+        }
+      );
+    };
+
+    yesBtn.onclick = () => triggerJudgeBolt('⭕', yesBtn);
+    noBtn.onclick = () => triggerJudgeBolt('❌', noBtn);
   }
 
   renderK2SoundMode(arena, q, s, useDart = true) {
+    const initDeg = typeof q._lastBowDeg === 'number' ? q._lastBowDeg.toFixed(1) : '0';
     arena.innerHTML = `
-      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點我再聽一次！">
+      <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我再聽一次！">
         <span class="k2-clue-pic">${escapeHtml(q.pic || '🌟')}</span>
         <span class="k2-clue-hanzi">${escapeHtml(q.charFocus || '')}</span>
         <span class="k2-speak-tag">🔊 點聽發音</span>
       </button>
       ${useDart ? `
-        <div class="dart-arena-box">
-          <div class="dart-arena-hint">🎯 聽聲音，射中對的注音！</div>
+        <div class="dart-arena-box archery-range-stage" id="archery-stage">
+          <div class="dart-arena-hint">🏹 聽聲音，拉滿黃金神弓射中對的注音！</div>
           <div class="dart-targets-grid" id="k2-sound-wrap"></div>
-          <div class="dart-launcher-bar" id="dart-launcher">🎯 點靶心發射！</div>
+          <div class="archery-bow-dock">
+            <div class="hero-bow-rig" id="hero-bow-rig" style="--bow-angle: ${initDeg}deg;">
+              ${getHeroRigByMode('dart')}
+            </div>
+            <div class="archery-bow-caption">🏹 點標靶拉弓發射黃金羽箭！</div>
+          </div>
         </div>
       ` : `
-        <div class="bubbles-stage" id="k2-sound-wrap"></div>
+        <div class="bubble-hero-stage">
+          <div class="bubble-hero-header">
+            <div class="bubble-hero-rig" id="bubble-hero-rig">${getHeroRigByMode('bubble_pop')}</div>
+            <div class="bubble-hero-caption">🫧 聽聲音，戳破對的七彩注音泡泡！</div>
+          </div>
+          <div class="bubbles-stage" id="k2-sound-wrap"></div>
+        </div>
       `}
     `;
 
@@ -2482,13 +2903,31 @@ class ChineseAdventureApp {
     }
 
     const wrap = document.getElementById('k2-sound-wrap');
-    const launcher = document.getElementById('dart-launcher');
+    const bowRig = document.getElementById('hero-bow-rig');
+    const sealRig = document.getElementById('bubble-hero-rig');
+    const wandGroup = sealRig ? sealRig.querySelector('.bubble-wand-group') : null;
+
+    const aimBowAt = (btnEl) => {
+      if (!bowRig || !btnEl) return { bowX: window.innerWidth / 2, bowY: window.innerHeight - 90, toX: 0, toY: 0 };
+      const br = bowRig.getBoundingClientRect();
+      const tr = btnEl.getBoundingClientRect();
+      const bowX = br.left + br.width / 2;
+      const bowY = br.top + br.height * 0.45;
+      const toX = tr.left + tr.width / 2;
+      const toY = tr.top + tr.height / 2;
+      const deg = Math.max(-42, Math.min(42, (Math.atan2(toX - bowX, Math.max(40, bowY - toY)) * 180) / Math.PI));
+      q._lastBowDeg = deg;
+      bowRig.style.setProperty('--bow-angle', `${deg.toFixed(1)}deg`);
+      return { bowX, bowY, toX, toY };
+    };
+
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.dataset.optIdx = idx;
       if (useDart) {
         btn.className = `dart-target-btn d-${idx}`;
+        const isHitTarget = Boolean(s.answered && opt === s.pickedValue);
         if (s.answered) {
           if (opt === q.answer) btn.classList.add('correct-pick');
           else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
@@ -2499,17 +2938,29 @@ class ChineseAdventureApp {
               <span class="dart-ring-core">${renderVerticalZhuyin(opt, 'dart')}</span>
             </span>
           </span>
+          ${isHitTarget ? `<span class="dart-stuck-arrow" aria-hidden="true">🏹</span>` : ''}
         `;
+        btn.onpointerenter = (e) => {
+          if (s.answered || q._dartFlying || (e && e.pointerType && e.pointerType !== 'mouse')) return;
+          aimBowAt(btn);
+        };
         btn.onclick = () => {
           if (s.answered || q._dartFlying) return;
           q._dartFlying = true;
-          this.sound.playDartThrow();
-          const r = btn.getBoundingClientRect();
-          const lr = launcher ? launcher.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight - 60, width: 0, height: 0 };
-          this.fx.flyDart(lr.left + lr.width / 2, lr.top + lr.height / 2, r.left + r.width / 2, r.top + r.height / 2, () => {
-            q._dartFlying = false;
-            this.handleAnswer(opt === q.answer, opt);
-          });
+          const coords = aimBowAt(btn);
+          if (bowRig) bowRig.classList.add('bow-drawing');
+          this.sound.playBowTwang();
+          setTimeout(() => {
+            if (bowRig) {
+              bowRig.classList.remove('bow-drawing');
+              bowRig.classList.add('bow-released');
+            }
+            this.sound.playDartThrow();
+            this.fx.shootArrow(coords.bowX, coords.bowY, coords.toX, coords.toY, () => {
+              q._dartFlying = false;
+              this.handleAnswer(opt === q.answer, opt);
+            });
+          }, 85);
         };
       } else {
         btn.className = 'bubble-opt-btn';
@@ -2519,10 +2970,27 @@ class ChineseAdventureApp {
         }
         btn.innerHTML = renderVerticalZhuyin(opt, 'bubble');
         btn.onclick = () => {
-          if (s.answered) return;
+          if (s.answered || q._bubbleBusy) return;
+          q._bubbleBusy = true;
+          this.sound.playPop();
           const r = btn.getBoundingClientRect();
-          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 90);
-          this.handleAnswer(opt === q.answer, opt);
+          const originEl = wandGroup || sealRig;
+          const wr = originEl ? originEl.getBoundingClientRect() : { left: r.left, top: r.top - 80, width: 0, height: 0 };
+          this.fx.flyItem(
+            wr.left + wr.width / 2,
+            wr.top + wr.height / 2,
+            r.left + r.width / 2,
+            r.top + r.height / 2,
+            '✨',
+            'rgba(56, 189, 248, 0.9)',
+            () => {
+              q._bubbleBusy = false;
+              this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#38bdf8', 100);
+              this.fx.emojiBurst(r.left + r.width / 2, r.top + r.height / 2, ['🫧', '💦', '✨']);
+              this.handleAnswer(opt === q.answer, opt);
+            },
+            36
+          );
         };
       }
       wrap.appendChild(btn);
@@ -2538,20 +3006,23 @@ class ChineseAdventureApp {
     const toneHtml = q.toneLabel ? `<span class="k2-tone-pill">${escapeHtml(q.toneLabel)}</span>` : '';
 
     arena.innerHTML = `
-      <div class="alchemy-arena k2-spell-arena">
-        <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
-          <span class="k2-clue-pic">${escapeHtml(q.pic || '🧪')}</span>
-          <span class="k2-speak-tag">🔊 點聽拼音</span>
-        </button>
-        <div class="alchemy-formula">
-          ${slot1Html}
-          <div class="alchemy-plus">＋</div>
-          ${slot2Html}
-          ${toneHtml}
-          <div class="alchemy-plus">＝</div>
-          <button type="button" class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}" id="btn-k2-goal-hanzi" title="點我聽國字發音">
-            ${s.answered ? renderCharWithZhuyin(q.resultChar, q.fullZhuyin, 'k2ruby') : escapeHtml(q.resultChar)}
+      <div class="alchemy-arena k2-spell-arena alchemy-hero-arena">
+        <div class="cauldron-hero-rig" id="cauldron-hero-rig">${getHeroRigByMode('alchemy')}</div>
+        <div class="alchemy-workbench">
+          <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
+            <span class="k2-clue-pic">${escapeHtml(q.pic || '🧪')}</span>
+            <span class="k2-speak-tag">🔊 點聽拼音</span>
           </button>
+          <div class="alchemy-formula">
+            ${slot1Html}
+            <div class="alchemy-plus">＋</div>
+            ${slot2Html}
+            ${toneHtml}
+            <div class="alchemy-plus">＝</div>
+            <button type="button" class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}" id="btn-k2-goal-hanzi" title="點我聽國字發音">
+              ${s.answered ? renderCharWithZhuyin(q.resultChar, q.fullZhuyin, 'k2ruby') : escapeHtml(q.resultChar)}
+            </button>
+          </div>
         </div>
       </div>
       <div class="options-grid k2-spell-opts" id="k2-spell-opts"></div>
@@ -2559,17 +3030,20 @@ class ChineseAdventureApp {
 
     this.bindArcadeContextBanner(q);
 
+    const potRig = document.getElementById('cauldron-hero-rig');
+    const potMouth = document.getElementById('cauldron-mouth-target');
     const wrap = document.getElementById('k2-spell-opts');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'option-card-btn k2-zy-card-btn';
+      btn.className = 'option-card-btn k2-zy-card-btn alchemy-potion-btn';
       btn.dataset.optIdx = idx;
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
       btn.innerHTML = `
+        <span class="potion-flask-icon">🧪</span>
         <span class="k2-zy-opt-center">${renderVerticalZhuyin(opt, 'bubble')}</span>
         <span role="button" tabindex="0" class="opt-speak-chip" title="聽注音發音">🔊</span>
       `;
@@ -2582,8 +3056,26 @@ class ChineseAdventureApp {
         };
       }
       btn.onclick = () => {
-        if (s.answered) return;
-        this.handleAnswer(opt === q.answer, opt);
+        if (s.answered || q._alchemyBusy) return;
+        q._alchemyBusy = true;
+        this.sound.playCauldronBubble();
+        const br = btn.getBoundingClientRect();
+        const targetEl = potMouth || potRig;
+        const pr = targetEl ? targetEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        this.fx.flyItem(
+          br.left + br.width / 2,
+          br.top + br.height / 2,
+          pr.left + pr.width / 2,
+          pr.top + pr.height / 2,
+          '🧪',
+          'rgba(192, 132, 252, 0.92)',
+          () => {
+            q._alchemyBusy = false;
+            this.fx.shockwave(pr.left + pr.width / 2, pr.top + pr.height / 2, '#c084fc', 100);
+            this.handleAnswer(opt === q.answer, opt);
+          },
+          78
+        );
       };
       wrap.appendChild(btn);
     });
@@ -2591,13 +3083,16 @@ class ChineseAdventureApp {
 
   renderK2MoleMode(arena, q, s) {
     arena.innerHTML = `
-      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點我聽聲音提示！">
+      <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽聲音提示！">
         <span class="k2-clue-pic">${escapeHtml(q.pic || '🌟')}</span>
         ${q.hintZhuyin ? `<span class="k2-mole-zy-badge">${renderVerticalZhuyin(q.hintZhuyin, 'bubble')}</span>` : ''}
         <span class="k2-speak-tag">🔊 點聽找國字</span>
       </button>
       <div class="mole-meadow-arena">
-        <div class="mole-arena-title">🔨 敲出對的國字地鼠！</div>
+        <div class="mole-hero-header">
+          <div class="mallet-hero-rig" id="mallet-hero-rig">${getHeroRigByMode('mole')}</div>
+          <div class="mole-arena-title">🔨 點選對的國字地鼠，大氣槌敲下去！</div>
+        </div>
         <div class="mole-holes-grid" id="mole-holes-grid"></div>
       </div>
     `;
@@ -2610,6 +3105,7 @@ class ChineseAdventureApp {
       };
     }
 
+    const malletRig = document.getElementById('mallet-hero-rig');
     const holes = document.getElementById('mole-holes-grid');
     const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
     q.shuffledOptions.forEach((opt, idx) => {
@@ -2622,7 +3118,6 @@ class ChineseAdventureApp {
         else if (opt === s.pickedValue) hole.classList.add('wrong-pick');
       }
       hole.innerHTML = `
-        <span class="mole-hammer">🔨</span>
         <span class="mole-critter">
           <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
           <span class="mole-sign k2-mole-hanzi">${escapeHtml(opt)}</span>
@@ -2633,19 +3128,20 @@ class ChineseAdventureApp {
         if (s.answered || q._moleWhacking) return;
         q._moleWhacking = true;
         hole.classList.add('whacking');
+        if (malletRig) malletRig.classList.add('mallet-swing-hide');
         const isOk = opt === q.answer;
         this.sound.playHammerBonk(isOk);
         const r = hole.getBoundingClientRect();
-        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
-        this.fx.screenShake(7);
-        setTimeout(() => {
+        this.fx.screenShake(8);
+        this.fx.swingGiantMallet(r.left + r.width / 2, r.top + r.height * 0.42, isOk, () => {
           q._moleWhacking = false;
           this.handleAnswer(isOk, opt);
-        }, 220);
+        });
       };
       holes.appendChild(hole);
     });
   }
+
 
   renderVictory(deck) {
     const s = this.session;
