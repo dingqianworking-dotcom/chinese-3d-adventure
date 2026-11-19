@@ -35,6 +35,18 @@ for (const lid of lessonIds) {
   lessonsArt[lid] = toDataUri(`src/assets/lessons/${lid}.webp`, 'image/webp');
 }
 
+// Official Taiwan Ministry of Education《國語注音符號手冊-開放部件》37 studio human recordings (CC BY 4.0)
+const zhuyinAudio = {};
+for (let cp = 0x3105; cp <= 0x3129; cp++) {
+  const hex = cp.toString(16);
+  const sym = String.fromCodePoint(cp);
+  const uri = toDataUri(`src/assets/zhuyin_moe/${hex}.mp3`, 'audio/mpeg');
+  if (!uri) {
+    throw new Error(`Missing official MOE audio file for ${sym} (${hex}.mp3)`);
+  }
+  zhuyinAudio[sym] = uri;
+}
+
 const artCss = `:root {
   --art-sky-kingdom: url("${skyUri}");
   --art-meadow-arena: url("${meadowUri}");
@@ -49,6 +61,7 @@ let jsBundle = `(function() {\n  const __mods = {};\n  const __cache = {};\n  fu
 for (const [id, code] of Object.entries(modules)) {
   jsBundle += `  __mods[${JSON.stringify(id)}] = function(require, module, exports) {\n${code}\n  };\n`;
 }
+jsBundle += `  window.__ZHUYIN_AUDIO__ = ${JSON.stringify(zhuyinAudio)};\n`;
 jsBundle += `  window.__ART__ = {
     sky: ${JSON.stringify(skyUri)},
     meadow: ${JSON.stringify(meadowUri)},
@@ -66,4 +79,4 @@ const outHtml = tpl
 fs.mkdirSync(path.join(__dirname, 'dist'), { recursive: true });
 const outPath = path.join(__dirname, 'dist/index.html');
 fs.writeFileSync(outPath, outHtml, 'utf8');
-console.log('Built:', outPath, 'Bytes:', Buffer.byteLength(outHtml));
+console.log('Built:', outPath, 'Bytes:', Buffer.byteLength(outHtml), 'MOE Symbols:', Object.keys(zhuyinAudio).length);

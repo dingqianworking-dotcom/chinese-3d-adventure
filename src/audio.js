@@ -1,5 +1,8 @@
-// Web Audio API Synthesizer + Taiwan Mandarin TTS Helper (Upgraded after Kid Playtest)
+// Web Audio API Synthesizer + Official Taiwan MOE Bopomofo Human Recordings (CC BY 4.0) + Taiwan Mandarin TTS Engine
 const RADICAL_SPEECH_MAP = [
+  ['ㄕㄣˊ ˙ㄇㄜ', '什麼'],
+  [' vs ', ' 對比 '],
+  ['/', '、'],
   ['扌', '提手旁'],
   ['氵', '三點水'],
   ['糹', '糸部'],
@@ -16,19 +19,78 @@ const RADICAL_SPEECH_MAP = [
   ['＋', '加'],
 ];
 
-const BOPOMOFO_SPEECH_MAP = {
-  'ㄅ': '玻', 'ㄆ': '坡', 'ㄇ': '摸', 'ㄈ': '佛',
-  'ㄉ': '得', 'ㄊ': '特', 'ㄋ': '訥', 'ㄌ': '勒',
-  'ㄍ': '哥', 'ㄎ': '科', 'ㄏ': '喝',
-  'ㄐ': '基', 'ㄑ': '欺', 'ㄒ': '希',
-  'ㄓ': '知', 'ㄔ': '蚩', 'ㄕ': '詩', 'ㄖ': '日',
-  'ㄗ': '資', 'ㄘ': '雌', 'ㄙ': '思',
-  'ㄧ': '衣', 'ㄨ': '屋', 'ㄩ': '迂',
-  'ㄚ': '啊', 'ㄛ': '喔', 'ㄜ': '鵝', 'ㄝ': '耶',
-  'ㄞ': '哀', 'ㄟ': '欸', 'ㄠ': '熬', 'ㄡ': '歐',
-  'ㄢ': '安', 'ㄣ': '恩', 'ㄤ': '昂', 'ㄥ': '亨',
-  'ㄦ': '兒',
+// Unambiguous single-reading (單音字, non-polyphonic) Taiwan Mandarin characters
+// for multi-symbol or toned Bopomofo syllables appearing in G1/G2/K2 explanations & tips.
+// All 37 standalone untoned Bopomofo symbols (ㄅ–ㄩ) ALWAYS play official Taiwan MOE studio recordings!
+const ZHUYIN_SYLLABLE_TO_HANZI = {
+  '˙ㄇㄜ': '麼',
+  '˙ㄉㄜ': '的',
+  'ㄅㄚˇ': '把', 'ㄅㄚˋ': '爸', 'ㄅㄠˋ': '抱', 'ㄅㄨˊ': '拔', 'ㄅㄨˋ': '布',
+  'ㄆㄠˇ': '跑', 'ㄆㄠˋ': '泡', 'ㄆㄥˊ': '朋',
+  'ㄇㄚ': '媽', 'ㄇㄚˇ': '馬', 'ㄇㄠ': '貓', 'ㄇㄢˇ': '滿', 'ㄇㄣˊ': '門',
+  'ㄇㄧˇ': '米', 'ㄇㄧˋ': '蜜', 'ㄇㄧㄢˊ': '綿', 'ㄇㄨˋ': '木',
+  'ㄈㄟ': '飛', 'ㄈㄤˊ': '房', 'ㄈㄥ': '風', 'ㄈㄨˊ': '福',
+  'ㄉㄚˋ': '大', 'ㄉㄞˋ': '帶', 'ㄉㄠˋ': '到', 'ㄉㄡ': '兜', 'ㄉㄥ': '燈',
+  'ㄉㄧˋ': '地', 'ㄉㄧㄝˊ': '蝶', 'ㄉㄧㄠ': '雕', 'ㄉㄧㄠˋ': '釣',
+  'ㄉㄧㄥ': '盯', 'ㄉㄧㄥˋ': '定', 'ㄉㄨ': '督', 'ㄉㄨˇ': '賭', 'ㄉㄨㄛ': '多',
+  'ㄊㄢˇ': '毯', 'ㄊㄤ': '湯', 'ㄊㄤˋ': '燙', 'ㄊㄧㄝ': '貼',
+  'ㄊㄧㄠˊ': '條', 'ㄊㄧㄠˋ': '跳', 'ㄊㄧㄢ': '天', 'ㄊㄧㄥ': '聽',
+  'ㄊㄨ': '禿', 'ㄊㄨˋ': '兔', 'ㄊㄨㄛ': '拖', 'ㄊㄨㄢˊ': '團',
+  'ㄋㄚˇ': '哪', 'ㄋㄚˋ': '那', 'ㄋㄧㄠˇ': '鳥', 'ㄋㄧㄡˊ': '牛',
+  'ㄋㄨㄛˋ': '糯', 'ㄋㄨㄢˇ': '暖',
+  'ㄌㄜˋ': '樂', 'ㄌㄞˊ': '來', 'ㄌㄧˇ': '裡', 'ㄌㄧㄡˊ': '流',
+  'ㄌㄧㄢˊ': '連', 'ㄌㄧㄤˇ': '兩', 'ㄌㄨˋ': '路', 'ㄌㄨㄛˋ': '落',
+  'ㄍㄜˊ': '格', 'ㄍㄠ': '高', 'ㄍㄡˇ': '狗', 'ㄍㄢˇ': '趕', 'ㄍㄤ': '剛',
+  'ㄎㄜˇ': '渴', 'ㄎㄞ': '開', 'ㄎㄡˇ': '口',
+  'ㄏㄜ': '喝', 'ㄏㄜˊ': '河', 'ㄏㄠˇ': '好', 'ㄏㄢˋ': '汗',
+  'ㄏㄨˊ': '壺', 'ㄏㄨㄚ': '花', 'ㄏㄨㄚˋ': '畫', 'ㄏㄨㄛˇ': '火',
+  'ㄏㄨㄛˊ': '活', 'ㄏㄨㄛˋ': '貨', 'ㄏㄨㄟˊ': '回', 'ㄏㄨㄥˊ': '紅',
+  'ㄐㄧ': '雞', 'ㄐㄧㄚ': '家', 'ㄐㄧㄚˇ': '甲', 'ㄐㄧㄚˋ': '嫁',
+  'ㄐㄧㄠ': '交', 'ㄐㄧㄠˇ': '絞', 'ㄐㄧㄢ': '尖', 'ㄐㄧㄥˋ': '靜',
+  'ㄐㄩㄝˊ': '決',
+  'ㄑㄧ': '七', 'ㄑㄧˇ': '起', 'ㄑㄧㄚˋ': '恰', 'ㄑㄧㄠ': '敲',
+  'ㄑㄧㄠˇ': '巧', 'ㄑㄧㄠˋ': '俏', 'ㄑㄧㄡˊ': '球', 'ㄑㄧㄢˊ': '前',
+  'ㄑㄧㄤˋ': '嗆', 'ㄑㄧㄥˇ': '請',
+  'ㄒㄧ': '西', 'ㄒㄧㄠ': '消', 'ㄒㄧㄠˇ': '小', 'ㄒㄧㄠˋ': '笑',
+  'ㄒㄧㄢˋ': '線', 'ㄒㄧㄤˋ': '象', 'ㄒㄧㄣ': '心', 'ㄒㄧㄥ': '星', 'ㄒㄧㄥˋ': '姓',
+  'ㄒㄧㄚˋ': '下',
+  'ㄓㄠ': '招', 'ㄓㄡ': '州', 'ㄓㄢ': '沾', 'ㄓㄤ': '張', 'ㄓㄤˋ': '丈',
+  'ㄓㄥˋ': '正', 'ㄓㄨ': '珠', 'ㄓㄨˊ': '竹', 'ㄓㄨˇ': '主', 'ㄓㄨㄤˋ': '壯',
+  'ㄔㄜ': '車', 'ㄔㄤ': '昌', 'ㄔㄤˇ': '場', 'ㄔㄤˋ': '唱',
+  'ㄔㄨㄟ': '吹', 'ㄔㄨㄢˊ': '船', 'ㄔㄨㄣ': '春', 'ㄔㄨㄤˊ': '床', 'ㄔㄨㄤˋ': '創',
+  'ㄕˊ': '十', 'ㄕˋ': '是', 'ㄕㄜˊ': '蛇', 'ㄕㄡˇ': '手', 'ㄕㄡˋ': '受',
+  'ㄕㄢ': '山', 'ㄕㄣ': '深', 'ㄕㄣˊ': '神', 'ㄕㄤˋ': '上', 'ㄕㄥ': '生',
+  'ㄕㄨˋ': '樹', 'ㄕㄨㄛˋ': '碩', 'ㄕㄨㄟˇ': '水',
+  'ㄖˋ': '日', 'ㄖㄡˋ': '肉', 'ㄖㄣˊ': '人', 'ㄖㄨㄛˋ': '弱', 'ㄖㄨㄥˊ': '容',
+  'ㄗㄠˇ': '早', 'ㄗㄣˇ': '怎', 'ㄗㄤ': '髒',
+  'ㄘㄞˊ': '才', 'ㄘㄞˇ': '彩', 'ㄘㄠˇ': '草',
+  'ㄙˋ': '四', 'ㄙㄡˋ': '嗽', 'ㄙㄢ': '三', 'ㄙㄨㄟˊ': '隨',
+  'ㄜˊ': '鵝', 'ㄜˋ': '餓', 'ㄞˋ': '愛', 'ㄦˇ': '耳', 'ㄦˋ': '二',
+  'ㄧˊ': '移', 'ㄧˇ': '椅', 'ㄧˋ': '意', 'ㄧㄚ': '鴨',
+  'ㄧㄠ': '腰', 'ㄧㄠˊ': '搖', 'ㄧㄠˇ': '咬', 'ㄧㄠˋ': '耀',
+  'ㄧㄡ': '優', 'ㄧㄡˊ': '郵', 'ㄧㄡˇ': '友', 'ㄧㄣ': '音',
+  'ㄧㄤˊ': '羊', 'ㄧㄥˇ': '影',
+  'ㄨˊ': '吳', 'ㄨˇ': '五', 'ㄨˋ': '霧', 'ㄨㄚ': '蛙',
+  'ㄨㄟ': '威', 'ㄨㄟˊ': '圍', 'ㄨㄟˇ': '尾', 'ㄨㄟˋ': '位',
+  'ㄨㄢˊ': '完', 'ㄨㄤˋ': '忘',
+  'ㄩˊ': '魚', 'ㄩˇ': '雨', 'ㄩㄝˋ': '月', 'ㄩㄥˇ': '泳',
 };
+
+const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣]/gu;
+const ZHUYIN_TOKEN_RE = /(?:˙)?[\u3105-\u3129]+(?:[ˊˇˋ˙])?/g;
+const PURE_PUNCT_RE = /^[\s，。！？、；：「」『』（）()—…,.!?;:'"]+$/;
+
+function base64DataUriToArrayBuffer(uri) {
+  const commaIdx = uri.indexOf(',');
+  const b64 = commaIdx >= 0 ? uri.slice(commaIdx + 1) : uri;
+  const bin = atob(b64);
+  const len = bin.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = bin.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
 
 class SoundEngine {
   constructor() {
@@ -39,6 +101,14 @@ class SoundEngine {
     this.bgmTimer = null;
     this.bgmStep = 0;
     this.voices = [];
+    this.moeBuffers = new Map();
+    this._decodingPromises = new Map();
+    this._activeMoeSources = new Set();
+    this._activeHtmlAudios = new Set();
+    this._speakSeqId = 0;
+    this._warmedUpMoe = false;
+    this.playedMoeSymbols = [];
+
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       const loadVoices = () => {
         this.voices = window.speechSynthesis.getVoices() || [];
@@ -58,9 +128,132 @@ class SoundEngine {
       if (this.ctx && this.ctx.state === 'suspended') {
         this.ctx.resume().catch(() => {});
       }
+      if (this.ctx && !this._warmedUpMoe) {
+        this._warmedUpMoe = true;
+        this.warmupMoeAudio();
+      }
       return this.ctx;
     } catch (_) {
       return null;
+    }
+  }
+
+  decodeMoeSymbol(sym) {
+    if (this.moeBuffers.has(sym)) {
+      return Promise.resolve(this.moeBuffers.get(sym));
+    }
+    if (this._decodingPromises.has(sym)) {
+      return this._decodingPromises.get(sym);
+    }
+    const map = typeof window !== 'undefined' && window.__ZHUYIN_AUDIO__;
+    const uri = map && map[sym];
+    const ctx = this.ensureCtx();
+    if (!uri || !ctx) return Promise.resolve(null);
+
+    const p = new Promise((resolve) => {
+      try {
+        const ab = base64DataUriToArrayBuffer(uri);
+        let settled = false;
+        const finish = (buf) => {
+          if (settled) return;
+          settled = true;
+          if (buf) this.moeBuffers.set(sym, buf);
+          this._decodingPromises.delete(sym);
+          resolve(buf || null);
+        };
+        const maybePromise = ctx.decodeAudioData(
+          ab.slice(0),
+          (buf) => finish(buf),
+          () => finish(null)
+        );
+        if (maybePromise && typeof maybePromise.then === 'function') {
+          maybePromise.then((buf) => finish(buf)).catch(() => finish(null));
+        }
+      } catch (_) {
+        this._decodingPromises.delete(sym);
+        resolve(null);
+      }
+    });
+    this._decodingPromises.set(sym, p);
+    return p;
+  }
+
+  warmupMoeAudio() {
+    if (typeof window === 'undefined' || !window.__ZHUYIN_AUDIO__) return;
+    const keys = Object.keys(window.__ZHUYIN_AUDIO__);
+    let idx = 0;
+    const step = () => {
+      if (idx >= keys.length) return;
+      const batch = keys.slice(idx, idx + 6);
+      idx += 6;
+      Promise.all(batch.map((k) => this.decodeMoeSymbol(k))).finally(() => {
+        if (idx < keys.length) setTimeout(step, 18);
+      });
+    };
+    setTimeout(step, 10);
+  }
+
+  async playZhuyinSymbol(sym, gainVal = 1.05) {
+    if (this.muted || !sym) return;
+    const map = typeof window !== 'undefined' && window.__ZHUYIN_AUDIO__;
+    const uri = map && map[sym];
+    if (!uri) return;
+
+    this.playedMoeSymbols.push({ sym, t: Date.now() });
+    if (this.playedMoeSymbols.length > 120) {
+      this.playedMoeSymbols.splice(0, this.playedMoeSymbols.length - 120);
+    }
+
+    const buf = await this.decodeMoeSymbol(sym);
+    const ctx = this.ensureCtx();
+    if (buf && ctx) {
+      await new Promise((resolve) => {
+        let done = false;
+        let timer = null;
+        const src = ctx.createBufferSource();
+        const gain = ctx.createGain();
+        src.buffer = buf;
+        gain.gain.value = gainVal;
+        src.connect(gain);
+        gain.connect(ctx.destination);
+        this._activeMoeSources.add(src);
+
+        const finish = () => {
+          if (done) return;
+          done = true;
+          if (timer) clearTimeout(timer);
+          this._activeMoeSources.delete(src);
+          resolve();
+        };
+        src.onended = finish;
+        timer = setTimeout(finish, Math.ceil(buf.duration * 1000) + 180);
+        try {
+          src.start(0);
+        } catch (_) {
+          finish();
+        }
+      });
+      return;
+    }
+
+    // Fallback to HTML5 Audio if Web Audio decoding is unavailable
+    if (typeof Audio !== 'undefined') {
+      await new Promise((resolve) => {
+        let done = false;
+        const a = new Audio(uri);
+        a.volume = 1.0;
+        this._activeHtmlAudios.add(a);
+        const finish = () => {
+          if (done) return;
+          done = true;
+          this._activeHtmlAudios.delete(a);
+          resolve();
+        };
+        a.onended = finish;
+        a.onerror = finish;
+        setTimeout(finish, 950);
+        a.play().catch(finish);
+      });
     }
   }
 
@@ -129,80 +322,80 @@ class SoundEngine {
 
   playLessonSFX(lessonId) {
     switch (lessonId) {
-      case 'k2_L1': // 親親一家人: Warm music-box heart chord
+      case 'k2_L1':
         [523.25, 659.25, 783.99, 1046.5].forEach((n, i) => this.tone(n, 0.16, 'sine', 0.16, i * 0.055));
         break;
-      case 'k2_L2': // 快樂動物村: Playful bunny hop + bird chirp
+      case 'k2_L2':
         this.tone(320, 0.11, 'sine', 0.17, 0, 740);
         this.tone(987.77, 0.09, 'triangle', 0.15, 0.12, 1318.5);
         break;
-      case 'k2_L3': // 汪汪喵喵派對: Cute puppy-kitty bell bounce
+      case 'k2_L3':
         this.tone(587.33, 0.1, 'triangle', 0.17, 0, 783.99);
         this.tone(880, 0.14, 'sine', 0.16, 0.09, 1174.66);
         break;
-      case 'k2_L4': // 小雞吃西瓜: Chick peep-peep!
+      case 'k2_L4':
         [1046.5, 1318.5, 1567.98].forEach((n, i) => this.tone(n, 0.075, 'sine', 0.15, i * 0.065, n * 1.18));
         break;
-      case 'k2_L5': // 太陽與山水: Golden sunbeam & stream chime
+      case 'k2_L5':
         [523.25, 587.33, 783.99, 1046.5, 1318.5].forEach((n, i) => this.tone(n, 0.13, 'triangle', 0.15, i * 0.045));
         break;
-      case 'k2_L6': // 森林數一數: 1-2-3-4 Toy Xylophone scale!
+      case 'k2_L6':
         [523.25, 587.33, 659.25, 698.46, 783.99].forEach((n, i) => this.tone(n, 0.1, 'triangle', 0.17, i * 0.055));
         break;
-      case 'k2_L7': // 月亮綿羊島: Dreamy celesta lullaby twinkle
+      case 'k2_L7':
         [659.25, 987.77, 1318.5, 1567.98].forEach((n, i) => this.tone(n, 0.18, 'sine', 0.14, i * 0.06));
         break;
-      case 'k2_L8': // 象形識字王: Royal xylophone fanfare
+      case 'k2_L8':
         [523.25, 659.25, 783.99, 1046.5, 1567.98].forEach((n, i) => this.tone(n, 0.15, 'triangle', 0.17, i * 0.05));
         break;
-      case 'g1_L1': // 小船: Ocean wave + boat bell
+      case 'g1_L1':
         this.tone(320, 0.18, 'sine', 0.14, 0, 520);
         this.tone(880, 0.22, 'triangle', 0.16, 0.08);
         this.tone(1174.66, 0.26, 'sine', 0.14, 0.16);
         break;
-      case 'g1_L2': // 印手印: Rainbow harp glissando
+      case 'g1_L2':
         [523.25, 587.33, 659.25, 783.99, 1046.5].forEach((n, i) => this.tone(n, 0.12, 'triangle', 0.14, i * 0.04));
         break;
-      case 'g1_L3': // 吹泡泡: Rapid bubbly pops
+      case 'g1_L3':
         [440, 587, 784, 1046].forEach((n, i) => this.tone(n, 0.08, 'sine', 0.15, i * 0.055, n * 1.45));
         break;
-      case 'g1_L4': // 你好: Mountain echo chime (loud -> soft -> softer)
+      case 'g1_L4':
         this.tone(659.25, 0.16, 'triangle', 0.18, 0);
         this.tone(880, 0.18, 'sine', 0.16, 0.08);
         this.tone(659.25, 0.16, 'sine', 0.09, 0.28);
         this.tone(880, 0.18, 'sine', 0.08, 0.36);
         break;
-      case 'g1_L5': // 外星人: Cute UFO sci-fi warble
+      case 'g1_L5':
         this.tone(520, 0.12, 'sine', 0.15, 0, 1180);
         this.tone(1180, 0.12, 'sine', 0.14, 0.11, 680);
         this.tone(960, 0.14, 'triangle', 0.14, 0.21, 1480);
         break;
-      case 'g1_L6': // 小金魚: Underwater bloop-bloop
+      case 'g1_L6':
         [360, 480, 640].forEach((n, i) => this.tone(n, 0.09, 'sine', 0.16, i * 0.07, n * 1.6));
         break;
-      case 'g1_L7': // 紅紅的春: Festive pentatonic New Year chime
+      case 'g1_L7':
         [587.33, 659.25, 783.99, 880, 1174.66].forEach((n, i) => this.tone(n, 0.14, 'triangle', 0.17, i * 0.05));
         break;
-      case 'g2_L7': // 兔子: Boing-boing hop
+      case 'g2_L7':
         this.tone(260, 0.13, 'sine', 0.18, 0, 680);
         this.tone(320, 0.14, 'sine', 0.16, 0.13, 820);
         break;
-      case 'g2_L8': // 角和腳: Shimmering golden antlers
+      case 'g2_L8':
         [783.99, 987.77, 1174.66, 1567.98].forEach((n, i) => this.tone(n, 0.14, 'sine', 0.14, i * 0.05));
         break;
-      case 'g2_L9': // 赤腳國王: Royal fanfare trumpet
+      case 'g2_L9':
         this.tone(523.25, 0.11, 'sawtooth', 0.1, 0);
         this.tone(659.25, 0.11, 'sawtooth', 0.1, 0.09);
         this.tone(783.99, 0.24, 'triangle', 0.18, 0.18);
         break;
-      case 'g2_L10': // 去農場玩: Happy farm cowbell/chime
+      case 'g2_L10':
         this.tone(587.33, 0.1, 'triangle', 0.16, 0);
         this.tone(880, 0.16, 'triangle', 0.16, 0.09);
         break;
-      case 'g2_L11': // 幸福湯圓: Warm cozy chord
+      case 'g2_L11':
         [523.25, 659.25, 783.99, 987.77].forEach((n, i) => this.tone(n, 0.22, 'sine', 0.13, i * 0.04));
         break;
-      case 'g2_L12': // 到野外上課: Rainbow waterfall arpeggio
+      case 'g2_L12':
         [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98].forEach((n, i) => this.tone(n, 0.11, 'sine', 0.13, i * 0.038));
         break;
       default:
@@ -290,44 +483,159 @@ class SoundEngine {
   }
 
   stopSpeak() {
+    this._speakSeqId++;
+    for (const src of this._activeMoeSources) {
+      try {
+        src.stop(0);
+      } catch (_) {}
+    }
+    this._activeMoeSources.clear();
+    for (const a of this._activeHtmlAudios) {
+      try {
+        a.pause();
+        a.currentTime = 0;
+      } catch (_) {}
+    }
+    this._activeHtmlAudios.clear();
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+      try {
+        window.speechSynthesis.cancel();
+      } catch (_) {}
     }
   }
 
-  speak(text, rate = 0.95) {
-    if (this.muted || !text) return;
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    try {
-      window.speechSynthesis.cancel();
-      let clean = String(text);
-      for (const [sym, spoken] of RADICAL_SPEECH_MAP) {
-        clean = clean.split(sym).join(spoken);
+  tokenizeForSpeech(rawText) {
+    if (!rawText) return [];
+    let clean = String(rawText);
+    for (const [sym, spoken] of RADICAL_SPEECH_MAP) {
+      clean = clean.split(sym).join(spoken);
+    }
+    // Strip parenthesized Zhuyin ruby annotations like （ㄔㄨㄢˊ） so annotated Hanzi aren't spoken twice
+    clean = clean.replace(/[（(][\u3105-\u3129ˊˇˋ˙\s/]+[)）]/g, '');
+    clean = clean.replace(EMOJI_STRIP_RE, ' ').replace(/＿+/g, '空格');
+
+    const segments = [];
+    let ttsBuf = '';
+    let lastIndex = 0;
+
+    const flushTts = (trailingText) => {
+      const combined = (ttsBuf + (trailingText || '')).replace(/\s+/g, ' ').trim();
+      ttsBuf = '';
+      if (!combined) return;
+      const leadMatch = combined.match(/^[，。！？、；：,.!?;:\s]+/);
+      if (leadMatch && segments.length && segments[segments.length - 1].type === 'moe') {
+        const lp = leadMatch[0];
+        if (/[！!。？?]/.test(lp)) segments[segments.length - 1].pauseMs = 150;
+        else if (/[,，]/.test(lp)) segments[segments.length - 1].pauseMs = 115;
+        else if (/、/.test(lp)) segments[segments.length - 1].pauseMs = 70;
       }
-      // First remove parenthesized Zhuyin annotations like （ㄔㄨㄢˊ） so words aren't read twice
-      clean = clean.replace(/[（(][\u3105-\u3129ˊˇˋ˙\s/]+[)）]/g, '');
-      // Convert any remaining standalone Bopomofo symbols (e.g. K2 ㄅㄆㄇ cards/options) to Taiwan Mandarin phonetic names!
-      clean = clean.replace(/[\u3105-\u3129]/g, (ch) => (BOPOMOFO_SPEECH_MAP[ch] ? ` ${BOPOMOFO_SPEECH_MAP[ch]} ` : ''));
-      clean = clean
-        .replace(/[ˊˇˋ˙]/g, '')
-        .replace(/[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜]/gu, ' ')
-        .replace(/＿+/g, '空格')
-        .replace(/\s+/g, ' ')
-        .trim();
-      if (!clean) return;
-      const u = new SpeechSynthesisUtterance(clean);
-      const voices = this.voices.length ? this.voices : window.speechSynthesis.getVoices();
-      const twVoice =
-        voices.find((v) => v.lang === 'zh-TW' && v.name.includes('Google')) ||
-        voices.find((v) => v.lang === 'zh-TW') ||
-        voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('zh'));
-      if (twVoice) u.voice = twVoice;
-      u.lang = 'zh-TW';
-      u.rate = rate;
-      u.pitch = 1.08;
-      window.speechSynthesis.speak(u);
-    } catch (_) {}
+      const stripped = combined.replace(/^[，。！？、；：,.!?;:\s]+/, '').trim();
+      if (!stripped || PURE_PUNCT_RE.test(stripped)) return;
+      segments.push({ type: 'tts', text: stripped });
+    };
+
+    ZHUYIN_TOKEN_RE.lastIndex = 0;
+    let match;
+    while ((match = ZHUYIN_TOKEN_RE.exec(clean)) !== null) {
+      const before = clean.slice(lastIndex, match.index);
+      lastIndex = match.index + match[0].length;
+      const token = match[0];
+
+      if (/^[\u3105-\u3129]$/.test(token)) {
+        flushTts(before);
+        segments.push({ type: 'moe', sym: token, pauseMs: 85 });
+      } else if (ZHUYIN_SYLLABLE_TO_HANZI[token]) {
+        ttsBuf += before + ZHUYIN_SYLLABLE_TO_HANZI[token];
+      } else {
+        flushTts(before);
+        const syms = Array.from(token.replace(/[ˊˇˋ˙]/g, ''));
+        syms.forEach((s) => {
+          segments.push({ type: 'moe', sym: s, pauseMs: 70 });
+        });
+      }
+    }
+
+    flushTts(clean.slice(lastIndex));
+    return segments;
+  }
+
+  _speakUtterance(text, rate, seqId) {
+    if (this.muted || !text || seqId !== this._speakSeqId) return Promise.resolve();
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return Promise.resolve();
+
+    return new Promise((resolve) => {
+      let done = false;
+      let pollId = null;
+      let maxTimer = null;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        if (pollId) clearInterval(pollId);
+        if (maxTimer) clearTimeout(maxTimer);
+        resolve();
+      };
+
+      try {
+        const u = new SpeechSynthesisUtterance(text);
+        const voices = this.voices.length ? this.voices : window.speechSynthesis.getVoices();
+        const twVoice =
+          voices.find((v) => v.lang === 'zh-TW' && v.name.includes('Google')) ||
+          voices.find((v) => v.lang === 'zh-TW') ||
+          voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('zh'));
+        if (twVoice) u.voice = twVoice;
+        u.lang = 'zh-TW';
+        u.rate = rate;
+        u.pitch = 1.06;
+        u.onend = finish;
+        u.onerror = finish;
+
+        window.speechSynthesis.speak(u);
+
+        // Safety monitor: if OS has no TTS voices or WebKit drops onend, resolve cleanly without hanging!
+        if (!voices || voices.length === 0) {
+          maxTimer = setTimeout(finish, 180);
+        } else {
+          const startedAt = Date.now();
+          pollId = setInterval(() => {
+            if (seqId !== this._speakSeqId) {
+              finish();
+              return;
+            }
+            if (Date.now() - startedAt > 240 && !window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
+              finish();
+            }
+          }, 110);
+          maxTimer = setTimeout(finish, Math.min(6000, Math.max(900, text.length * 280)));
+        }
+      } catch (_) {
+        finish();
+      }
+    });
+  }
+
+  speak(text, rate = 0.95) {
+    if (this.muted || !text) return Promise.resolve();
+    this.stopSpeak();
+    const seqId = this._speakSeqId;
+    const segments = this.tokenizeForSpeech(text);
+    if (!segments.length) return Promise.resolve();
+
+    return (async () => {
+      for (let i = 0; i < segments.length; i++) {
+        if (this.muted || seqId !== this._speakSeqId) return;
+        const seg = segments[i];
+        if (seg.type === 'moe') {
+          await this.playZhuyinSymbol(seg.sym);
+          if (i + 1 < segments.length && seqId === this._speakSeqId && !this.muted) {
+            const waitMs = Math.max(40, seg.pauseMs || 80);
+            await new Promise((r) => setTimeout(r, waitMs));
+          }
+        } else if (seg.type === 'tts') {
+          await this._speakUtterance(seg.text, rate, seqId);
+        }
+      }
+    })();
   }
 }
 
-module.exports = { SoundEngine };
+module.exports = { SoundEngine, ZHUYIN_SYLLABLE_TO_HANZI };

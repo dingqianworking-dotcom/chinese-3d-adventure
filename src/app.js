@@ -1752,12 +1752,11 @@ class ChineseAdventureApp {
 
   renderK2SpellMode(arena, q, s) {
     const firstIsMissing = q.missingPos === 'first';
-    const slot1Html = firstIsMissing
-      ? `<div class="alchemy-slot k2-zy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? renderVerticalZhuyin(q.answer, 'bubble') : '？'}</div>`
-      : `<div class="alchemy-slot k2-zy-slot">${renderVerticalZhuyin(q.fixedPart, 'bubble')}</div>`;
-    const slot2Html = !firstIsMissing
-      ? `<div class="alchemy-slot k2-zy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? renderVerticalZhuyin(q.answer, 'bubble') : '？'}</div>`
-      : `<div class="alchemy-slot k2-zy-slot">${renderVerticalZhuyin(q.fixedPart, 'bubble')}</div>`;
+    const fixedSlotHtml = `<button type="button" class="alchemy-slot k2-zy-slot k2-fixed-tap" id="btn-k2-fixed-zy" title="點我聽注音發音">${renderVerticalZhuyin(q.fixedPart, 'bubble')}</button>`;
+    const mysterySlotHtml = `<div class="alchemy-slot k2-zy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? renderVerticalZhuyin(q.answer, 'bubble') : '？'}</div>`;
+    const slot1Html = firstIsMissing ? mysterySlotHtml : fixedSlotHtml;
+    const slot2Html = !firstIsMissing ? mysterySlotHtml : fixedSlotHtml;
+    const toneHtml = q.toneLabel ? `<span class="k2-tone-pill">${escapeHtml(q.toneLabel)}</span>` : '';
 
     arena.innerHTML = `
       <div class="alchemy-arena k2-spell-arena">
@@ -1769,10 +1768,11 @@ class ChineseAdventureApp {
           ${slot1Html}
           <div class="alchemy-plus">＋</div>
           ${slot2Html}
+          ${toneHtml}
           <div class="alchemy-plus">＝</div>
-          <div class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}">
+          <button type="button" class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}" id="btn-k2-goal-hanzi" title="點我聽國字發音">
             ${s.answered ? renderCharWithZhuyin(q.resultChar, q.fullZhuyin, 'k2ruby') : escapeHtml(q.resultChar)}
-          </div>
+          </button>
         </div>
       </div>
       <div class="options-grid k2-spell-opts" id="k2-spell-opts"></div>
@@ -1783,6 +1783,18 @@ class ChineseAdventureApp {
       clueBtn.onclick = () => {
         this.sound.playPop();
         this.sound.speak(q.tts || q.resultChar);
+      };
+    }
+    const fixedBtn = document.getElementById('btn-k2-fixed-zy');
+    if (fixedBtn) {
+      fixedBtn.onclick = () => {
+        this.sound.speak(Array.from(q.fixedPart || '').join('、'));
+      };
+    }
+    const goalBtn = document.getElementById('btn-k2-goal-hanzi');
+    if (goalBtn) {
+      goalBtn.onclick = () => {
+        this.sound.speak(q.resultChar);
       };
     }
 
@@ -2039,6 +2051,9 @@ class ChineseAdventureApp {
           <h3 class="hero-card-title">🏅 冒險家紀錄</h3>
           <p class="hero-card-desc">最高連擊：<strong>${this.state.bestCombo} 連擊</strong><br>神獸收集：<strong>${this.state.unlockedPets.length} / 12 隻</strong><br>待修補錯題：<strong>${totalMistakes} 題</strong></p>
         </div>
+      </div>
+      <div class="moe-credit-note">
+        🔊 注音符號真人發音素材：2017 © 教育部，國語注音符號手冊-開放部件（依「創用CC 姓名標示 4.0 國際版本」授權利用）
       </div>
     `;
     document.getElementById('btn-report-back').onclick = () => this.goHub();

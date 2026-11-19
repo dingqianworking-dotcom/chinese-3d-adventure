@@ -2646,6 +2646,46 @@ body.in-play .stage-3d-wrap {
   }
 }
 
+.alchemy-slot.k2-fixed-tap,
+button.alchemy-slot.k2-hanzi-goal {
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.alchemy-slot.k2-fixed-tap:hover,
+button.alchemy-slot.k2-hanzi-goal:hover {
+  transform: translateY(-3px) scale(1.04);
+}
+
+.k2-tone-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #fef08a 0%, #fde047 100%);
+  color: #854d0e;
+  border: 2.5px solid #f59e0b;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.96rem;
+  font-weight: 900;
+  box-shadow: 0 3px 0 #d97706;
+  white-space: nowrap;
+}
+
+.moe-credit-note {
+  margin-top: 16px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px solid rgba(14, 165, 233, 0.25);
+  color: #475569;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+
 
 
 
