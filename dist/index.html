@@ -2697,9 +2697,730 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   text-align: center;
 }
 
+/* =========================================================
+   v10 Multi-Arcade Carnival: 9 Distinct Games Inside Every Lesson
+   (Claw Machine, Fishing Pond, Dino Feeder, Golden Chest,
+    3D Flip-Card Memory, UFO Laser Zapper, Hub & Stage Trail)
+   ========================================================= */
 
+.grade-arcade-ribbon {
+  background: linear-gradient(135deg, #f0f9ff 0%, #fef9c3 52%, #ecfdf5 100%);
+  box-shadow: 0 5px 0 rgba(56, 189, 248, 0.26), 0 8px 18px rgba(15, 23, 42, 0.06);
+}
 
+/* Hub Card 9-Game Mini Strip */
+.lesson-arcade-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 6px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1.5px solid #e2e8f0;
+  pointer-events: none;
+}
 
+.arcade-mini-dot {
+  font-size: 0.84rem;
+  line-height: 1.15;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.08));
+}
+
+/* Play Mode Stage Trail (Shows All 9 Distinct Games!) */
+.arcade-stage-trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: -2px 0 10px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 2px solid #e2e8f0;
+}
+
+.trail-node {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.98rem;
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  opacity: 0.68;
+  transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+}
+
+.trail-node.done {
+  background: #dcfce7;
+  border-color: #4ade80;
+  opacity: 0.95;
+  box-shadow: 0 2px 0 #22c55e;
+}
+
+.trail-node.current {
+  opacity: 1;
+  transform: scale(1.18) translateY(-2px);
+  background: linear-gradient(180deg, #fef08a 0%, #fde047 100%);
+  border: 2px solid #f59e0b;
+  box-shadow: 0 4px 0 #d97706, 0 6px 12px rgba(245, 158, 11, 0.35);
+}
+
+/* Shared Option Layout for Claw / Fish / Dino / Chest */
+.arcade-opt-emblem {
+  font-size: 1.85rem;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 3px 4px rgba(15, 23, 42, 0.16));
+  pointer-events: none;
+}
+
+.arcade-opt-content {
+  flex: 1;
+  font-size: 1.24rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.42;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.arcade-k2-pure-hanzi {
+  font-size: 2.35rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.mole-sign.mole-quiz-sign {
+  font-size: 1.18rem;
+  padding: 5px 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* 1. 🕹️ Fantasy Claw Machine (奇幻夾娃娃機) */
+.claw-machine-stage {
+  position: relative;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(180deg, #ede9fe 0%, #fae8ff 48%, #fffbeb 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(139, 92, 246, 0.2);
+  overflow: hidden;
+}
+
+.claw-top-rail {
+  background: linear-gradient(90deg, #7c3aed 0%, #ec4899 50%, #f59e0b 100%);
+  border-radius: 999px;
+  padding: 5px 14px;
+  text-align: center;
+  box-shadow: 0 4px 0 #5b21b6;
+}
+
+.claw-rail-title {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.claw-gantry-zone {
+  position: relative;
+  height: 66px;
+  margin-bottom: 4px;
+  pointer-events: none;
+}
+
+.claw-carriage {
+  position: absolute;
+  top: 0;
+  left: var(--claw-x, 50%);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: left 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.claw-motor {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.claw-cable {
+  width: 4px;
+  height: 14px;
+  background: linear-gradient(180deg, #475569, #94a3b8);
+  border-radius: 999px;
+  transition: height 0.18s ease;
+}
+
+.claw-prongs {
+  font-size: 1.7rem;
+  line-height: 1;
+  margin-top: -3px;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.22));
+  transition: transform 0.18s ease;
+}
+
+.claw-carriage.grabbing .claw-cable {
+  height: 36px;
+}
+
+.claw-carriage.grabbing .claw-prongs {
+  transform: scale(1.22) rotate(-8deg);
+}
+
+.claw-capsules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.claw-capsule-btn {
+  appearance: none;
+  min-height: 92px;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: radial-gradient(circle at 24% 22%, #ffffff 0%, #ffe4e6 55%, #fecdd3 100%);
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.9), 0 6px 0 #f43f5e, 0 10px 18px rgba(244, 63, 94, 0.18);
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.claw-capsule-btn.cap-1 {
+  background: radial-gradient(circle at 24% 22%, #ffffff 0%, #e0f2fe 55%, #bae6fd 100%);
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.9), 0 6px 0 #0284c7, 0 10px 18px rgba(2, 132, 199, 0.18);
+}
+
+.claw-capsule-btn.cap-2 {
+  background: radial-gradient(circle at 24% 22%, #ffffff 0%, #fef9c3 55%, #fde68a 100%);
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.9), 0 6px 0 #d97706, 0 10px 18px rgba(217, 119, 6, 0.18);
+}
+
+.claw-capsule-btn.cap-3 {
+  background: radial-gradient(circle at 24% 22%, #ffffff 0%, #d1fae5 55%, #a7f3d0 100%);
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.9), 0 6px 0 #059669, 0 10px 18px rgba(5, 150, 105, 0.18);
+}
+
+.claw-capsule-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.04);
+}
+
+.claw-capsule-btn.grabbed-lift {
+  transform: translateY(-12px) scale(1.05);
+}
+
+/* 2. 🎣 Starlight Fishing Pond (星光釣魚池) */
+.fish-pond-stage {
+  position: relative;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.45) 0%, transparent 45%),
+    linear-gradient(180deg, #bae6fd 0%, #7dd3fc 48%, #38bdf8 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 14px rgba(255, 255, 255, 0.8), 0 10px 24px rgba(2, 132, 199, 0.24);
+}
+
+.fish-dock-bar {
+  width: fit-content;
+  margin: 0 auto 12px;
+  background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+  color: #78350f;
+  border: 2.5px solid #b45309;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  box-shadow: 0 4px 0 #92400e;
+}
+
+.fish-pond-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.fish-swim-btn {
+  appearance: none;
+  min-height: 92px;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.94) 100%);
+  box-shadow: 0 6px 0 #0369a1, 0 10px 18px rgba(3, 105, 161, 0.22);
+  animation: fishBobSwim 2.6s ease-in-out infinite alternate;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.fish-swim-btn.f-1 { animation-delay: 0.4s; }
+.fish-swim-btn.f-2 { animation-delay: 0.8s; }
+.fish-swim-btn.f-3 { animation-delay: 1.2s; }
+
+@keyframes fishBobSwim {
+  0% { transform: translateX(-3px) translateY(0px); }
+  100% { transform: translateX(3px) translateY(-4px); }
+}
+
+.fish-swim-btn:hover {
+  filter: brightness(1.05);
+  transform: scale(1.03) translateY(-3px);
+}
+
+.fish-swim-btn.hooked {
+  transform: translateY(-10px) scale(1.05);
+}
+
+/* 3. 🦖 Hungry Baby Dino Feeder (貪吃小恐龍) */
+.dino-feeder-stage {
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(180deg, #ecfdf5 0%, #fef9c3 55%, #ffedd5 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(16, 185, 129, 0.2);
+}
+
+.dino-pal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto 12px;
+  width: fit-content;
+  background: #ffffff;
+  border: 2.5px solid #34d399;
+  border-radius: 999px;
+  padding: 6px 18px 6px 12px;
+  box-shadow: 0 5px 0 #10b981;
+}
+
+.dino-avatar {
+  font-size: 2.35rem;
+  line-height: 1;
+  animation: dinoIdleBounce 1.8s ease-in-out infinite;
+}
+
+.dino-pal-header.happy-chomp .dino-avatar {
+  animation: popBounce 0.4s ease 2;
+}
+
+@keyframes dinoIdleBounce {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-5px) rotate(4deg); }
+}
+
+.dino-speech-pill {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #065f46;
+}
+
+.dino-food-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.dino-food-btn {
+  appearance: none;
+  min-height: 92px;
+  border-radius: 24px;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
+  box-shadow: 0 6px 0 #fb923c, 0 10px 18px rgba(249, 115, 22, 0.18);
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.dino-food-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.03);
+}
+
+/* 4. 🗝️ Golden Treasure Chest Lock (黃金寶箱鎖) */
+.chest-lock-stage {
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(180deg, #fef9c3 0%, #fde68a 48%, #ffedd5 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(217, 119, 6, 0.24);
+}
+
+.golden-chest-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto 12px;
+  width: fit-content;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  border: 2.5px solid #f59e0b;
+  border-radius: 999px;
+  padding: 6px 18px 6px 12px;
+  box-shadow: 0 5px 0 #d97706;
+}
+
+.golden-chest-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+  animation: chestWobble 2.2s ease-in-out infinite;
+}
+
+@keyframes chestWobble {
+  0%, 100% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(4deg) scale(1.08); }
+}
+
+.golden-chest-pill {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #92400e;
+}
+
+.chest-keys-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.chest-key-btn {
+  appearance: none;
+  min-height: 92px;
+  border-radius: 24px;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%);
+  box-shadow: 0 6px 0 #eab308, 0 10px 18px rgba(202, 138, 4, 0.2);
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.chest-key-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.04);
+}
+
+/* 5. 🃏 3D Magic Flip-Card Memory Arena (魔法翻翻牌 — Flat Z=0 Hit Plane for 100% Safari Clickability!) */
+.memory-arena-stage {
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 52%, #e0f2fe 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(124, 58, 237, 0.2);
+}
+
+.memory-status-bar {
+  width: fit-content;
+  margin: 0 auto 12px;
+  background: #ffffff;
+  color: #5b21b6;
+  border: 2px solid #c4b5fd;
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  box-shadow: 0 3px 0 #a78bfa;
+  text-align: center;
+}
+
+.memory-grid-3x2 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.mem-card-btn {
+  appearance: none;
+  position: relative;
+  min-height: 118px;
+  border-radius: 22px;
+  border: 3px solid #ffffff;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 55%, #ec4899 100%);
+  box-shadow: 0 7px 0 #6d28d9, 0 10px 20px rgba(109, 40, 217, 0.24);
+  transition: transform 0.14s ease, box-shadow 0.16s ease, background 0.16s ease;
+  overflow: hidden;
+}
+
+.mem-card-btn:hover {
+  transform: translateY(-3px);
+}
+
+.mem-card-btn.is-face-up {
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  box-shadow: 0 7px 0 #f59e0b, 0 10px 20px rgba(245, 158, 11, 0.22);
+  animation: memCardReveal 0.24s ease-out;
+}
+
+.mem-card-btn.is-matched {
+  background: linear-gradient(180deg, #ecfdf5 0%, #bbf7d0 100%);
+  border-color: #4ade80;
+  box-shadow: 0 7px 0 #16a34a, 0 0 18px rgba(74, 222, 128, 0.5);
+  cursor: default;
+}
+
+.mem-card-btn.is-mismatch {
+  background: linear-gradient(180deg, #fff1f2 0%, #fecdd3 100%);
+  box-shadow: 0 7px 0 #e11d48;
+  animation: gentleShake 0.35s ease;
+}
+
+@keyframes memCardReveal {
+  0% { transform: scaleX(0.25) scaleY(0.96); }
+  100% { transform: scaleX(1) scaleY(1); }
+}
+
+.mem-card-inner,
+.mem-face {
+  pointer-events: none;
+}
+
+.mem-card-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 112px;
+  padding: 10px 8px;
+}
+
+.mem-face-back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.mem-face-front {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.mem-card-btn.is-face-up .mem-face-back {
+  display: none;
+}
+
+.mem-card-btn.is-face-up .mem-face-front {
+  display: flex;
+}
+
+.mem-back-star {
+  font-size: 2.3rem;
+  line-height: 1;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+}
+
+.mem-back-sub {
+  font-size: 1rem;
+}
+
+.mem-k2-hanzi {
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: #be123c;
+  line-height: 1.08;
+}
+
+.mem-k2-pic {
+  font-size: 2.35rem;
+  line-height: 1;
+}
+
+.mem-g-text {
+  font-size: 1.24rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.42;
+  text-align: center;
+}
+
+/* 6. 🛸 UFO Space Crystal Laser Zapper (飛碟除蟲砲) */
+.typo-step-banner.laser-theme {
+  background: linear-gradient(90deg, #e0f2fe 0%, #ede9fe 100%);
+  color: #1e3a8a;
+  border: 2px solid #7dd3fc;
+}
+
+.ufo-laser-arena {
+  border-radius: 26px;
+  border: 3px solid #7dd3fc;
+  background: radial-gradient(circle at 50% 15%, #312e81 0%, #0f172a 100%);
+  padding: 14px 16px 18px;
+  box-shadow: inset 0 2px 16px rgba(56, 189, 248, 0.45), 0 10px 24px rgba(15, 23, 42, 0.35);
+}
+
+.ufo-ship-header {
+  width: fit-content;
+  margin: 0 auto 14px;
+  background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 0.94rem;
+  font-weight: 900;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.55);
+  animation: dartBob 2s ease-in-out infinite;
+}
+
+.ufo-crystals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(96px, 1fr));
+  gap: 12px;
+}
+
+.ufo-crystal-btn {
+  appearance: none;
+  min-height: 108px;
+  border-radius: 22px;
+  border: 2.5px solid #7dd3fc;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(180deg, rgba(224, 242, 254, 0.96) 0%, rgba(186, 230, 253, 0.92) 100%);
+  box-shadow: 0 6px 0 #0284c7, 0 0 18px rgba(56, 189, 248, 0.45);
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.ufo-crystal-btn:hover {
+  transform: translateY(-4px) scale(1.04);
+  filter: brightness(1.07);
+}
+
+.ufo-crystal-gem {
+  font-size: 1.55rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.ufo-crystal-char {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.1;
+  pointer-events: none;
+}
+
+/* Correct / Wrong feedback states for all new arcade buttons */
+.claw-capsule-btn.correct-pick,
+.fish-swim-btn.correct-pick,
+.dino-food-btn.correct-pick,
+.chest-key-btn.correct-pick,
+.ufo-crystal-btn.correct-pick {
+  background: linear-gradient(180deg, #dcfce7 0%, #86efac 100%) !important;
+  border-color: #22c55e !important;
+  box-shadow: 0 6px 0 #15803d, 0 0 18px rgba(74, 222, 128, 0.65) !important;
+}
+
+.claw-capsule-btn.wrong-pick,
+.fish-swim-btn.wrong-pick,
+.dino-food-btn.wrong-pick,
+.chest-key-btn.wrong-pick,
+.ufo-crystal-btn.wrong-pick {
+  background: linear-gradient(180deg, #ffe4e6 0%, #fecdd3 100%) !important;
+  border-color: #f43f5e !important;
+  box-shadow: 0 6px 0 #be123c !important;
+  opacity: 0.78;
+}
+
+@media (max-width: 680px) {
+  .claw-capsules-grid,
+  .fish-pond-grid,
+  .dino-food-grid,
+  .chest-keys-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .claw-capsule-btn,
+  .fish-swim-btn,
+  .dino-food-btn,
+  .chest-key-btn {
+    min-height: 76px;
+    padding: 10px 12px;
+  }
+  .arcade-opt-content {
+    font-size: 1.08rem;
+  }
+  .arcade-k2-pure-hanzi {
+    font-size: 1.95rem;
+  }
+  .memory-grid-3x2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  }
+  .mem-card-btn {
+    min-height: 98px;
+  }
+  .mem-card-inner {
+    min-height: 92px;
+  }
+  .mem-k2-hanzi {
+    font-size: 2.2rem;
+  }
+  .mem-g-text {
+    font-size: 1.08rem;
+  }
+  .ufo-crystals-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .trail-node {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+  }
+}
 
 </style>
 </head>
@@ -2837,7 +3558,7 @@ const ZHUYIN_SYLLABLE_TO_HANZI = {
   'ㄩˊ': '魚', 'ㄩˇ': '雨', 'ㄩㄝˋ': '月', 'ㄩㄥˇ': '泳',
 };
 
-const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣]/gu;
+const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣🕹️🎣🦖🃏🗝️🛸🍩🍔🍓🍕🐠🐡🐟🐬🔮🧰🦾🪝💦😋]/gu;
 const ZHUYIN_TOKEN_RE = /(?:˙)?[\u3105-\u3129]+(?:[ˊˇˋ˙])?/g;
 const PURE_PUNCT_RE = /^[\s，。！？、；：「」『』（）()—…,.!?;:'"]+$/;
 
@@ -3073,6 +3794,45 @@ class SoundEngine {
 
   playMolePop() {
     this.tone(330, 0.08, 'sine', 0.12, 0, 660);
+  }
+
+  playClawGrab() {
+    this.tone(240, 0.12, 'triangle', 0.13, 0, 340);
+    this.tone(460, 0.12, 'sine', 0.14, 0.11, 250);
+    this.tone(659.25, 0.14, 'triangle', 0.16, 0.22, 987.77);
+  }
+
+  playFishSplash() {
+    this.tone(720, 0.09, 'sine', 0.13, 0, 320);
+    [290, 440, 660, 880].forEach((n, i) => this.tone(n, 0.075, 'sine', 0.14, 0.08 + i * 0.04, n * 1.35));
+  }
+
+  playDinoChomp(isYum = true) {
+    this.tone(360, 0.08, 'sine', 0.13, 0, 640);
+    this.tone(190, 0.08, 'triangle', 0.22, 0.11, 95);
+    this.tone(210, 0.08, 'triangle', 0.2, 0.19, 105);
+    if (isYum) {
+      this.tone(587.33, 0.11, 'sine', 0.16, 0.25, 880);
+    }
+  }
+
+  playCardFlip() {
+    this.tone(460, 0.065, 'triangle', 0.12, 0, 760);
+  }
+
+  playPairMatch() {
+    [587.33, 783.99, 1174.66].forEach((n, i) => this.tone(n, 0.12, 'triangle', 0.16, i * 0.05));
+  }
+
+  playKeyUnlock() {
+    this.tone(660, 0.08, 'triangle', 0.15, 0, 880);
+    this.tone(523.25, 0.09, 'sine', 0.16, 0.09, 1046.5);
+    this.tone(1318.5, 0.16, 'triangle', 0.18, 0.17);
+  }
+
+  playUfoLaser() {
+    this.tone(1180, 0.12, 'sawtooth', 0.11, 0, 280);
+    this.tone(880, 0.11, 'sine', 0.15, 0.12, 1480);
   }
 
   playSparkleBurst() {
@@ -3403,7 +4163,7 @@ module.exports = { SoundEngine, ZHUYIN_SYLLABLE_TO_HANZI };
 
   };
   __mods["./fx"] = function(require, module, exports) {
-// 60fps Canvas 2D Arcade Juice & Particle Engine (Confetti, Shockwaves, Flying Darts, Floating Text, Screen Shake)
+// 60fps Canvas 2D Arcade Juice & Particle Engine (Confetti, Shockwaves, Flying Projectiles, Floating Text, Screen Shake)
 class FXEngine {
   constructor(canvasId = 'fx-canvas') {
     this.canvas = typeof document !== 'undefined' ? document.getElementById(canvasId) : null;
@@ -3493,22 +4253,42 @@ class FXEngine {
     this.texts.push({ x, y, vy: -95, text, color, life: 1.05, maxLife: 1.05 });
   }
 
-  flyDart(fromX, fromY, toX, toY, onArrive) {
+  flyItem(fromX, fromY, toX, toY, emoji = '🎯', trailColor = 'rgba(253, 224, 71, 0.82)', onArrive = null, arcHeight = 62) {
     if (!this.ctx) {
       if (onArrive) onArrive();
       return;
     }
-    this.darts.push({
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (onArrive) onArrive();
+    };
+    const item = {
       fromX, fromY, toX, toY,
+      emoji,
+      trailColor,
+      arcHeight,
       t: 0,
       dur: 0.24,
-      onArrive,
-    });
+      onArrive: finish,
+    };
+    this.darts.push(item);
+    // Safety fallback if requestAnimationFrame is throttled in background tabs
+    setTimeout(() => {
+      const idx = this.darts.indexOf(item);
+      if (idx >= 0) this.darts.splice(idx, 1);
+      finish();
+    }, 480);
+  }
+
+  flyDart(fromX, fromY, toX, toY, onArrive) {
+    this.flyItem(fromX, fromY, toX, toY, '🎯', 'rgba(253, 224, 71, 0.82)', onArrive, 55);
   }
 
   screenShake(px = 7) {
     const shell = document.querySelector('.app-shell');
-    if (!shell) return;
+    if (!shell || typeof shell.animate !== 'function') return;
     shell.animate(
       [
         { transform: 'translate(0, 0)' },
@@ -3544,18 +4324,17 @@ class FXEngine {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.w, this.h);
 
-    // Flying Darts
+    // Flying Projectiles (Darts, Treats, Magic Keys, Fish, Lasers)
     for (let i = this.darts.length - 1; i >= 0; i--) {
       const d = this.darts[i];
       d.t += dt / d.dur;
       const p = Math.min(1, d.t);
       const x = d.fromX + (d.toX - d.fromX) * p;
-      const y = d.fromY + (d.toY - d.fromY) * p - Math.sin(p * Math.PI) * 55;
+      const y = d.fromY + (d.toY - d.fromY) * p - Math.sin(p * Math.PI) * (d.arcHeight || 55);
       const ang = Math.atan2(d.toY - d.fromY, d.toX - d.fromX);
 
-      // Golden trail
       ctx.save();
-      ctx.strokeStyle = 'rgba(253, 224, 71, 0.78)';
+      ctx.strokeStyle = d.trailColor || 'rgba(253, 224, 71, 0.78)';
       ctx.lineWidth = 6;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -3563,13 +4342,12 @@ class FXEngine {
       ctx.lineTo(x, y);
       ctx.stroke();
 
-      // Dart emoji / body
       ctx.translate(x, y);
-      ctx.rotate(ang + Math.PI / 4);
-      ctx.font = '34px sans-serif';
+      ctx.rotate(d.emoji === '🎯' ? ang + Math.PI / 4 : Math.sin(p * Math.PI * 3) * 0.25);
+      ctx.font = '36px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🎯', 0, 0);
+      ctx.fillText(d.emoji || '🎯', 0, 0);
       ctx.restore();
 
       if (p >= 1) {
@@ -5127,1066 +5905,2217 @@ module.exports = { World3DEngine };
   };
   __mods["./curriculum_k2"] = function(require, module, exports) {
 // 幼兒中班（4～5歲）ㄅㄆㄇ注音符號啟蒙 ➔ 慢慢認識國字 專屬奇幻闖關題庫
-// 採用中華民國教育部《國語注音符號手冊》標準真人發音（CC BY 4.0）＋四階段鷹架學習法：
-//   1. k2_sound  (🎯聽音射飛鏢 / 🫧戳泡泡)：聽教育部真人標準發音＋看大圖大字，認識 ㄅㄆㄇ 符號
-//   2. k2_spell  (🧪拼音變國字魔法鍋)    ：聽標準注音連讀，將注音拼起來親眼看見變出國字
-//   3. k2_bridge (🧩注音小幫手陪讀認字)  ：看大圖，搭配國字右側直式注音選出國字卡
-//   4. k2_mole   (🔨小地鼠純國字大挑戰)  ：脫離選項注音，直接敲出正確的純國字地鼠！
+// 採用中華民國教育部《國語注音符號手冊》標準真人發音（CC BY 4.0）＋每關 9 種不同遊樂場玩法：
+//   1. k2_dart   (🎯神準射飛鏢)    ：聽教育部真人發音＋看大圖大字，發射飛鏢射中 ㄅㄆㄇ
+//   2. k2_bubble (🫧奇幻戳泡泡)    ：聽教育部真人發音，戳破飄浮的彩色 ㄅㄆㄇ 泡泡
+//   3. k2_spell  (🧪魔法拼音鍋)    ：將缺少的注音放進魔法鍋，親眼看見拼出國字
+//   4. k2_claw   (🕹️奇幻夾娃娃機)  ：操作 3D 機械爪移動下爪，夾出正確注音扭蛋球
+//   5. k2_fish   (🎣星光釣魚池)    ：看大圖聽聲音，甩竿釣起「國字＋直式注音」小魚
+//   6. k2_feed   (🦖貪吃小恐龍)    ：看圖聽聲音，把「國字＋直式注音」點心餵給小恐龍
+//   7. k2_match  (🃏3D 魔法翻翻牌) ：3 組「純國字 ⇄ 圖案注音」3D 閃卡翻牌記憶配對
+//   8. k2_mole   (🔨草原打地鼠)    ：脫離選項注音，拿木槌敲出正確的「純國字」地鼠
+//   9. k2_chest  (🗝️黃金寶箱開鎖)  ：選出正確的「純國字」魔鑰匙，飛入鎖孔打開黃金寶箱！
 
 const K2_LESSONS = [
   {
-    id: 'k2_L1',
-    code: '第 1 關',
-    title: 'ㄅ ㄆ ㄇ ㄈ 親親一家人',
-    icon: '🏡',
-    scene: 'k2_L1',
-    sky: ['#f472b6', '#fbcfe8', '#fef9c3'],
-    summary: '認識 ㄅㄆㄇㄈ 與「爸、跑、媽、門、馬、風」6 個基礎國字',
-    studyCards: [
-      { pic: '👨', word: '爸', zhuyin: 'ㄅ ㄅㄚˋ', tip: '爸爸抱抱！開頭是 ㄅ', tts: 'ㄅ！ㄅ、ㄚ，爸！爸爸抱抱！' },
-      { pic: '🏃', word: '跑', zhuyin: 'ㄆ ㄆㄠˇ', tip: '開心跑步！開頭是 ㄆ', tts: 'ㄆ！ㄆ、ㄠ，跑！開心跑步！' },
-      { pic: '👩', word: '媽', zhuyin: 'ㄇ ㄇㄚ', tip: '媽媽親親！開頭是 ㄇ', tts: 'ㄇ！ㄇ、ㄚ，媽！媽媽親親！' },
-      { pic: '🚪', word: '門', zhuyin: 'ㄇ ㄇㄣˊ', tip: '打開大門！ㄇ 加 ㄣ 二聲', tts: 'ㄇ！ㄇ、ㄣ，門！打開大門！' },
-      { pic: '🐴', word: '馬', zhuyin: 'ㄇ ㄇㄚˇ', tip: '小馬奔跑！ㄇ 加 ㄚ 三聲', tts: 'ㄇ！ㄇ、ㄚ，馬！小馬奔跑！' },
-      { pic: '🌬️', word: '風', zhuyin: 'ㄈ ㄈㄥ', tip: '微風吹吹！開頭是 ㄈ', tts: 'ㄈ！ㄈ、ㄥ，風！微風吹吹！' },
+    "id": "k2_L1",
+    "code": "第 1 關",
+    "title": "ㄅ ㄆ ㄇ ㄈ 親親一家人",
+    "icon": "🏡",
+    "scene": "k2_L1",
+    "sky": [
+      "#f472b6",
+      "#fbcfe8",
+      "#fef9c3"
     ],
-    questions: [
+    "summary": "認識 ㄅㄆㄇㄈ 與「爸、跑、媽、門、馬、風」6 個基礎國字",
+    "studyCards": [
       {
-        id: 'k2_L1_q1',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找 ㄅ ㄆ ㄇ',
-        prompt: '聽聲音看大字，射中開頭的注音！',
-        pic: '👨',
-        charFocus: '爸',
-        tts: 'ㄅ！ㄅ！爸爸的「爸」，開頭注音是 ㄅ！請射中 ㄅ！',
-        options: ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ'],
-        answer: 'ㄅ',
-        explain: 'ㄅ！爸（ㄅㄚˋ）的開頭注音是 ㄅ，這就是爸爸的「爸」喔！',
+        "pic": "👨",
+        "word": "爸",
+        "zhuyin": "ㄅ ㄅㄚˋ",
+        "tip": "爸爸抱抱！開頭是 ㄅ",
+        "tts": "ㄅ！ㄅ、ㄚ，爸！爸爸抱抱！"
       },
       {
-        id: 'k2_L1_q2',
-        type: 'k2_sound',
-        modeBadge: '🫧 聽音戳泡泡',
-        prompt: '聽聲音看大字，戳破開頭的注音泡泡！',
-        pic: '🌬️',
-        charFocus: '風',
-        tts: 'ㄈ！ㄈ！吹風的「風」，開頭注音是 ㄈ！請戳破 ㄈ！',
-        options: ['ㄈ', 'ㄅ', 'ㄆ', 'ㄇ'],
-        answer: 'ㄈ',
-        explain: 'ㄈ！風（ㄈㄥ）的開頭注音是 ㄈ，呼呼吹的「風」記起來囉！',
+        "pic": "🏃",
+        "word": "跑",
+        "zhuyin": "ㄆ ㄆㄠˇ",
+        "tip": "開心跑步！開頭是 ㄆ",
+        "tts": "ㄆ！ㄆ、ㄠ，跑！開心跑步！"
       },
       {
-        id: 'k2_L1_q3',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「媽」！',
-        pic: '👩',
-        missingPos: 'first',
-        fixedPart: 'ㄚ',
-        resultChar: '媽',
-        fullZhuyin: 'ㄇㄚ',
-        tts: 'ㄇ、ㄚ，媽！媽媽的「媽」，前面要放哪一個注音呢？',
-        options: ['ㄇ', 'ㄅ', 'ㄆ', 'ㄈ'],
-        answer: 'ㄇ',
-        explain: 'ㄇ、ㄚ！ㄇ 加 ㄚ 拼起來就是媽媽的「媽（ㄇㄚ）」！',
+        "pic": "👩",
+        "word": "媽",
+        "zhuyin": "ㄇ ㄇㄚ",
+        "tip": "媽媽親親！開頭是 ㄇ",
+        "tts": "ㄇ！ㄇ、ㄚ，媽！媽媽親親！"
       },
       {
-        id: 'k2_L1_q4',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「跑」！',
-        pic: '🏃',
-        missingPos: 'first',
-        fixedPart: 'ㄠ',
-        toneLabel: '三聲',
-        resultChar: '跑',
-        fullZhuyin: 'ㄆㄠˇ',
-        tts: 'ㄆ、ㄠ，跑！跑步的「跑」，前面要放注音 ㄆ 喔！',
-        options: ['ㄆ', 'ㄅ', 'ㄇ', 'ㄈ'],
-        answer: 'ㄆ',
-        explain: 'ㄆ、ㄠ！ㄆ 加 ㄠ 的三聲，拼起來就是跑步的「跑（ㄆㄠˇ）」！',
+        "pic": "🚪",
+        "word": "門",
+        "zhuyin": "ㄇ ㄇㄣˊ",
+        "tip": "打開大門！ㄇ 加 ㄣ 二聲",
+        "tts": "ㄇ！ㄇ、ㄣ，門！打開大門！"
       },
       {
-        id: 'k2_L1_q5',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🚪',
-        tts: 'ㄇ、ㄣ，門！叩叩叩！打開大門的「門」，是哪一張國字卡呢？',
-        options: ['門', '馬', '爸', '風'],
-        optZhuyin: { '門': 'ㄇㄣˊ', '馬': 'ㄇㄚˇ', '爸': 'ㄅㄚˋ', '風': 'ㄈㄥ' },
-        answer: '門',
-        explain: '像兩扇大門一樣的字，就是「門（ㄇㄣˊ）」！',
+        "pic": "🐴",
+        "word": "馬",
+        "zhuyin": "ㄇ ㄇㄚˇ",
+        "tip": "小馬奔跑！ㄇ 加 ㄚ 三聲",
+        "tts": "ㄇ！ㄇ、ㄚ，馬！小馬奔跑！"
       },
       {
-        id: 'k2_L1_q6',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🐴',
-        tts: 'ㄇ、ㄚ，馬！噠噠噠！小馬奔跑的「馬」，是哪一張國字卡呢？',
-        options: ['馬', '媽', '跑', '門'],
-        optZhuyin: { '馬': 'ㄇㄚˇ', '媽': 'ㄇㄚ', '跑': 'ㄆㄠˇ', '門': 'ㄇㄣˊ' },
-        answer: '馬',
-        explain: '有長長鬃毛和四條腿的國字，就是小馬的「馬（ㄇㄚˇ）」！',
-      },
-      {
-        id: 'k2_L1_q7',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '👨',
-        hintZhuyin: 'ㄅㄚˋ',
-        tts: '認國字挑戰！爸爸的「爸」躲在哪個洞裡？快敲它！',
-        options: ['爸', '媽', '門', '風'],
-        answer: '爸',
-        explain: '太棒了！不用注音也認得爸爸的「爸（ㄅㄚˋ）」了！',
-      },
-      {
-        id: 'k2_L1_q8',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🚪',
-        hintZhuyin: 'ㄇㄣˊ',
-        tts: '打開大門的「門」在哪裡？快用槌子敲一敲！',
-        options: ['門', '馬', '跑', '爸'],
-        answer: '門',
-        explain: '好厲害！你已經學會認得國字「門（ㄇㄣˊ）」囉！',
-      },
+        "pic": "🌬️",
+        "word": "風",
+        "zhuyin": "ㄈ ㄈㄥ",
+        "tip": "微風吹吹！開頭是 ㄈ",
+        "tts": "ㄈ！ㄈ、ㄥ，風！微風吹吹！"
+      }
     ],
+    "questions": [
+      {
+        "id": "k2_L1_q1",
+        "type": "k2_dart",
+        "modeBadge": "🎯 神準射飛鏢",
+        "prompt": "聽聲音看大字，射中開頭的注音！",
+        "pic": "👨",
+        "charFocus": "爸",
+        "tts": "ㄅ！ㄅ！爸爸的「爸」，開頭注音是 ㄅ！請射中 ㄅ！",
+        "options": [
+          "ㄅ",
+          "ㄆ",
+          "ㄇ",
+          "ㄈ"
+        ],
+        "answer": "ㄅ",
+        "explain": "ㄅ！爸（ㄅㄚˋ）的開頭注音是 ㄅ，這就是爸爸的「爸」喔！"
+      },
+      {
+        "id": "k2_L1_q2",
+        "type": "k2_bubble",
+        "modeBadge": "🫧 奇幻戳泡泡",
+        "prompt": "聽聲音看大字，戳破開頭的注音泡泡！",
+        "pic": "🌬️",
+        "charFocus": "風",
+        "tts": "ㄈ！ㄈ！吹風的「風」，開頭注音是 ㄈ！請戳破 ㄈ！",
+        "options": [
+          "ㄈ",
+          "ㄅ",
+          "ㄆ",
+          "ㄇ"
+        ],
+        "answer": "ㄈ",
+        "explain": "ㄈ！風（ㄈㄥ）的開頭注音是 ㄈ，呼呼吹的「風」記起來囉！"
+      },
+      {
+        "id": "k2_L1_q3",
+        "type": "k2_spell",
+        "modeBadge": "🧪 魔法拼音鍋",
+        "prompt": "把缺少的注音放進魔法鍋，拼出「媽」！",
+        "pic": "👩",
+        "missingPos": "first",
+        "fixedPart": "ㄚ",
+        "resultChar": "媽",
+        "fullZhuyin": "ㄇㄚ",
+        "tts": "ㄇ、ㄚ，媽！媽媽的「媽」，前面要放哪一個注音呢？",
+        "options": [
+          "ㄇ",
+          "ㄅ",
+          "ㄆ",
+          "ㄈ"
+        ],
+        "answer": "ㄇ",
+        "explain": "ㄇ、ㄚ！ㄇ 加 ㄚ 拼起來就是媽媽的「媽（ㄇㄚ）」！"
+      },
+      {
+        "id": "k2_L1_q4",
+        "type": "k2_claw",
+        "modeBadge": "🕹️ 奇幻夾娃娃",
+        "prompt": "開動夾娃娃機，夾出缺少的注音拼出「跑」！",
+        "pic": "🏃",
+        "missingPos": "first",
+        "fixedPart": "ㄠ",
+        "toneLabel": "三聲",
+        "resultChar": "跑",
+        "fullZhuyin": "ㄆㄠˇ",
+        "tts": "ㄆ、ㄠ，跑！跑步的「跑」，前面要放注音 ㄆ 喔！",
+        "options": [
+          "ㄆ",
+          "ㄅ",
+          "ㄇ",
+          "ㄈ"
+        ],
+        "answer": "ㄆ",
+        "explain": "ㄆ、ㄠ！ㄆ 加 ㄠ 的三聲，拼起來就是跑步的「跑（ㄆㄠˇ）」！"
+      },
+      {
+        "id": "k2_L1_q5",
+        "type": "k2_fish",
+        "modeBadge": "🎣 星光釣魚池",
+        "prompt": "看圖聽聲音，甩竿釣起對的國字小魚！",
+        "pic": "🚪",
+        "tts": "ㄇ、ㄣ，門！叩叩叩！打開大門的「門」，是哪一張國字卡呢？",
+        "options": [
+          "門",
+          "馬",
+          "爸",
+          "風"
+        ],
+        "optZhuyin": {
+          "門": "ㄇㄣˊ",
+          "馬": "ㄇㄚˇ",
+          "爸": "ㄅㄚˋ",
+          "風": "ㄈㄥ"
+        },
+        "answer": "門",
+        "explain": "像兩扇大門一樣的字，就是「門（ㄇㄣˊ）」！"
+      },
+      {
+        "id": "k2_L1_q6",
+        "type": "k2_feed",
+        "modeBadge": "🦖 貪吃小恐龍",
+        "prompt": "看圖聽聲音，餵小恐龍吃對的國字點心！",
+        "pic": "🐴",
+        "tts": "ㄇ、ㄚ，馬！噠噠噠！小馬奔跑的「馬」，是哪一張國字卡呢？",
+        "options": [
+          "馬",
+          "媽",
+          "跑",
+          "門"
+        ],
+        "optZhuyin": {
+          "馬": "ㄇㄚˇ",
+          "媽": "ㄇㄚ",
+          "跑": "ㄆㄠˇ",
+          "門": "ㄇㄣˊ"
+        },
+        "answer": "馬",
+        "explain": "有長長鬃毛和四條腿的國字，就是小馬的「馬（ㄇㄚˇ）」！"
+      },
+      {
+        "id": "k2_L1_q9",
+        "type": "k2_match",
+        "modeBadge": "🃏 3D 魔法翻翻牌",
+        "prompt": "翻開兩張一樣的魔法卡，把國字和圖案配對起來！",
+        "tts": "魔法翻翻牌！翻開兩張配對的卡片，把國字記起來喔！",
+        "pairs": [
+          [
+            {
+              "hanzi": "爸",
+              "tts": "爸"
+            },
+            {
+              "pic": "👨",
+              "zy": "ㄅㄚˋ",
+              "tts": "ㄅ、ㄚ，爸！"
+            }
+          ],
+          [
+            {
+              "hanzi": "媽",
+              "tts": "媽"
+            },
+            {
+              "pic": "👩",
+              "zy": "ㄇㄚ",
+              "tts": "ㄇ、ㄚ，媽！"
+            }
+          ],
+          [
+            {
+              "hanzi": "風",
+              "tts": "風"
+            },
+            {
+              "pic": "🌬️",
+              "zy": "ㄈㄥ",
+              "tts": "ㄈ、ㄥ，風！"
+            }
+          ]
+        ],
+        "explain": "哇！3 組國字與注音圖卡全部配對成功，記憶力一百分！"
+      },
+      {
+        "id": "k2_L1_q7",
+        "type": "k2_mole",
+        "modeBadge": "🔨 草原打地鼠",
+        "prompt": "看圖和注音，敲出對的國字地鼠！",
+        "pic": "👨",
+        "hintZhuyin": "ㄅㄚˋ",
+        "tts": "認國字挑戰！爸爸的「爸」躲在哪個洞裡？快敲它！",
+        "options": [
+          "爸",
+          "媽",
+          "門",
+          "風"
+        ],
+        "answer": "爸",
+        "explain": "太棒了！不用注音也認得爸爸的「爸（ㄅㄚˋ）」了！"
+      },
+      {
+        "id": "k2_L1_q8",
+        "type": "k2_chest",
+        "modeBadge": "🗝️ 黃金寶箱鎖",
+        "prompt": "看圖和注音，選「門」的魔鑰匙打開黃金寶箱！",
+        "pic": "🚪",
+        "hintZhuyin": "ㄇㄣˊ",
+        "tts": "黃金寶箱挑戰！國字「門」是哪一把鑰匙呢？快打開寶箱！",
+        "options": [
+          "門",
+          "馬",
+          "跑",
+          "爸"
+        ],
+        "answer": "門",
+        "explain": "好厲害！你已經學會認得國字「門（ㄇㄣˊ）」囉！"
+      }
+    ]
   },
   {
-    id: 'k2_L2',
-    code: '第 2 關',
-    title: 'ㄉ ㄊ ㄋ ㄌ 快樂動物村',
-    icon: '🐰',
-    scene: 'k2_L2',
-    sky: ['#34d399', '#a7f3d0', '#fef9c3'],
-    summary: '認識 ㄉㄊㄋㄌ 與「大、兔、牛、鳥、來、樂」6 個基礎國字',
-    studyCards: [
-      { pic: '🐘', word: '大', zhuyin: 'ㄉ ㄉㄚˋ', tip: '大象好大！開頭是 ㄉ', tts: 'ㄉ！ㄉ、ㄚ，大！大象好大！' },
-      { pic: '🐰', word: '兔', zhuyin: 'ㄊ ㄊㄨˋ', tip: '小兔跳跳！開頭是 ㄊ', tts: 'ㄊ！ㄊ、ㄨ，兔！小兔子跳跳！' },
-      { pic: '🐮', word: '牛', zhuyin: 'ㄋ ㄋㄧㄡˊ', tip: '小牛哞哞！開頭是 ㄋ', tts: 'ㄋ！ㄋ、ㄧ、ㄡ，牛！小牛哞哞！' },
-      { pic: '🐦', word: '鳥', zhuyin: 'ㄋ ㄋㄧㄠˇ', tip: '小鳥飛飛！開頭是 ㄋ', tts: 'ㄋ！ㄋ、ㄧ、ㄠ，鳥！小鳥飛飛！' },
-      { pic: '👋', word: '來', zhuyin: 'ㄌ ㄌㄞˊ', tip: '過來一起玩！開頭是 ㄌ', tts: 'ㄌ！ㄌ、ㄞ，來！過來一起玩！' },
-      { pic: '😄', word: '樂', zhuyin: 'ㄌ ㄌㄜˋ', tip: '笑得好快樂！開頭是 ㄌ', tts: 'ㄌ！ㄌ、ㄜ，樂！笑得好快樂！' },
+    "id": "k2_L2",
+    "code": "第 2 關",
+    "title": "ㄉ ㄊ ㄋ ㄌ 快樂動物村",
+    "icon": "🐰",
+    "scene": "k2_L2",
+    "sky": [
+      "#34d399",
+      "#a7f3d0",
+      "#fef9c3"
     ],
-    questions: [
+    "summary": "認識 ㄉㄊㄋㄌ 與「大、兔、牛、鳥、來、樂」6 個基礎國字",
+    "studyCards": [
       {
-        id: 'k2_L2_q1',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找 ㄅ ㄆ ㄇ',
-        prompt: '聽聲音看大字，射中開頭的注音！',
-        pic: '🐘',
-        charFocus: '大',
-        tts: 'ㄉ！ㄉ！大象好大的「大」，開頭注音是 ㄉ！請射中 ㄉ！',
-        options: ['ㄉ', 'ㄊ', 'ㄋ', 'ㄌ'],
-        answer: 'ㄉ',
-        explain: 'ㄉ！大（ㄉㄚˋ）張開雙手像個人，開頭注音是 ㄉ！',
+        "pic": "🐘",
+        "word": "大",
+        "zhuyin": "ㄉ ㄉㄚˋ",
+        "tip": "大象好大！開頭是 ㄉ",
+        "tts": "ㄉ！ㄉ、ㄚ，大！大象好大！"
       },
       {
-        id: 'k2_L2_q2',
-        type: 'k2_sound',
-        modeBadge: '🫧 聽音戳泡泡',
-        prompt: '聽聲音看大字，戳破開頭的注音泡泡！',
-        pic: '🐰',
-        charFocus: '兔',
-        tts: 'ㄊ！ㄊ！長耳朵小兔子的「兔」，開頭注音是 ㄊ！請戳破 ㄊ！',
-        options: ['ㄊ', 'ㄉ', 'ㄋ', 'ㄌ'],
-        answer: 'ㄊ',
-        explain: 'ㄊ！兔（ㄊㄨˋ）的開頭注音是 ㄊ，右下角那一點就像兔尾巴喔！',
+        "pic": "🐰",
+        "word": "兔",
+        "zhuyin": "ㄊ ㄊㄨˋ",
+        "tip": "小兔跳跳！開頭是 ㄊ",
+        "tts": "ㄊ！ㄊ、ㄨ，兔！小兔子跳跳！"
       },
       {
-        id: 'k2_L2_q3',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「牛」！',
-        pic: '🐮',
-        missingPos: 'first',
-        fixedPart: 'ㄧㄡ',
-        toneLabel: '二聲',
-        resultChar: '牛',
-        fullZhuyin: 'ㄋㄧㄡˊ',
-        tts: 'ㄋ、ㄧ、ㄡ，牛！哞哞叫的「牛」，前面要放哪一個注音呢？',
-        options: ['ㄋ', 'ㄌ', 'ㄉ', 'ㄊ'],
-        answer: 'ㄋ',
-        explain: 'ㄋ！ㄋ 加 ㄧ、ㄡ 的二聲，拼起來就是小牛的「牛（ㄋㄧㄡˊ）」！',
+        "pic": "🐮",
+        "word": "牛",
+        "zhuyin": "ㄋ ㄋㄧㄡˊ",
+        "tip": "小牛哞哞！開頭是 ㄋ",
+        "tts": "ㄋ！ㄋ、ㄧ、ㄡ，牛！小牛哞哞！"
       },
       {
-        id: 'k2_L2_q4',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「來」！',
-        pic: '👋',
-        missingPos: 'first',
-        fixedPart: 'ㄞ',
-        toneLabel: '二聲',
-        resultChar: '來',
-        fullZhuyin: 'ㄌㄞˊ',
-        tts: 'ㄌ、ㄞ，來！過來玩的「來」，前面要放注音 ㄌ 喔！',
-        options: ['ㄌ', 'ㄋ', 'ㄉ', 'ㄊ'],
-        answer: 'ㄌ',
-        explain: 'ㄌ、ㄞ！ㄌ 加 ㄞ 的二聲，拼起來就是過來的「來（ㄌㄞˊ）」！',
+        "pic": "🐦",
+        "word": "鳥",
+        "zhuyin": "ㄋ ㄋㄧㄠˇ",
+        "tip": "小鳥飛飛！開頭是 ㄋ",
+        "tts": "ㄋ！ㄋ、ㄧ、ㄠ，鳥！小鳥飛飛！"
       },
       {
-        id: 'k2_L2_q5',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🐦',
-        tts: 'ㄋ、ㄧ、ㄠ，鳥！啾啾啾！天空飛的小鳥，「鳥」是哪一張國字卡呢？',
-        options: ['鳥', '牛', '大', '樂'],
-        optZhuyin: { '鳥': 'ㄋㄧㄠˇ', '牛': 'ㄋㄧㄡˊ', '大': 'ㄉㄚˋ', '樂': 'ㄌㄜˋ' },
-        answer: '鳥',
-        explain: '有小眼睛和羽毛尾巴的字，就是小鳥的「鳥（ㄋㄧㄠˇ）」！',
+        "pic": "👋",
+        "word": "來",
+        "zhuyin": "ㄌ ㄌㄞˊ",
+        "tip": "過來一起玩！開頭是 ㄌ",
+        "tts": "ㄌ！ㄌ、ㄞ，來！過來一起玩！"
       },
       {
-        id: 'k2_L2_q6',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🐮',
-        tts: 'ㄋ、ㄧ、ㄡ，牛！哞哞哞！愛吃草的小牛，「牛」是哪一張國字卡呢？',
-        options: ['牛', '兔', '來', '鳥'],
-        optZhuyin: { '牛': 'ㄋㄧㄡˊ', '兔': 'ㄊㄨˋ', '來': 'ㄌㄞˊ', '鳥': 'ㄋㄧㄠˇ' },
-        answer: '牛',
-        explain: '頭上有彎彎牛角的國字，就是「牛（ㄋㄧㄡˊ）」！',
-      },
-      {
-        id: 'k2_L2_q7',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🐘',
-        hintZhuyin: 'ㄉㄚˋ',
-        tts: '認國字挑戰！大象好大的「大」在哪裡？快敲它！',
-        options: ['大', '牛', '兔', '來'],
-        answer: '大',
-        explain: '超棒！一眼就認出大象的「大（ㄉㄚˋ）」！',
-      },
-      {
-        id: 'k2_L2_q8',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🐰',
-        hintZhuyin: 'ㄊㄨˋ',
-        tts: '蹦蹦跳的小兔子，「兔」地鼠在哪裡？敲一敲！',
-        options: ['兔', '鳥', '大', '樂'],
-        answer: '兔',
-        explain: '太強了！小兔子的「兔（ㄊㄨˋ）」也記熟囉！',
-      },
+        "pic": "😄",
+        "word": "樂",
+        "zhuyin": "ㄌ ㄌㄜˋ",
+        "tip": "笑得好快樂！開頭是 ㄌ",
+        "tts": "ㄌ！ㄌ、ㄜ，樂！笑得好快樂！"
+      }
     ],
+    "questions": [
+      {
+        "id": "k2_L2_q1",
+        "type": "k2_dart",
+        "modeBadge": "🎯 神準射飛鏢",
+        "prompt": "聽聲音看大字，射中開頭的注音！",
+        "pic": "🐘",
+        "charFocus": "大",
+        "tts": "ㄉ！ㄉ！大象好大的「大」，開頭注音是 ㄉ！請射中 ㄉ！",
+        "options": [
+          "ㄉ",
+          "ㄊ",
+          "ㄋ",
+          "ㄌ"
+        ],
+        "answer": "ㄉ",
+        "explain": "ㄉ！大（ㄉㄚˋ）張開雙手像個人，開頭注音是 ㄉ！"
+      },
+      {
+        "id": "k2_L2_q2",
+        "type": "k2_bubble",
+        "modeBadge": "🫧 奇幻戳泡泡",
+        "prompt": "聽聲音看大字，戳破開頭的注音泡泡！",
+        "pic": "🐰",
+        "charFocus": "兔",
+        "tts": "ㄊ！ㄊ！長耳朵小兔子的「兔」，開頭注音是 ㄊ！請戳破 ㄊ！",
+        "options": [
+          "ㄊ",
+          "ㄉ",
+          "ㄋ",
+          "ㄌ"
+        ],
+        "answer": "ㄊ",
+        "explain": "ㄊ！兔（ㄊㄨˋ）的開頭注音是 ㄊ，右下角那一點就像兔尾巴喔！"
+      },
+      {
+        "id": "k2_L2_q3",
+        "type": "k2_spell",
+        "modeBadge": "🧪 魔法拼音鍋",
+        "prompt": "把缺少的注音放進魔法鍋，拼出「牛」！",
+        "pic": "🐮",
+        "missingPos": "first",
+        "fixedPart": "ㄧㄡ",
+        "toneLabel": "二聲",
+        "resultChar": "牛",
+        "fullZhuyin": "ㄋㄧㄡˊ",
+        "tts": "ㄋ、ㄧ、ㄡ，牛！哞哞叫的「牛」，前面要放哪一個注音呢？",
+        "options": [
+          "ㄋ",
+          "ㄌ",
+          "ㄉ",
+          "ㄊ"
+        ],
+        "answer": "ㄋ",
+        "explain": "ㄋ！ㄋ 加 ㄧ、ㄡ 的二聲，拼起來就是小牛的「牛（ㄋㄧㄡˊ）」！"
+      },
+      {
+        "id": "k2_L2_q4",
+        "type": "k2_claw",
+        "modeBadge": "🕹️ 奇幻夾娃娃",
+        "prompt": "開動夾娃娃機，夾出缺少的注音拼出「來」！",
+        "pic": "👋",
+        "missingPos": "first",
+        "fixedPart": "ㄞ",
+        "toneLabel": "二聲",
+        "resultChar": "來",
+        "fullZhuyin": "ㄌㄞˊ",
+        "tts": "ㄌ、ㄞ，來！過來玩的「來」，前面要放注音 ㄌ 喔！",
+        "options": [
+          "ㄌ",
+          "ㄋ",
+          "ㄉ",
+          "ㄊ"
+        ],
+        "answer": "ㄌ",
+        "explain": "ㄌ、ㄞ！ㄌ 加 ㄞ 的二聲，拼起來就是過來的「來（ㄌㄞˊ）」！"
+      },
+      {
+        "id": "k2_L2_q5",
+        "type": "k2_fish",
+        "modeBadge": "🎣 星光釣魚池",
+        "prompt": "看圖聽聲音，甩竿釣起對的國字小魚！",
+        "pic": "🐦",
+        "tts": "ㄋ、ㄧ、ㄠ，鳥！啾啾啾！天空飛的小鳥，「鳥」是哪一張國字卡呢？",
+        "options": [
+          "鳥",
+          "牛",
+          "大",
+          "樂"
+        ],
+        "optZhuyin": {
+          "鳥": "ㄋㄧㄠˇ",
+          "牛": "ㄋㄧㄡˊ",
+          "大": "ㄉㄚˋ",
+          "樂": "ㄌㄜˋ"
+        },
+        "answer": "鳥",
+        "explain": "有小眼睛和羽毛尾巴的字，就是小鳥的「鳥（ㄋㄧㄠˇ）」！"
+      },
+      {
+        "id": "k2_L2_q6",
+        "type": "k2_feed",
+        "modeBadge": "🦖 貪吃小恐龍",
+        "prompt": "看圖聽聲音，餵小恐龍吃對的國字點心！",
+        "pic": "🐮",
+        "tts": "ㄋ、ㄧ、ㄡ，牛！哞哞哞！愛吃草的小牛，「牛」是哪一張國字卡呢？",
+        "options": [
+          "牛",
+          "兔",
+          "來",
+          "鳥"
+        ],
+        "optZhuyin": {
+          "牛": "ㄋㄧㄡˊ",
+          "兔": "ㄊㄨˋ",
+          "來": "ㄌㄞˊ",
+          "鳥": "ㄋㄧㄠˇ"
+        },
+        "answer": "牛",
+        "explain": "頭上有彎彎牛角的國字，就是「牛（ㄋㄧㄡˊ）」！"
+      },
+      {
+        "id": "k2_L2_q9",
+        "type": "k2_match",
+        "modeBadge": "🃏 3D 魔法翻翻牌",
+        "prompt": "翻開兩張一樣的魔法卡，把國字和圖案配對起來！",
+        "tts": "魔法翻翻牌！翻開兩張配對的卡片，把國字記起來喔！",
+        "pairs": [
+          [
+            {
+              "hanzi": "大",
+              "tts": "大"
+            },
+            {
+              "pic": "🐘",
+              "zy": "ㄉㄚˋ",
+              "tts": "ㄉ、ㄚ，大！"
+            }
+          ],
+          [
+            {
+              "hanzi": "兔",
+              "tts": "兔"
+            },
+            {
+              "pic": "🐰",
+              "zy": "ㄊㄨˋ",
+              "tts": "ㄊ、ㄨ，兔！"
+            }
+          ],
+          [
+            {
+              "hanzi": "牛",
+              "tts": "牛"
+            },
+            {
+              "pic": "🐮",
+              "zy": "ㄋㄧㄡˊ",
+              "tts": "ㄋ、ㄧ、ㄡ，牛！"
+            }
+          ]
+        ],
+        "explain": "哇！3 組國字與注音圖卡全部配對成功，記憶力一百分！"
+      },
+      {
+        "id": "k2_L2_q7",
+        "type": "k2_mole",
+        "modeBadge": "🔨 草原打地鼠",
+        "prompt": "看圖和注音，敲出對的國字地鼠！",
+        "pic": "🐘",
+        "hintZhuyin": "ㄉㄚˋ",
+        "tts": "認國字挑戰！大象好大的「大」在哪裡？快敲它！",
+        "options": [
+          "大",
+          "牛",
+          "兔",
+          "來"
+        ],
+        "answer": "大",
+        "explain": "超棒！一眼就認出大象的「大（ㄉㄚˋ）」！"
+      },
+      {
+        "id": "k2_L2_q8",
+        "type": "k2_chest",
+        "modeBadge": "🗝️ 黃金寶箱鎖",
+        "prompt": "看圖和注音，選「兔」的魔鑰匙打開黃金寶箱！",
+        "pic": "🐰",
+        "hintZhuyin": "ㄊㄨˋ",
+        "tts": "黃金寶箱挑戰！國字「兔」是哪一把鑰匙呢？快打開寶箱！",
+        "options": [
+          "兔",
+          "鳥",
+          "大",
+          "樂"
+        ],
+        "answer": "兔",
+        "explain": "太強了！小兔子的「兔（ㄊㄨˋ）」也記熟囉！"
+      }
+    ]
   },
   {
-    id: 'k2_L3',
-    code: '第 3 關',
-    title: 'ㄍ ㄎ ㄏ 汪汪喵喵派對',
-    icon: '🐶',
-    scene: 'k2_L3',
-    sky: ['#38bdf8', '#bae6fd', '#fef9c3'],
-    summary: '認識 ㄍㄎㄏ 與「狗、高、口、開、火、花」6 個基礎國字',
-    studyCards: [
-      { pic: '🐶', word: '狗', zhuyin: 'ㄍ ㄍㄡˇ', tip: '小狗汪汪！開頭是 ㄍ', tts: 'ㄍ！ㄍ、ㄡ，狗！小狗汪汪！' },
-      { pic: '🦒', word: '高', zhuyin: 'ㄍ ㄍㄠ', tip: '長頸鹿好高！開頭是 ㄍ', tts: 'ㄍ！ㄍ、ㄠ，高！長頸鹿好高！' },
-      { pic: '👄', word: '口', zhuyin: 'ㄎ ㄎㄡˇ', tip: '張開嘴巴像個口！開頭是 ㄎ', tts: 'ㄎ！ㄎ、ㄡ，口！張開嘴巴的口！' },
-      { pic: '🔓', word: '開', zhuyin: 'ㄎ ㄎㄞ', tip: '開門開心！開頭是 ㄎ', tts: 'ㄎ！ㄎ、ㄞ，開！打開的開！' },
-      { pic: '🔥', word: '火', zhuyin: 'ㄏ ㄏㄨㄛˇ', tip: '火苗燒呀燒！開頭是 ㄏ', tts: 'ㄏ！ㄏ、ㄨ、ㄛ，火！大火的火！' },
-      { pic: '🌸', word: '花', zhuyin: 'ㄏ ㄏㄨㄚ', tip: '香香的花朵！開頭是 ㄏ', tts: 'ㄏ！ㄏ、ㄨ、ㄚ，花！香香的花朵！' },
+    "id": "k2_L3",
+    "code": "第 3 關",
+    "title": "ㄍ ㄎ ㄏ 汪汪喵喵派對",
+    "icon": "🐶",
+    "scene": "k2_L3",
+    "sky": [
+      "#38bdf8",
+      "#bae6fd",
+      "#fef9c3"
     ],
-    questions: [
+    "summary": "認識 ㄍㄎㄏ 與「狗、高、口、開、火、花」6 個基礎國字",
+    "studyCards": [
       {
-        id: 'k2_L3_q1',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找 ㄅ ㄆ ㄇ',
-        prompt: '聽聲音看大字，射中開頭的注音！',
-        pic: '🐶',
-        charFocus: '狗',
-        tts: 'ㄍ！ㄍ！汪汪叫小狗的「狗」，開頭注音是 ㄍ！請射中 ㄍ！',
-        options: ['ㄍ', 'ㄎ', 'ㄏ', 'ㄉ'],
-        answer: 'ㄍ',
-        explain: 'ㄍ！狗（ㄍㄡˇ）的開頭注音是 ㄍ！',
+        "pic": "🐶",
+        "word": "狗",
+        "zhuyin": "ㄍ ㄍㄡˇ",
+        "tip": "小狗汪汪！開頭是 ㄍ",
+        "tts": "ㄍ！ㄍ、ㄡ，狗！小狗汪汪！"
       },
       {
-        id: 'k2_L3_q2',
-        type: 'k2_sound',
-        modeBadge: '🫧 聽音戳泡泡',
-        prompt: '聽聲音看大字，戳破開頭的注音泡泡！',
-        pic: '👄',
-        charFocus: '口',
-        tts: 'ㄎ！ㄎ！張開嘴巴的「口」，開頭注音是 ㄎ！請戳破 ㄎ！',
-        options: ['ㄎ', 'ㄍ', 'ㄏ', 'ㄊ'],
-        answer: 'ㄎ',
-        explain: 'ㄎ！口（ㄎㄡˇ）方方正正像張開的嘴巴，開頭是 ㄎ！',
+        "pic": "🦒",
+        "word": "高",
+        "zhuyin": "ㄍ ㄍㄠ",
+        "tip": "長頸鹿好高！開頭是 ㄍ",
+        "tts": "ㄍ！ㄍ、ㄠ，高！長頸鹿好高！"
       },
       {
-        id: 'k2_L3_q3',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「花」！',
-        pic: '🌸',
-        missingPos: 'first',
-        fixedPart: 'ㄨㄚ',
-        resultChar: '花',
-        fullZhuyin: 'ㄏㄨㄚ',
-        tts: 'ㄏ、ㄨ、ㄚ，花！漂亮花朵的「花」，前面要放哪一個注音呢？',
-        options: ['ㄏ', 'ㄍ', 'ㄎ', 'ㄈ'],
-        answer: 'ㄏ',
-        explain: 'ㄏ！ㄏ 加 ㄨ、ㄚ 拼起來就是香香的「花（ㄏㄨㄚ）」！',
+        "pic": "👄",
+        "word": "口",
+        "zhuyin": "ㄎ ㄎㄡˇ",
+        "tip": "張開嘴巴像個口！開頭是 ㄎ",
+        "tts": "ㄎ！ㄎ、ㄡ，口！張開嘴巴的口！"
       },
       {
-        id: 'k2_L3_q4',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「高」！',
-        pic: '🦒',
-        missingPos: 'second',
-        fixedPart: 'ㄍ',
-        resultChar: '高',
-        fullZhuyin: 'ㄍㄠ',
-        tts: 'ㄍ、ㄠ，高！長頸鹿好高的「高」，ㄍ 後面要加哪一個注音呢？',
-        options: ['ㄠ', 'ㄡ', 'ㄞ', 'ㄟ'],
-        answer: 'ㄠ',
-        explain: 'ㄍ、ㄠ！ㄍ 加 ㄠ 拼起來就是高樓的「高（ㄍㄠ）」！',
+        "pic": "🔓",
+        "word": "開",
+        "zhuyin": "ㄎ ㄎㄞ",
+        "tip": "開門開心！開頭是 ㄎ",
+        "tts": "ㄎ！ㄎ、ㄞ，開！打開的開！"
       },
       {
-        id: 'k2_L3_q5',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🔥',
-        tts: 'ㄏ、ㄨ、ㄛ，火！轟隆隆！紅通通的火焰，「火」是哪一張國字卡呢？',
-        options: ['火', '口', '花', '高'],
-        optZhuyin: { '火': 'ㄏㄨㄛˇ', '口': 'ㄎㄡˇ', '花': 'ㄏㄨㄚ', '高': 'ㄍㄠ' },
-        answer: '火',
-        explain: '兩邊冒出火苗的國字，就是「火（ㄏㄨㄛˇ）」！',
+        "pic": "🔥",
+        "word": "火",
+        "zhuyin": "ㄏ ㄏㄨㄛˇ",
+        "tip": "火苗燒呀燒！開頭是 ㄏ",
+        "tts": "ㄏ！ㄏ、ㄨ、ㄛ，火！大火的火！"
       },
       {
-        id: 'k2_L3_q6',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🌸',
-        tts: 'ㄏ、ㄨ、ㄚ，花！花園裡開滿香香的「花」，是哪一張國字卡呢？',
-        options: ['花', '狗', '開', '口'],
-        optZhuyin: { '花': 'ㄏㄨㄚ', '狗': 'ㄍㄡˇ', '開': 'ㄎㄞ', '口': 'ㄎㄡˇ' },
-        answer: '花',
-        explain: '頭上長著草字頭「艹」的美麗國字，就是「花（ㄏㄨㄚ）」！',
-      },
-      {
-        id: 'k2_L3_q7',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '👄',
-        hintZhuyin: 'ㄎㄡˇ',
-        tts: '張開嘴巴的「口」地鼠在哪裡？快敲它！',
-        options: ['口', '火', '高', '狗'],
-        answer: '口',
-        explain: '神準！方方正正的「口（ㄎㄡˇ）」一下子就認出來了！',
-      },
-      {
-        id: 'k2_L3_q8',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🔥',
-        hintZhuyin: 'ㄏㄨㄛˇ',
-        tts: '燒呀燒的「火」地鼠在哪裡？快敲它！',
-        options: ['火', '花', '開', '口'],
-        answer: '火',
-        explain: '太棒了！你已經完全認得國字「火（ㄏㄨㄛˇ）」囉！',
-      },
+        "pic": "🌸",
+        "word": "花",
+        "zhuyin": "ㄏ ㄏㄨㄚ",
+        "tip": "香香的花朵！開頭是 ㄏ",
+        "tts": "ㄏ！ㄏ、ㄨ、ㄚ，花！香香的花朵！"
+      }
     ],
+    "questions": [
+      {
+        "id": "k2_L3_q1",
+        "type": "k2_dart",
+        "modeBadge": "🎯 神準射飛鏢",
+        "prompt": "聽聲音看大字，射中開頭的注音！",
+        "pic": "🐶",
+        "charFocus": "狗",
+        "tts": "ㄍ！ㄍ！汪汪叫小狗的「狗」，開頭注音是 ㄍ！請射中 ㄍ！",
+        "options": [
+          "ㄍ",
+          "ㄎ",
+          "ㄏ",
+          "ㄉ"
+        ],
+        "answer": "ㄍ",
+        "explain": "ㄍ！狗（ㄍㄡˇ）的開頭注音是 ㄍ！"
+      },
+      {
+        "id": "k2_L3_q2",
+        "type": "k2_bubble",
+        "modeBadge": "🫧 奇幻戳泡泡",
+        "prompt": "聽聲音看大字，戳破開頭的注音泡泡！",
+        "pic": "👄",
+        "charFocus": "口",
+        "tts": "ㄎ！ㄎ！張開嘴巴的「口」，開頭注音是 ㄎ！請戳破 ㄎ！",
+        "options": [
+          "ㄎ",
+          "ㄍ",
+          "ㄏ",
+          "ㄊ"
+        ],
+        "answer": "ㄎ",
+        "explain": "ㄎ！口（ㄎㄡˇ）方方正正像張開的嘴巴，開頭是 ㄎ！"
+      },
+      {
+        "id": "k2_L3_q3",
+        "type": "k2_spell",
+        "modeBadge": "🧪 魔法拼音鍋",
+        "prompt": "把缺少的注音放進魔法鍋，拼出「花」！",
+        "pic": "🌸",
+        "missingPos": "first",
+        "fixedPart": "ㄨㄚ",
+        "resultChar": "花",
+        "fullZhuyin": "ㄏㄨㄚ",
+        "tts": "ㄏ、ㄨ、ㄚ，花！漂亮花朵的「花」，前面要放哪一個注音呢？",
+        "options": [
+          "ㄏ",
+          "ㄍ",
+          "ㄎ",
+          "ㄈ"
+        ],
+        "answer": "ㄏ",
+        "explain": "ㄏ！ㄏ 加 ㄨ、ㄚ 拼起來就是香香的「花（ㄏㄨㄚ）」！"
+      },
+      {
+        "id": "k2_L3_q4",
+        "type": "k2_claw",
+        "modeBadge": "🕹️ 奇幻夾娃娃",
+        "prompt": "開動夾娃娃機，夾出缺少的注音拼出「高」！",
+        "pic": "🦒",
+        "missingPos": "second",
+        "fixedPart": "ㄍ",
+        "resultChar": "高",
+        "fullZhuyin": "ㄍㄠ",
+        "tts": "ㄍ、ㄠ，高！長頸鹿好高的「高」，ㄍ 後面要加哪一個注音呢？",
+        "options": [
+          "ㄠ",
+          "ㄡ",
+          "ㄞ",
+          "ㄟ"
+        ],
+        "answer": "ㄠ",
+        "explain": "ㄍ、ㄠ！ㄍ 加 ㄠ 拼起來就是高樓的「高（ㄍㄠ）」！"
+      },
+      {
+        "id": "k2_L3_q5",
+        "type": "k2_fish",
+        "modeBadge": "🎣 星光釣魚池",
+        "prompt": "看圖聽聲音，甩竿釣起對的國字小魚！",
+        "pic": "🔥",
+        "tts": "ㄏ、ㄨ、ㄛ，火！轟隆隆！紅通通的火焰，「火」是哪一張國字卡呢？",
+        "options": [
+          "火",
+          "口",
+          "花",
+          "高"
+        ],
+        "optZhuyin": {
+          "火": "ㄏㄨㄛˇ",
+          "口": "ㄎㄡˇ",
+          "花": "ㄏㄨㄚ",
+          "高": "ㄍㄠ"
+        },
+        "answer": "火",
+        "explain": "兩邊冒出火苗的國字，就是「火（ㄏㄨㄛˇ）」！"
+      },
+      {
+        "id": "k2_L3_q6",
+        "type": "k2_feed",
+        "modeBadge": "🦖 貪吃小恐龍",
+        "prompt": "看圖聽聲音，餵小恐龍吃對的國字點心！",
+        "pic": "🌸",
+        "tts": "ㄏ、ㄨ、ㄚ，花！花園裡開滿香香的「花」，是哪一張國字卡呢？",
+        "options": [
+          "花",
+          "狗",
+          "開",
+          "口"
+        ],
+        "optZhuyin": {
+          "花": "ㄏㄨㄚ",
+          "狗": "ㄍㄡˇ",
+          "開": "ㄎㄞ",
+          "口": "ㄎㄡˇ"
+        },
+        "answer": "花",
+        "explain": "頭上長著草字頭「艹」的美麗國字，就是「花（ㄏㄨㄚ）」！"
+      },
+      {
+        "id": "k2_L3_q9",
+        "type": "k2_match",
+        "modeBadge": "🃏 3D 魔法翻翻牌",
+        "prompt": "翻開兩張一樣的魔法卡，把國字和圖案配對起來！",
+        "tts": "魔法翻翻牌！翻開兩張配對的卡片，把國字記起來喔！",
+        "pairs": [
+          [
+            {
+              "hanzi": "狗",
+              "tts": "狗"
+            },
+            {
+              "pic": "🐶",
+              "zy": "ㄍㄡˇ",
+              "tts": "ㄍ、ㄡ，狗！"
+            }
+          ],
+          [
+            {
+              "hanzi": "火",
+              "tts": "火"
+            },
+            {
+              "pic": "🔥",
+              "zy": "ㄏㄨㄛˇ",
+              "tts": "ㄏ、ㄨ、ㄛ，火！"
+            }
+          ],
+          [
+            {
+              "hanzi": "花",
+              "tts": "花"
+            },
+            {
+              "pic": "🌸",
+              "zy": "ㄏㄨㄚ",
+              "tts": "ㄏ、ㄨ、ㄚ，花！"
+            }
+          ]
+        ],
+        "explain": "哇！3 組國字與注音圖卡全部配對成功，記憶力一百分！"
+      },
+      {
+        "id": "k2_L3_q7",
+        "type": "k2_mole",
+        "modeBadge": "🔨 草原打地鼠",
+        "prompt": "看圖和注音，敲出對的國字地鼠！",
+        "pic": "👄",
+        "hintZhuyin": "ㄎㄡˇ",
+        "tts": "張開嘴巴的「口」地鼠在哪裡？快敲它！",
+        "options": [
+          "口",
+          "火",
+          "高",
+          "狗"
+        ],
+        "answer": "口",
+        "explain": "神準！方方正正的「口（ㄎㄡˇ）」一下子就認出來了！"
+      },
+      {
+        "id": "k2_L3_q8",
+        "type": "k2_chest",
+        "modeBadge": "🗝️ 黃金寶箱鎖",
+        "prompt": "看圖和注音，選「火」的魔鑰匙打開黃金寶箱！",
+        "pic": "🔥",
+        "hintZhuyin": "ㄏㄨㄛˇ",
+        "tts": "黃金寶箱挑戰！國字「火」是哪一把鑰匙呢？快打開寶箱！",
+        "options": [
+          "火",
+          "花",
+          "開",
+          "口"
+        ],
+        "answer": "火",
+        "explain": "太棒了！你已經完全認得國字「火（ㄏㄨㄛˇ）」囉！"
+      }
+    ]
   },
   {
-    id: 'k2_L4',
-    code: '第 4 關',
-    title: 'ㄐ ㄑ ㄒ 小雞吃西瓜',
-    icon: '🐥',
-    scene: 'k2_L4',
-    sky: ['#f59e0b', '#fde68a', '#fffbeb'],
-    summary: '認識 ㄐㄑㄒ 與 ㄧㄨㄩ，學會「雞、七、西、衣、五、魚」6 個國字',
-    studyCards: [
-      { pic: '🐥', word: '雞', zhuyin: 'ㄐ ㄐㄧ', tip: '小雞啾啾！開頭是 ㄐ', tts: 'ㄐ！ㄐ、ㄧ，雞！小雞啾啾！' },
-      { pic: '7️⃣', word: '七', zhuyin: 'ㄑ ㄑㄧ', tip: '數字七！開頭是 ㄑ', tts: 'ㄑ！ㄑ、ㄧ，七！數字七！' },
-      { pic: '🍉', word: '西', zhuyin: 'ㄒ ㄒㄧ', tip: '甜西瓜！開頭是 ㄒ', tts: 'ㄒ！ㄒ、ㄧ，西！甜甜的西瓜！' },
-      { pic: '👕', word: '衣', zhuyin: 'ㄧ ㄧ', tip: '穿新衣！注音就是 ㄧ', tts: 'ㄧ！穿新衣服的衣！' },
-      { pic: '5️⃣', word: '五', zhuyin: 'ㄨ ㄨˇ', tip: '五根手指！ㄨ 的三聲', tts: 'ㄨ！數字五！五根手指頭！' },
-      { pic: '🐟', word: '魚', zhuyin: 'ㄩ ㄩˊ', tip: '小魚游水！ㄩ 的二聲', tts: 'ㄩ！小魚游水的魚！' },
+    "id": "k2_L4",
+    "code": "第 4 關",
+    "title": "ㄐ ㄑ ㄒ 小雞吃西瓜",
+    "icon": "🐥",
+    "scene": "k2_L4",
+    "sky": [
+      "#f59e0b",
+      "#fde68a",
+      "#fffbeb"
     ],
-    questions: [
+    "summary": "認識 ㄐㄑㄒ 與 ㄧㄨㄩ，學會「雞、七、西、衣、五、魚」6 個國字",
+    "studyCards": [
       {
-        id: 'k2_L4_q1',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找 ㄅ ㄆ ㄇ',
-        prompt: '聽聲音看大字，射中開頭的注音！',
-        pic: '🐥',
-        charFocus: '雞',
-        tts: 'ㄐ！ㄐ！小雞啾啾的「雞」，開頭注音是 ㄐ！請射中 ㄐ！',
-        options: ['ㄐ', 'ㄑ', 'ㄒ', 'ㄧ'],
-        answer: 'ㄐ',
-        explain: 'ㄐ！雞（ㄐㄧ）的開頭注音是 ㄐ！',
+        "pic": "🐥",
+        "word": "雞",
+        "zhuyin": "ㄐ ㄐㄧ",
+        "tip": "小雞啾啾！開頭是 ㄐ",
+        "tts": "ㄐ！ㄐ、ㄧ，雞！小雞啾啾！"
       },
       {
-        id: 'k2_L4_q2',
-        type: 'k2_sound',
-        modeBadge: '🫧 聽音戳泡泡',
-        prompt: '聽聲音看大字，戳破開頭的注音泡泡！',
-        pic: '🍉',
-        charFocus: '西',
-        tts: 'ㄒ！ㄒ！大西瓜的「西」，開頭注音是 ㄒ！請戳破 ㄒ！',
-        options: ['ㄒ', 'ㄐ', 'ㄑ', 'ㄩ'],
-        answer: 'ㄒ',
-        explain: 'ㄒ！西（ㄒㄧ）的開頭注音是 ㄒ，西瓜甜甜真好吃！',
+        "pic": "7️⃣",
+        "word": "七",
+        "zhuyin": "ㄑ ㄑㄧ",
+        "tip": "數字七！開頭是 ㄑ",
+        "tts": "ㄑ！ㄑ、ㄧ，七！數字七！"
       },
       {
-        id: 'k2_L4_q3',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「七」！',
-        pic: '7️⃣',
-        missingPos: 'first',
-        fixedPart: 'ㄧ',
-        resultChar: '七',
-        fullZhuyin: 'ㄑㄧ',
-        tts: 'ㄑ、ㄧ，七！數字「七」，前面要放哪一個注音呢？',
-        options: ['ㄑ', 'ㄐ', 'ㄒ', 'ㄨ'],
-        answer: 'ㄑ',
-        explain: 'ㄑ、ㄧ！ㄑ 加 ㄧ 拼起來就是數字「七（ㄑㄧ）」！',
+        "pic": "🍉",
+        "word": "西",
+        "zhuyin": "ㄒ ㄒㄧ",
+        "tip": "甜西瓜！開頭是 ㄒ",
+        "tts": "ㄒ！ㄒ、ㄧ，西！甜甜的西瓜！"
       },
       {
-        id: 'k2_L4_q4',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找 ㄧ ㄨ ㄩ',
-        prompt: '聽聲音看大字，射中「魚」的注音符號！',
-        pic: '🐟',
-        charFocus: '魚',
-        tts: 'ㄩ！ㄩ！水裡游的小魚，「魚」用的是注音 ㄩ！請射中 ㄩ！',
-        options: ['ㄩ', 'ㄧ', 'ㄨ', 'ㄒ'],
-        answer: 'ㄩ',
-        explain: 'ㄩ！小魚的「魚（ㄩˊ）」用的是圓嘴唇的 ㄩ 喔！',
+        "pic": "👕",
+        "word": "衣",
+        "zhuyin": "ㄧ ㄧ",
+        "tip": "穿新衣！注音就是 ㄧ",
+        "tts": "ㄧ！穿新衣服的衣！"
       },
       {
-        id: 'k2_L4_q5',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '👕',
-        tts: 'ㄧ！穿漂亮的衣服，「衣」是哪一張國字卡呢？',
-        options: ['衣', '五', '西', '七'],
-        optZhuyin: { '衣': 'ㄧ', '五': 'ㄨˇ', '西': 'ㄒㄧ', '七': 'ㄑㄧ' },
-        answer: '衣',
-        explain: '上面有領子、兩邊有袖子的國字，就是「衣（ㄧ）」！',
+        "pic": "5️⃣",
+        "word": "五",
+        "zhuyin": "ㄨ ㄨˇ",
+        "tip": "五根手指！ㄨ 的三聲",
+        "tts": "ㄨ！數字五！五根手指頭！"
       },
       {
-        id: 'k2_L4_q6',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🐟',
-        tts: 'ㄩ！水裡游來游去的「魚」，是哪一張國字卡呢？',
-        options: ['魚', '雞', '衣', '五'],
-        optZhuyin: { '魚': 'ㄩˊ', '雞': 'ㄐㄧ', '衣': 'ㄧ', '五': 'ㄨˇ' },
-        answer: '魚',
-        explain: '底下四個點像魚尾巴的國字，就是「魚（ㄩˊ）」！',
-      },
-      {
-        id: 'k2_L4_q7',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '5️⃣',
-        hintZhuyin: 'ㄨˇ',
-        tts: '一二三四五！數字「五」地鼠在哪裡？快敲它！',
-        options: ['五', '七', '西', '衣'],
-        answer: '五',
-        explain: '好棒喔！數字「五（ㄨˇ）」與「七（ㄑㄧ）」都分得清清楚楚！',
-      },
-      {
-        id: 'k2_L4_q8',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🐟',
-        hintZhuyin: 'ㄩˊ',
-        tts: '小魚游呀游，國字「魚」地鼠在哪裡？敲一敲！',
-        options: ['魚', '雞', '西', '五'],
-        answer: '魚',
-        explain: '滿分！你已經認得國字「魚（ㄩˊ）」了！',
-      },
+        "pic": "🐟",
+        "word": "魚",
+        "zhuyin": "ㄩ ㄩˊ",
+        "tip": "小魚游水！ㄩ 的二聲",
+        "tts": "ㄩ！小魚游水的魚！"
+      }
     ],
+    "questions": [
+      {
+        "id": "k2_L4_q1",
+        "type": "k2_dart",
+        "modeBadge": "🎯 神準射飛鏢",
+        "prompt": "聽聲音看大字，射中開頭的注音！",
+        "pic": "🐥",
+        "charFocus": "雞",
+        "tts": "ㄐ！ㄐ！小雞啾啾的「雞」，開頭注音是 ㄐ！請射中 ㄐ！",
+        "options": [
+          "ㄐ",
+          "ㄑ",
+          "ㄒ",
+          "ㄧ"
+        ],
+        "answer": "ㄐ",
+        "explain": "ㄐ！雞（ㄐㄧ）的開頭注音是 ㄐ！"
+      },
+      {
+        "id": "k2_L4_q2",
+        "type": "k2_bubble",
+        "modeBadge": "🫧 奇幻戳泡泡",
+        "prompt": "聽聲音看大字，戳破開頭的注音泡泡！",
+        "pic": "🍉",
+        "charFocus": "西",
+        "tts": "ㄒ！ㄒ！大西瓜的「西」，開頭注音是 ㄒ！請戳破 ㄒ！",
+        "options": [
+          "ㄒ",
+          "ㄐ",
+          "ㄑ",
+          "ㄩ"
+        ],
+        "answer": "ㄒ",
+        "explain": "ㄒ！西（ㄒㄧ）的開頭注音是 ㄒ，西瓜甜甜真好吃！"
+      },
+      {
+        "id": "k2_L4_q3",
+        "type": "k2_spell",
+        "modeBadge": "🧪 魔法拼音鍋",
+        "prompt": "把缺少的注音放進魔法鍋，拼出「七」！",
+        "pic": "7️⃣",
+        "missingPos": "first",
+        "fixedPart": "ㄧ",
+        "resultChar": "七",
+        "fullZhuyin": "ㄑㄧ",
+        "tts": "ㄑ、ㄧ，七！數字「七」，前面要放哪一個注音呢？",
+        "options": [
+          "ㄑ",
+          "ㄐ",
+          "ㄒ",
+          "ㄨ"
+        ],
+        "answer": "ㄑ",
+        "explain": "ㄑ、ㄧ！ㄑ 加 ㄧ 拼起來就是數字「七（ㄑㄧ）」！"
+      },
+      {
+        "id": "k2_L4_q4",
+        "type": "k2_claw",
+        "modeBadge": "🕹️ 奇幻夾娃娃",
+        "prompt": "開動夾娃娃機，夾出「魚」的注音扭蛋！",
+        "pic": "🐟",
+        "charFocus": "魚",
+        "tts": "ㄩ！ㄩ！水裡游的小魚，「魚」用的是注音 ㄩ！請射中 ㄩ！",
+        "options": [
+          "ㄩ",
+          "ㄧ",
+          "ㄨ",
+          "ㄒ"
+        ],
+        "answer": "ㄩ",
+        "explain": "ㄩ！小魚的「魚（ㄩˊ）」用的是圓嘴唇的 ㄩ 喔！"
+      },
+      {
+        "id": "k2_L4_q5",
+        "type": "k2_fish",
+        "modeBadge": "🎣 星光釣魚池",
+        "prompt": "看圖聽聲音，甩竿釣起對的國字小魚！",
+        "pic": "👕",
+        "tts": "ㄧ！穿漂亮的衣服，「衣」是哪一張國字卡呢？",
+        "options": [
+          "衣",
+          "五",
+          "西",
+          "七"
+        ],
+        "optZhuyin": {
+          "衣": "ㄧ",
+          "五": "ㄨˇ",
+          "西": "ㄒㄧ",
+          "七": "ㄑㄧ"
+        },
+        "answer": "衣",
+        "explain": "上面有領子、兩邊有袖子的國字，就是「衣（ㄧ）」！"
+      },
+      {
+        "id": "k2_L4_q6",
+        "type": "k2_feed",
+        "modeBadge": "🦖 貪吃小恐龍",
+        "prompt": "看圖聽聲音，餵小恐龍吃對的國字點心！",
+        "pic": "🐟",
+        "tts": "ㄩ！水裡游來游去的「魚」，是哪一張國字卡呢？",
+        "options": [
+          "魚",
+          "雞",
+          "衣",
+          "五"
+        ],
+        "optZhuyin": {
+          "魚": "ㄩˊ",
+          "雞": "ㄐㄧ",
+          "衣": "ㄧ",
+          "五": "ㄨˇ"
+        },
+        "answer": "魚",
+        "explain": "底下四個點像魚尾巴的國字，就是「魚（ㄩˊ）」！"
+      },
+      {
+        "id": "k2_L4_q9",
+        "type": "k2_match",
+        "modeBadge": "🃏 3D 魔法翻翻牌",
+        "prompt": "翻開兩張一樣的魔法卡，把國字和圖案配對起來！",
+        "tts": "魔法翻翻牌！翻開兩張配對的卡片，把國字記起來喔！",
+        "pairs": [
+          [
+            {
+              "hanzi": "雞",
+              "tts": "雞"
+            },
+            {
+              "pic": "🐥",
+              "zy": "ㄐㄧ",
+              "tts": "ㄐ、ㄧ，雞！"
+            }
+          ],
+          [
+            {
+              "hanzi": "西",
+              "tts": "西"
+            },
+            {
+              "pic": "🍉",
+              "zy": "ㄒㄧ",
+              "tts": "ㄒ、ㄧ，西！"
+            }
+          ],
+          [
+            {
+              "hanzi": "魚",
+              "tts": "魚"
+            },
+            {
+              "pic": "🐟",
+              "zy": "ㄩˊ",
+              "tts": "ㄩ！小魚的魚！"
+            }
+          ]
+        ],
+        "explain": "哇！3 組國字與注音圖卡全部配對成功，記憶力一百分！"
+      },
+      {
+        "id": "k2_L4_q7",
+        "type": "k2_mole",
+        "modeBadge": "🔨 草原打地鼠",
+        "prompt": "看圖和注音，敲出對的國字地鼠！",
+        "pic": "5️⃣",
+        "hintZhuyin": "ㄨˇ",
+        "tts": "一二三四五！數字「五」地鼠在哪裡？快敲它！",
+        "options": [
+          "五",
+          "七",
+          "西",
+          "衣"
+        ],
+        "answer": "五",
+        "explain": "好棒喔！數字「五（ㄨˇ）」與「七（ㄑㄧ）」都分得清清楚楚！"
+      },
+      {
+        "id": "k2_L4_q8",
+        "type": "k2_chest",
+        "modeBadge": "🗝️ 黃金寶箱鎖",
+        "prompt": "看圖和注音，選「魚」的魔鑰匙打開黃金寶箱！",
+        "pic": "🐟",
+        "hintZhuyin": "ㄩˊ",
+        "tts": "黃金寶箱挑戰！國字「魚」是哪一把鑰匙呢？快打開寶箱！",
+        "options": [
+          "魚",
+          "雞",
+          "西",
+          "五"
+        ],
+        "answer": "魚",
+        "explain": "滿分！你已經認得國字「魚（ㄩˊ）」了！"
+      }
+    ]
   },
   {
-    id: 'k2_L5',
-    code: '第 5 關',
-    title: 'ㄓ ㄔ ㄕ ㄖ 太陽與山水',
-    icon: '⛰️',
-    scene: 'k2_L5',
-    sky: ['#0ea5e9', '#bae6fd', '#fef08a'],
-    summary: '認識翹舌音 ㄓㄔㄕㄖ 與象形字「竹、車、山、水、手、日」',
-    studyCards: [
-      { pic: '🎋', word: '竹', zhuyin: 'ㄓ ㄓㄨˊ', tip: '綠竹子節節高！開頭是 ㄓ', tts: 'ㄓ！ㄓ、ㄨ，竹！綠竹子節節高！' },
-      { pic: '🚗', word: '車', zhuyin: 'ㄔ ㄔㄜ', tip: '小汽車嘟嘟！開頭是 ㄔ', tts: 'ㄔ！ㄔ、ㄜ，車！小汽車嘟嘟！' },
-      { pic: '⛰️', word: '山', zhuyin: 'ㄕ ㄕㄢ', tip: '三座尖尖的高山！開頭是 ㄕ', tts: 'ㄕ！ㄕ、ㄢ，山！高高的山！' },
-      { pic: '💧', word: '水', zhuyin: 'ㄕ ㄕㄨㄟˇ', tip: '冰涼的河水！開頭是 ㄕ', tts: 'ㄕ！ㄕ、ㄨ、ㄟ，水！清涼的水！' },
-      { pic: '🖐️', word: '手', zhuyin: 'ㄕ ㄕㄡˇ', tip: '拍拍小手！開頭是 ㄕ', tts: 'ㄕ！ㄕ、ㄡ，手！拍拍小手！' },
-      { pic: '☀️', word: '日', zhuyin: 'ㄖ ㄖˋ', tip: '太陽公公！ㄖ 的四聲', tts: 'ㄖ！太陽公公的日！' },
+    "id": "k2_L5",
+    "code": "第 5 關",
+    "title": "ㄓ ㄔ ㄕ ㄖ 太陽與山水",
+    "icon": "⛰️",
+    "scene": "k2_L5",
+    "sky": [
+      "#0ea5e9",
+      "#bae6fd",
+      "#fef08a"
     ],
-    questions: [
+    "summary": "認識翹舌音 ㄓㄔㄕㄖ 與象形字「竹、車、山、水、手、日」",
+    "studyCards": [
       {
-        id: 'k2_L5_q1',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找 ㄅ ㄆ ㄇ',
-        prompt: '聽聲音看大字，射中開頭的注音！',
-        pic: '🚗',
-        charFocus: '車',
-        tts: 'ㄔ！ㄔ！小汽車嘟嘟的「車」，開頭是翹舌音 ㄔ！請射中 ㄔ！',
-        options: ['ㄔ', 'ㄓ', 'ㄕ', 'ㄖ'],
-        answer: 'ㄔ',
-        explain: 'ㄔ！車（ㄔㄜ）的開頭注音是翹舌音 ㄔ！',
+        "pic": "🎋",
+        "word": "竹",
+        "zhuyin": "ㄓ ㄓㄨˊ",
+        "tip": "綠竹子節節高！開頭是 ㄓ",
+        "tts": "ㄓ！ㄓ、ㄨ，竹！綠竹子節節高！"
       },
       {
-        id: 'k2_L5_q2',
-        type: 'k2_sound',
-        modeBadge: '🫧 聽音戳泡泡',
-        prompt: '聽聲音看大字，戳破「日」的注音泡泡！',
-        pic: '☀️',
-        charFocus: '日',
-        tts: 'ㄖ！ㄖ！天上的太陽叫做「日」，注音符號是 ㄖ！請戳破 ㄖ！',
-        options: ['ㄖ', 'ㄓ', 'ㄔ', 'ㄕ'],
-        answer: 'ㄖ',
-        explain: 'ㄖ！太陽公公就是「日（ㄖˋ）」，注音符號是 ㄖ！',
+        "pic": "🚗",
+        "word": "車",
+        "zhuyin": "ㄔ ㄔㄜ",
+        "tip": "小汽車嘟嘟！開頭是 ㄔ",
+        "tts": "ㄔ！ㄔ、ㄜ，車！小汽車嘟嘟！"
       },
       {
-        id: 'k2_L5_q3',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「山」！',
-        pic: '⛰️',
-        missingPos: 'first',
-        fixedPart: 'ㄢ',
-        resultChar: '山',
-        fullZhuyin: 'ㄕㄢ',
-        tts: 'ㄕ、ㄢ，山！高山的「山」，前面要放哪一個注音呢？',
-        options: ['ㄕ', 'ㄓ', 'ㄔ', 'ㄖ'],
-        answer: 'ㄕ',
-        explain: 'ㄕ、ㄢ！ㄕ 加 ㄢ 拼起來就是像三座山峰的「山（ㄕㄢ）」！',
+        "pic": "⛰️",
+        "word": "山",
+        "zhuyin": "ㄕ ㄕㄢ",
+        "tip": "三座尖尖的高山！開頭是 ㄕ",
+        "tts": "ㄕ！ㄕ、ㄢ，山！高高的山！"
       },
       {
-        id: 'k2_L5_q4',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「竹」！',
-        pic: '🎋',
-        missingPos: 'first',
-        fixedPart: 'ㄨ',
-        toneLabel: '二聲',
-        resultChar: '竹',
-        fullZhuyin: 'ㄓㄨˊ',
-        tts: 'ㄓ、ㄨ，竹！熊貓愛吃的「竹」，前面要放注音 ㄓ 喔！',
-        options: ['ㄓ', 'ㄔ', 'ㄕ', 'ㄖ'],
-        answer: 'ㄓ',
-        explain: 'ㄓ、ㄨ！ㄓ 加 ㄨ 的二聲，拼起來就是竹子的「竹（ㄓㄨˊ）」！',
+        "pic": "💧",
+        "word": "水",
+        "zhuyin": "ㄕ ㄕㄨㄟˇ",
+        "tip": "冰涼的河水！開頭是 ㄕ",
+        "tts": "ㄕ！ㄕ、ㄨ、ㄟ，水！清涼的水！"
       },
       {
-        id: 'k2_L5_q5',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '💧',
-        tts: 'ㄕ、ㄨ、ㄟ，水！嘩啦啦！清涼好喝的「水」，是哪一張國字卡呢？',
-        options: ['水', '山', '手', '日'],
-        optZhuyin: { '水': 'ㄕㄨㄟˇ', '山': 'ㄕㄢ', '手': 'ㄕㄡˇ', '日': 'ㄖˋ' },
-        answer: '水',
-        explain: '像小河流水一樣的象形字，就是「水（ㄕㄨㄟˇ）」！',
+        "pic": "🖐️",
+        "word": "手",
+        "zhuyin": "ㄕ ㄕㄡˇ",
+        "tip": "拍拍小手！開頭是 ㄕ",
+        "tts": "ㄕ！ㄕ、ㄡ，手！拍拍小手！"
       },
       {
-        id: 'k2_L5_q6',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🖐️',
-        tts: 'ㄕ、ㄡ，手！拍拍小手、揮揮小手，「手」是哪一張國字卡呢？',
-        options: ['手', '車', '竹', '水'],
-        optZhuyin: { '手': 'ㄕㄡˇ', '車': 'ㄔㄜ', '竹': 'ㄓㄨˊ', '水': 'ㄕㄨㄟˇ' },
-        answer: '手',
-        explain: '像張開手指頭一樣的國字，就是「手（ㄕㄡˇ）」！',
-      },
-      {
-        id: 'k2_L5_q7',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '⛰️',
-        hintZhuyin: 'ㄕㄢ',
-        tts: '尖尖的高山，「山」地鼠在哪裡？快敲它！',
-        options: ['山', '水', '日', '車'],
-        answer: '山',
-        explain: '一百分！像三座山峰的「山（ㄕㄢ）」超好認對不對！',
-      },
-      {
-        id: 'k2_L5_q8',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '☀️',
-        hintZhuyin: 'ㄖˋ',
-        tts: '亮晶晶的太陽公公，「日」地鼠在哪裡？敲一敲！',
-        options: ['日', '手', '竹', '水'],
-        answer: '日',
-        explain: '太厲害了！「山、水、日」象形字你都會認了！',
-      },
+        "pic": "☀️",
+        "word": "日",
+        "zhuyin": "ㄖ ㄖˋ",
+        "tip": "太陽公公！ㄖ 的四聲",
+        "tts": "ㄖ！太陽公公的日！"
+      }
     ],
+    "questions": [
+      {
+        "id": "k2_L5_q1",
+        "type": "k2_dart",
+        "modeBadge": "🎯 神準射飛鏢",
+        "prompt": "聽聲音看大字，射中開頭的注音！",
+        "pic": "🚗",
+        "charFocus": "車",
+        "tts": "ㄔ！ㄔ！小汽車嘟嘟的「車」，開頭是翹舌音 ㄔ！請射中 ㄔ！",
+        "options": [
+          "ㄔ",
+          "ㄓ",
+          "ㄕ",
+          "ㄖ"
+        ],
+        "answer": "ㄔ",
+        "explain": "ㄔ！車（ㄔㄜ）的開頭注音是翹舌音 ㄔ！"
+      },
+      {
+        "id": "k2_L5_q2",
+        "type": "k2_bubble",
+        "modeBadge": "🫧 奇幻戳泡泡",
+        "prompt": "聽聲音看大字，戳破「日」的注音泡泡！",
+        "pic": "☀️",
+        "charFocus": "日",
+        "tts": "ㄖ！ㄖ！天上的太陽叫做「日」，注音符號是 ㄖ！請戳破 ㄖ！",
+        "options": [
+          "ㄖ",
+          "ㄓ",
+          "ㄔ",
+          "ㄕ"
+        ],
+        "answer": "ㄖ",
+        "explain": "ㄖ！太陽公公就是「日（ㄖˋ）」，注音符號是 ㄖ！"
+      },
+      {
+        "id": "k2_L5_q3",
+        "type": "k2_spell",
+        "modeBadge": "🧪 魔法拼音鍋",
+        "prompt": "把缺少的注音放進魔法鍋，拼出「山」！",
+        "pic": "⛰️",
+        "missingPos": "first",
+        "fixedPart": "ㄢ",
+        "resultChar": "山",
+        "fullZhuyin": "ㄕㄢ",
+        "tts": "ㄕ、ㄢ，山！高山的「山」，前面要放哪一個注音呢？",
+        "options": [
+          "ㄕ",
+          "ㄓ",
+          "ㄔ",
+          "ㄖ"
+        ],
+        "answer": "ㄕ",
+        "explain": "ㄕ、ㄢ！ㄕ 加 ㄢ 拼起來就是像三座山峰的「山（ㄕㄢ）」！"
+      },
+      {
+        "id": "k2_L5_q4",
+        "type": "k2_claw",
+        "modeBadge": "🕹️ 奇幻夾娃娃",
+        "prompt": "開動夾娃娃機，夾出缺少的注音拼出「竹」！",
+        "pic": "🎋",
+        "missingPos": "first",
+        "fixedPart": "ㄨ",
+        "toneLabel": "二聲",
+        "resultChar": "竹",
+        "fullZhuyin": "ㄓㄨˊ",
+        "tts": "ㄓ、ㄨ，竹！熊貓愛吃的「竹」，前面要放注音 ㄓ 喔！",
+        "options": [
+          "ㄓ",
+          "ㄔ",
+          "ㄕ",
+          "ㄖ"
+        ],
+        "answer": "ㄓ",
+        "explain": "ㄓ、ㄨ！ㄓ 加 ㄨ 的二聲，拼起來就是竹子的「竹（ㄓㄨˊ）」！"
+      },
+      {
+        "id": "k2_L5_q5",
+        "type": "k2_fish",
+        "modeBadge": "🎣 星光釣魚池",
+        "prompt": "看圖聽聲音，甩竿釣起對的國字小魚！",
+        "pic": "💧",
+        "tts": "ㄕ、ㄨ、ㄟ，水！嘩啦啦！清涼好喝的「水」，是哪一張國字卡呢？",
+        "options": [
+          "水",
+          "山",
+          "手",
+          "日"
+        ],
+        "optZhuyin": {
+          "水": "ㄕㄨㄟˇ",
+          "山": "ㄕㄢ",
+          "手": "ㄕㄡˇ",
+          "日": "ㄖˋ"
+        },
+        "answer": "水",
+        "explain": "像小河流水一樣的象形字，就是「水（ㄕㄨㄟˇ）」！"
+      },
+      {
+        "id": "k2_L5_q6",
+        "type": "k2_feed",
+        "modeBadge": "🦖 貪吃小恐龍",
+        "prompt": "看圖聽聲音，餵小恐龍吃對的國字點心！",
+        "pic": "🖐️",
+        "tts": "ㄕ、ㄡ，手！拍拍小手、揮揮小手，「手」是哪一張國字卡呢？",
+        "options": [
+          "手",
+          "車",
+          "竹",
+          "水"
+        ],
+        "optZhuyin": {
+          "手": "ㄕㄡˇ",
+          "車": "ㄔㄜ",
+          "竹": "ㄓㄨˊ",
+          "水": "ㄕㄨㄟˇ"
+        },
+        "answer": "手",
+        "explain": "像張開手指頭一樣的國字，就是「手（ㄕㄡˇ）」！"
+      },
+      {
+        "id": "k2_L5_q9",
+        "type": "k2_match",
+        "modeBadge": "🃏 3D 魔法翻翻牌",
+        "prompt": "翻開兩張一樣的魔法卡，把國字和圖案配對起來！",
+        "tts": "魔法翻翻牌！翻開兩張配對的卡片，把國字記起來喔！",
+        "pairs": [
+          [
+            {
+              "hanzi": "山",
+              "tts": "山"
+            },
+            {
+              "pic": "⛰️",
+              "zy": "ㄕㄢ",
+              "tts": "ㄕ、ㄢ，山！"
+            }
+          ],
+          [
+            {
+              "hanzi": "水",
+              "tts": "水"
+            },
+            {
+              "pic": "💧",
+              "zy": "ㄕㄨㄟˇ",
+              "tts": "ㄕ、ㄨ、ㄟ，水！"
+            }
+          ],
+          [
+            {
+              "hanzi": "日",
+              "tts": "日"
+            },
+            {
+              "pic": "☀️",
+              "zy": "ㄖˋ",
+              "tts": "ㄖ！太陽公公的日！"
+            }
+          ]
+        ],
+        "explain": "哇！3 組國字與注音圖卡全部配對成功，記憶力一百分！"
+      },
+      {
+        "id": "k2_L5_q7",
+        "type": "k2_mole",
+        "modeBadge": "🔨 草原打地鼠",
+        "prompt": "看圖和注音，敲出對的國字地鼠！",
+        "pic": "⛰️",
+        "hintZhuyin": "ㄕㄢ",
+        "tts": "尖尖的高山，「山」地鼠在哪裡？快敲它！",
+        "options": [
+          "山",
+          "水",
+          "日",
+          "車"
+        ],
+        "answer": "山",
+        "explain": "一百分！像三座山峰的「山（ㄕㄢ）」超好認對不對！"
+      },
+      {
+        "id": "k2_L5_q8",
+        "type": "k2_chest",
+        "modeBadge": "🗝️ 黃金寶箱鎖",
+        "prompt": "看圖和注音，選「日」的魔鑰匙打開黃金寶箱！",
+        "pic": "☀️",
+        "hintZhuyin": "ㄖˋ",
+        "tts": "黃金寶箱挑戰！國字「日」是哪一把鑰匙呢？快打開寶箱！",
+        "options": [
+          "日",
+          "手",
+          "竹",
+          "水"
+        ],
+        "answer": "日",
+        "explain": "太厲害了！「山、水、日」象形字你都會認了！"
+      }
+    ]
   },
   {
-    id: 'k2_L6',
-    code: '第 6 關',
-    title: 'ㄗ ㄘ ㄙ 森林數一數',
-    icon: '🌿',
-    scene: 'k2_L6',
-    sky: ['#10b981', '#a7f3d0', '#fef9c3'],
-    summary: '認識平舌音 ㄗㄘㄙ 與數字「一、二、三、四、早、草」',
-    studyCards: [
-      { pic: '🌅', word: '早', zhuyin: 'ㄗ ㄗㄠˇ', tip: '早安你好！開頭是 ㄗ', tts: 'ㄗ！ㄗ、ㄠ，早！早安你好！' },
-      { pic: '🌿', word: '草', zhuyin: 'ㄘ ㄘㄠˇ', tip: '綠綠的小草！開頭是 ㄘ', tts: 'ㄘ！ㄘ、ㄠ，草！綠綠的小草！' },
-      { pic: '3️⃣', word: '三', zhuyin: 'ㄙ ㄙㄢ', tip: '三條橫線就是三！開頭是 ㄙ', tts: 'ㄙ！ㄙ、ㄢ，三！數字三！' },
-      { pic: '4️⃣', word: '四', zhuyin: 'ㄙ ㄙˋ', tip: '數字四！ㄙ 的四聲', tts: 'ㄙ！數字四！一二三四的四！' },
-      { pic: '1️⃣', word: '一', zhuyin: 'ㄧ ㄧ', tip: '一條橫線就是一！注音是 ㄧ', tts: 'ㄧ！數字一！一條橫線的一！' },
-      { pic: '2️⃣', word: '二', zhuyin: 'ㄦ ㄦˋ', tip: '兩條橫線就是二！ㄦ 的四聲', tts: 'ㄦ！數字二！兩條橫線的二！' },
+    "id": "k2_L6",
+    "code": "第 6 關",
+    "title": "ㄗ ㄘ ㄙ 森林數一數",
+    "icon": "🌿",
+    "scene": "k2_L6",
+    "sky": [
+      "#10b981",
+      "#a7f3d0",
+      "#fef9c3"
     ],
-    questions: [
+    "summary": "認識平舌音 ㄗㄘㄙ 與數字「一、二、三、四、早、草」",
+    "studyCards": [
       {
-        id: 'k2_L6_q1',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找 ㄅ ㄆ ㄇ',
-        prompt: '聽聲音看大字，射中開頭的注音！',
-        pic: '🌅',
-        charFocus: '早',
-        tts: 'ㄗ！ㄗ！太陽出來說早安！「早」的開頭注音是 ㄗ，請射中 ㄗ！',
-        options: ['ㄗ', 'ㄘ', 'ㄙ', 'ㄓ'],
-        answer: 'ㄗ',
-        explain: 'ㄗ！早安的「早（ㄗㄠˇ）」，開頭是平舌音 ㄗ！',
+        "pic": "🌅",
+        "word": "早",
+        "zhuyin": "ㄗ ㄗㄠˇ",
+        "tip": "早安你好！開頭是 ㄗ",
+        "tts": "ㄗ！ㄗ、ㄠ，早！早安你好！"
       },
       {
-        id: 'k2_L6_q2',
-        type: 'k2_sound',
-        modeBadge: '🫧 聽音戳泡泡',
-        prompt: '聽聲音看大字，戳破開頭的注音泡泡！',
-        pic: '🌿',
-        charFocus: '草',
-        tts: 'ㄘ！ㄘ！青青草地的「草」，開頭注音是 ㄘ！請戳破 ㄘ！',
-        options: ['ㄘ', 'ㄗ', 'ㄙ', 'ㄔ'],
-        answer: 'ㄘ',
-        explain: 'ㄘ！小草的「草（ㄘㄠˇ）」，開頭注音是 ㄘ！',
+        "pic": "🌿",
+        "word": "草",
+        "zhuyin": "ㄘ ㄘㄠˇ",
+        "tip": "綠綠的小草！開頭是 ㄘ",
+        "tts": "ㄘ！ㄘ、ㄠ，草！綠綠的小草！"
       },
       {
-        id: 'k2_L6_q3',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「三」！',
-        pic: '3️⃣',
-        missingPos: 'first',
-        fixedPart: 'ㄢ',
-        resultChar: '三',
-        fullZhuyin: 'ㄙㄢ',
-        tts: 'ㄙ、ㄢ，三！一二三的「三」，前面要放哪一個注音呢？',
-        options: ['ㄙ', 'ㄗ', 'ㄘ', 'ㄕ'],
-        answer: 'ㄙ',
-        explain: 'ㄙ、ㄢ！ㄙ 加 ㄢ 拼起來就是三條線的「三（ㄙㄢ）」！',
+        "pic": "3️⃣",
+        "word": "三",
+        "zhuyin": "ㄙ ㄙㄢ",
+        "tip": "三條橫線就是三！開頭是 ㄙ",
+        "tts": "ㄙ！ㄙ、ㄢ，三！數字三！"
       },
       {
-        id: 'k2_L6_q4',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「草」！',
-        pic: '🌿',
-        missingPos: 'second',
-        fixedPart: 'ㄘ',
-        toneLabel: '三聲',
-        resultChar: '草',
-        fullZhuyin: 'ㄘㄠˇ',
-        tts: 'ㄘ、ㄠ，草！小草的「草」，ㄘ 後面要加哪一個注音呢？',
-        options: ['ㄠ', 'ㄢ', 'ㄚ', 'ㄡ'],
-        answer: 'ㄠ',
-        explain: 'ㄘ、ㄠ！ㄘ 加 ㄠ 的三聲，拼起來就是綠油油的「草（ㄘㄠˇ）」！',
+        "pic": "4️⃣",
+        "word": "四",
+        "zhuyin": "ㄙ ㄙˋ",
+        "tip": "數字四！ㄙ 的四聲",
+        "tts": "ㄙ！數字四！一二三四的四！"
       },
       {
-        id: 'k2_L6_q5',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '2️⃣',
-        tts: 'ㄦ！一、二、三！兩條橫線的數字「二」，是哪一張國字卡呢？',
-        options: ['二', '一', '三', '四'],
-        optZhuyin: { '二': 'ㄦˋ', '一': 'ㄧ', '三': 'ㄙㄢ', '四': 'ㄙˋ' },
-        answer: '二',
-        explain: '一短一長兩條線，就是數字「二（ㄦˋ）」！',
+        "pic": "1️⃣",
+        "word": "一",
+        "zhuyin": "ㄧ ㄧ",
+        "tip": "一條橫線就是一！注音是 ㄧ",
+        "tts": "ㄧ！數字一！一條橫線的一！"
       },
       {
-        id: 'k2_L6_q6',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '4️⃣',
-        tts: 'ㄙ！一二三四！像窗戶一樣的數字「四」，是哪一張國字卡呢？',
-        options: ['四', '三', '早', '草'],
-        optZhuyin: { '四': 'ㄙˋ', '三': 'ㄙㄢ', '早': 'ㄗㄠˇ', '草': 'ㄘㄠˇ' },
-        answer: '四',
-        explain: '方框裡面有兩筆的國字，就是數字「四（ㄙˋ）」！',
-      },
-      {
-        id: 'k2_L6_q7',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '3️⃣',
-        hintZhuyin: 'ㄙㄢ',
-        tts: '數一數！數字「三」地鼠在哪裡？快敲它！',
-        options: ['三', '一', '二', '四'],
-        answer: '三',
-        explain: '好棒！一、二、三、四全部都會認囉！',
-      },
-      {
-        id: 'k2_L6_q8',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🌿',
-        hintZhuyin: 'ㄘㄠˇ',
-        tts: '綠綠的小草，「草」地鼠在哪裡？快敲它！',
-        options: ['草', '早', '四', '三'],
-        answer: '草',
-        explain: '超強！「早」和「草」長得很像，你也分得清清楚楚！',
-      },
+        "pic": "2️⃣",
+        "word": "二",
+        "zhuyin": "ㄦ ㄦˋ",
+        "tip": "兩條橫線就是二！ㄦ 的四聲",
+        "tts": "ㄦ！數字二！兩條橫線的二！"
+      }
     ],
+    "questions": [
+      {
+        "id": "k2_L6_q1",
+        "type": "k2_dart",
+        "modeBadge": "🎯 神準射飛鏢",
+        "prompt": "聽聲音看大字，射中開頭的注音！",
+        "pic": "🌅",
+        "charFocus": "早",
+        "tts": "ㄗ！ㄗ！太陽出來說早安！「早」的開頭注音是 ㄗ，請射中 ㄗ！",
+        "options": [
+          "ㄗ",
+          "ㄘ",
+          "ㄙ",
+          "ㄓ"
+        ],
+        "answer": "ㄗ",
+        "explain": "ㄗ！早安的「早（ㄗㄠˇ）」，開頭是平舌音 ㄗ！"
+      },
+      {
+        "id": "k2_L6_q2",
+        "type": "k2_bubble",
+        "modeBadge": "🫧 奇幻戳泡泡",
+        "prompt": "聽聲音看大字，戳破開頭的注音泡泡！",
+        "pic": "🌿",
+        "charFocus": "草",
+        "tts": "ㄘ！ㄘ！青青草地的「草」，開頭注音是 ㄘ！請戳破 ㄘ！",
+        "options": [
+          "ㄘ",
+          "ㄗ",
+          "ㄙ",
+          "ㄔ"
+        ],
+        "answer": "ㄘ",
+        "explain": "ㄘ！小草的「草（ㄘㄠˇ）」，開頭注音是 ㄘ！"
+      },
+      {
+        "id": "k2_L6_q3",
+        "type": "k2_spell",
+        "modeBadge": "🧪 魔法拼音鍋",
+        "prompt": "把缺少的注音放進魔法鍋，拼出「三」！",
+        "pic": "3️⃣",
+        "missingPos": "first",
+        "fixedPart": "ㄢ",
+        "resultChar": "三",
+        "fullZhuyin": "ㄙㄢ",
+        "tts": "ㄙ、ㄢ，三！一二三的「三」，前面要放哪一個注音呢？",
+        "options": [
+          "ㄙ",
+          "ㄗ",
+          "ㄘ",
+          "ㄕ"
+        ],
+        "answer": "ㄙ",
+        "explain": "ㄙ、ㄢ！ㄙ 加 ㄢ 拼起來就是三條線的「三（ㄙㄢ）」！"
+      },
+      {
+        "id": "k2_L6_q4",
+        "type": "k2_claw",
+        "modeBadge": "🕹️ 奇幻夾娃娃",
+        "prompt": "開動夾娃娃機，夾出缺少的注音拼出「草」！",
+        "pic": "🌿",
+        "missingPos": "second",
+        "fixedPart": "ㄘ",
+        "toneLabel": "三聲",
+        "resultChar": "草",
+        "fullZhuyin": "ㄘㄠˇ",
+        "tts": "ㄘ、ㄠ，草！小草的「草」，ㄘ 後面要加哪一個注音呢？",
+        "options": [
+          "ㄠ",
+          "ㄢ",
+          "ㄚ",
+          "ㄡ"
+        ],
+        "answer": "ㄠ",
+        "explain": "ㄘ、ㄠ！ㄘ 加 ㄠ 的三聲，拼起來就是綠油油的「草（ㄘㄠˇ）」！"
+      },
+      {
+        "id": "k2_L6_q5",
+        "type": "k2_fish",
+        "modeBadge": "🎣 星光釣魚池",
+        "prompt": "看圖聽聲音，甩竿釣起對的國字小魚！",
+        "pic": "2️⃣",
+        "tts": "ㄦ！一、二、三！兩條橫線的數字「二」，是哪一張國字卡呢？",
+        "options": [
+          "二",
+          "一",
+          "三",
+          "四"
+        ],
+        "optZhuyin": {
+          "二": "ㄦˋ",
+          "一": "ㄧ",
+          "三": "ㄙㄢ",
+          "四": "ㄙˋ"
+        },
+        "answer": "二",
+        "explain": "一短一長兩條線，就是數字「二（ㄦˋ）」！"
+      },
+      {
+        "id": "k2_L6_q6",
+        "type": "k2_feed",
+        "modeBadge": "🦖 貪吃小恐龍",
+        "prompt": "看圖聽聲音，餵小恐龍吃對的國字點心！",
+        "pic": "4️⃣",
+        "tts": "ㄙ！一二三四！像窗戶一樣的數字「四」，是哪一張國字卡呢？",
+        "options": [
+          "四",
+          "三",
+          "早",
+          "草"
+        ],
+        "optZhuyin": {
+          "四": "ㄙˋ",
+          "三": "ㄙㄢ",
+          "早": "ㄗㄠˇ",
+          "草": "ㄘㄠˇ"
+        },
+        "answer": "四",
+        "explain": "方框裡面有兩筆的國字，就是數字「四（ㄙˋ）」！"
+      },
+      {
+        "id": "k2_L6_q9",
+        "type": "k2_match",
+        "modeBadge": "🃏 3D 魔法翻翻牌",
+        "prompt": "翻開兩張一樣的魔法卡，把國字和圖案配對起來！",
+        "tts": "魔法翻翻牌！翻開兩張配對的卡片，把國字記起來喔！",
+        "pairs": [
+          [
+            {
+              "hanzi": "一",
+              "tts": "一"
+            },
+            {
+              "pic": "1️⃣",
+              "zy": "ㄧ",
+              "tts": "ㄧ！數字一！"
+            }
+          ],
+          [
+            {
+              "hanzi": "三",
+              "tts": "三"
+            },
+            {
+              "pic": "3️⃣",
+              "zy": "ㄙㄢ",
+              "tts": "ㄙ、ㄢ，三！"
+            }
+          ],
+          [
+            {
+              "hanzi": "草",
+              "tts": "草"
+            },
+            {
+              "pic": "🌿",
+              "zy": "ㄘㄠˇ",
+              "tts": "ㄘ、ㄠ，草！"
+            }
+          ]
+        ],
+        "explain": "哇！3 組國字與注音圖卡全部配對成功，記憶力一百分！"
+      },
+      {
+        "id": "k2_L6_q7",
+        "type": "k2_mole",
+        "modeBadge": "🔨 草原打地鼠",
+        "prompt": "看圖和注音，敲出對的國字地鼠！",
+        "pic": "3️⃣",
+        "hintZhuyin": "ㄙㄢ",
+        "tts": "數一數！數字「三」地鼠在哪裡？快敲它！",
+        "options": [
+          "三",
+          "一",
+          "二",
+          "四"
+        ],
+        "answer": "三",
+        "explain": "好棒！一、二、三、四全部都會認囉！"
+      },
+      {
+        "id": "k2_L6_q8",
+        "type": "k2_chest",
+        "modeBadge": "🗝️ 黃金寶箱鎖",
+        "prompt": "看圖和注音，選「草」的魔鑰匙打開黃金寶箱！",
+        "pic": "🌿",
+        "hintZhuyin": "ㄘㄠˇ",
+        "tts": "黃金寶箱挑戰！國字「草」是哪一把鑰匙呢？快打開寶箱！",
+        "options": [
+          "草",
+          "早",
+          "四",
+          "三"
+        ],
+        "answer": "草",
+        "explain": "超強！「早」和「草」長得很像，你也分得清清楚楚！"
+      }
+    ]
   },
   {
-    id: 'k2_L7',
-    code: '第 7 關',
-    title: 'ㄚ ㄛ ㄜ ㄝ 月亮綿羊島',
-    icon: '🌙',
-    scene: 'k2_L7',
-    sky: ['#6366f1', '#c4b5fd', '#fef9c3'],
-    summary: '認識韻母 ㄚㄛㄜㄝ・ㄞㄟㄠㄡ 與「鴨、鵝、月、愛、飛、貓」',
-    studyCards: [
-      { pic: '🦆', word: '鴨', zhuyin: 'ㄚ ㄧㄚ', tip: '小鴨呱呱！韻母是 ㄚ', tts: 'ㄚ！ㄧ、ㄚ，鴨！小鴨呱呱！' },
-      { pic: '🦢', word: '鵝', zhuyin: 'ㄜ ㄜˊ', tip: '白鵝游水！ㄜ 的二聲', tts: 'ㄜ！白鵝游水的鵝！' },
-      { pic: '🌙', word: '月', zhuyin: 'ㄝ ㄩㄝˋ', tip: '彎彎月亮！ㄩ 加 ㄝ 四聲', tts: 'ㄝ！ㄩ、ㄝ，月！彎彎的月亮！' },
-      { pic: '❤️', word: '愛', zhuyin: 'ㄞ ㄞˋ', tip: '愛心滿滿！ㄞ 的四聲', tts: 'ㄞ！愛心滿滿的愛！' },
-      { pic: '🦋', word: '飛', zhuyin: 'ㄟ ㄈㄟ', tip: '蝴蝶飛高高！ㄈ 加 ㄟ', tts: 'ㄟ！ㄈ、ㄟ，飛！蝴蝶飛高高！' },
-      { pic: '🐱', word: '貓', zhuyin: 'ㄠ ㄇㄠ', tip: '小貓喵喵！ㄇ 加 ㄠ', tts: 'ㄠ！ㄇ、ㄠ，貓！小貓喵喵！' },
+    "id": "k2_L7",
+    "code": "第 7 關",
+    "title": "ㄚ ㄛ ㄜ ㄝ 月亮綿羊島",
+    "icon": "🌙",
+    "scene": "k2_L7",
+    "sky": [
+      "#6366f1",
+      "#c4b5fd",
+      "#fef9c3"
     ],
-    questions: [
+    "summary": "認識韻母 ㄚㄛㄜㄝ・ㄞㄟㄠㄡ 與「鴨、鵝、月、愛、飛、貓」",
+    "studyCards": [
       {
-        id: 'k2_L7_q1',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找韻母',
-        prompt: '聽聲音看大字，射中「鵝」的注音符號！',
-        pic: '🦢',
-        charFocus: '鵝',
-        tts: 'ㄜ！ㄜ！大白鵝游呀游，「鵝」用的是注音 ㄜ！請射中 ㄜ！',
-        options: ['ㄜ', 'ㄚ', 'ㄛ', 'ㄝ'],
-        answer: 'ㄜ',
-        explain: 'ㄜ！白鵝的「鵝（ㄜˊ）」，注音符號就是 ㄜ 加上二聲喔！',
+        "pic": "🦆",
+        "word": "鴨",
+        "zhuyin": "ㄚ ㄧㄚ",
+        "tip": "小鴨呱呱！韻母是 ㄚ",
+        "tts": "ㄚ！ㄧ、ㄚ，鴨！小鴨呱呱！"
       },
       {
-        id: 'k2_L7_q2',
-        type: 'k2_sound',
-        modeBadge: '🫧 聽音戳泡泡',
-        prompt: '聽聲音看大字，戳破「愛」的注音泡泡！',
-        pic: '❤️',
-        charFocus: '愛',
-        tts: 'ㄞ！ㄞ！我愛你的「愛」，用的是注音 ㄞ！請戳破 ㄞ！',
-        options: ['ㄞ', 'ㄟ', 'ㄠ', 'ㄡ'],
-        answer: 'ㄞ',
-        explain: 'ㄞ！愛心的「愛（ㄞˋ）」，注音就是 ㄞ 加上四聲！',
+        "pic": "🦢",
+        "word": "鵝",
+        "zhuyin": "ㄜ ㄜˊ",
+        "tip": "白鵝游水！ㄜ 的二聲",
+        "tts": "ㄜ！白鵝游水的鵝！"
       },
       {
-        id: 'k2_L7_q3',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「月」！',
-        pic: '🌙',
-        missingPos: 'second',
-        fixedPart: 'ㄩ',
-        toneLabel: '四聲',
-        resultChar: '月',
-        fullZhuyin: 'ㄩㄝˋ',
-        tts: 'ㄩ、ㄝ，月！彎彎月亮的「月」，ㄩ 後面要加哪一個注音呢？',
-        options: ['ㄝ', 'ㄚ', 'ㄛ', 'ㄜ'],
-        answer: 'ㄝ',
-        explain: 'ㄩ、ㄝ！ㄩ 加 ㄝ 的四聲，拼起來就是彎彎的「月（ㄩㄝˋ）」！',
+        "pic": "🌙",
+        "word": "月",
+        "zhuyin": "ㄝ ㄩㄝˋ",
+        "tip": "彎彎月亮！ㄩ 加 ㄝ 四聲",
+        "tts": "ㄝ！ㄩ、ㄝ，月！彎彎的月亮！"
       },
       {
-        id: 'k2_L7_q4',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「貓」！',
-        pic: '🐱',
-        missingPos: 'second',
-        fixedPart: 'ㄇ',
-        resultChar: '貓',
-        fullZhuyin: 'ㄇㄠ',
-        tts: 'ㄇ、ㄠ，貓！小貓咪的「貓」，ㄇ 後面要加哪一個注音呢？',
-        options: ['ㄠ', 'ㄞ', 'ㄟ', 'ㄡ'],
-        answer: 'ㄠ',
-        explain: 'ㄇ、ㄠ！ㄇ 加 ㄠ 拼起來就是喵喵叫的「貓（ㄇㄠ）」！',
+        "pic": "❤️",
+        "word": "愛",
+        "zhuyin": "ㄞ ㄞˋ",
+        "tip": "愛心滿滿！ㄞ 的四聲",
+        "tts": "ㄞ！愛心滿滿的愛！"
       },
       {
-        id: 'k2_L7_q5',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🦆',
-        tts: 'ㄧ、ㄚ，鴨！呱呱呱！池塘裡的小鴨，「鴨」是哪一張國字卡呢？',
-        options: ['鴨', '月', '貓', '愛'],
-        optZhuyin: { '鴨': 'ㄧㄚ', '月': 'ㄩㄝˋ', '貓': 'ㄇㄠ', '愛': 'ㄞˋ' },
-        answer: '鴨',
-        explain: '右邊有一隻鳥的國字，就是小鴨的「鴨（ㄧㄚ）」！',
+        "pic": "🦋",
+        "word": "飛",
+        "zhuyin": "ㄟ ㄈㄟ",
+        "tip": "蝴蝶飛高高！ㄈ 加 ㄟ",
+        "tts": "ㄟ！ㄈ、ㄟ，飛！蝴蝶飛高高！"
       },
       {
-        id: 'k2_L7_q6',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🦋',
-        tts: 'ㄈ、ㄟ，飛！拍拍翅膀飛高高，「飛」是哪一張國字卡呢？',
-        options: ['飛', '鵝', '愛', '月'],
-        optZhuyin: { '飛': 'ㄈㄟ', '鵝': 'ㄜˊ', '愛': 'ㄞˋ', '月': 'ㄩㄝˋ' },
-        answer: '飛',
-        explain: '張開雙翅往上衝的國字，就是「飛（ㄈㄟ）」！',
-      },
-      {
-        id: 'k2_L7_q7',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🌙',
-        hintZhuyin: 'ㄩㄝˋ',
-        tts: '晚上亮晶晶的月亮，「月」地鼠在哪裡？快敲它！',
-        options: ['月', '貓', '鴨', '飛'],
-        answer: '月',
-        explain: '好厲害！彎彎的「月（ㄩㄝˋ）」一眼就認出來了！',
-      },
-      {
-        id: 'k2_L7_q8',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '❤️',
-        hintZhuyin: 'ㄞˋ',
-        tts: '滿滿愛心的「愛」地鼠在哪裡？敲一敲！',
-        options: ['愛', '鵝', '月', '貓'],
-        answer: '愛',
-        explain: '太棒了！連筆畫比較多的「愛（ㄞˋ）」你也認得囉！',
-      },
+        "pic": "🐱",
+        "word": "貓",
+        "zhuyin": "ㄠ ㄇㄠ",
+        "tip": "小貓喵喵！ㄇ 加 ㄠ",
+        "tts": "ㄠ！ㄇ、ㄠ，貓！小貓喵喵！"
+      }
     ],
+    "questions": [
+      {
+        "id": "k2_L7_q1",
+        "type": "k2_dart",
+        "modeBadge": "🎯 神準射飛鏢",
+        "prompt": "聽聲音看大字，射中「鵝」的注音符號！",
+        "pic": "🦢",
+        "charFocus": "鵝",
+        "tts": "ㄜ！ㄜ！大白鵝游呀游，「鵝」用的是注音 ㄜ！請射中 ㄜ！",
+        "options": [
+          "ㄜ",
+          "ㄚ",
+          "ㄛ",
+          "ㄝ"
+        ],
+        "answer": "ㄜ",
+        "explain": "ㄜ！白鵝的「鵝（ㄜˊ）」，注音符號就是 ㄜ 加上二聲喔！"
+      },
+      {
+        "id": "k2_L7_q2",
+        "type": "k2_bubble",
+        "modeBadge": "🫧 奇幻戳泡泡",
+        "prompt": "聽聲音看大字，戳破「愛」的注音泡泡！",
+        "pic": "❤️",
+        "charFocus": "愛",
+        "tts": "ㄞ！ㄞ！我愛你的「愛」，用的是注音 ㄞ！請戳破 ㄞ！",
+        "options": [
+          "ㄞ",
+          "ㄟ",
+          "ㄠ",
+          "ㄡ"
+        ],
+        "answer": "ㄞ",
+        "explain": "ㄞ！愛心的「愛（ㄞˋ）」，注音就是 ㄞ 加上四聲！"
+      },
+      {
+        "id": "k2_L7_q3",
+        "type": "k2_spell",
+        "modeBadge": "🧪 魔法拼音鍋",
+        "prompt": "把缺少的注音放進魔法鍋，拼出「月」！",
+        "pic": "🌙",
+        "missingPos": "second",
+        "fixedPart": "ㄩ",
+        "toneLabel": "四聲",
+        "resultChar": "月",
+        "fullZhuyin": "ㄩㄝˋ",
+        "tts": "ㄩ、ㄝ，月！彎彎月亮的「月」，ㄩ 後面要加哪一個注音呢？",
+        "options": [
+          "ㄝ",
+          "ㄚ",
+          "ㄛ",
+          "ㄜ"
+        ],
+        "answer": "ㄝ",
+        "explain": "ㄩ、ㄝ！ㄩ 加 ㄝ 的四聲，拼起來就是彎彎的「月（ㄩㄝˋ）」！"
+      },
+      {
+        "id": "k2_L7_q4",
+        "type": "k2_claw",
+        "modeBadge": "🕹️ 奇幻夾娃娃",
+        "prompt": "開動夾娃娃機，夾出缺少的注音拼出「貓」！",
+        "pic": "🐱",
+        "missingPos": "second",
+        "fixedPart": "ㄇ",
+        "resultChar": "貓",
+        "fullZhuyin": "ㄇㄠ",
+        "tts": "ㄇ、ㄠ，貓！小貓咪的「貓」，ㄇ 後面要加哪一個注音呢？",
+        "options": [
+          "ㄠ",
+          "ㄞ",
+          "ㄟ",
+          "ㄡ"
+        ],
+        "answer": "ㄠ",
+        "explain": "ㄇ、ㄠ！ㄇ 加 ㄠ 拼起來就是喵喵叫的「貓（ㄇㄠ）」！"
+      },
+      {
+        "id": "k2_L7_q5",
+        "type": "k2_fish",
+        "modeBadge": "🎣 星光釣魚池",
+        "prompt": "看圖聽聲音，甩竿釣起對的國字小魚！",
+        "pic": "🦆",
+        "tts": "ㄧ、ㄚ，鴨！呱呱呱！池塘裡的小鴨，「鴨」是哪一張國字卡呢？",
+        "options": [
+          "鴨",
+          "月",
+          "貓",
+          "愛"
+        ],
+        "optZhuyin": {
+          "鴨": "ㄧㄚ",
+          "月": "ㄩㄝˋ",
+          "貓": "ㄇㄠ",
+          "愛": "ㄞˋ"
+        },
+        "answer": "鴨",
+        "explain": "右邊有一隻鳥的國字，就是小鴨的「鴨（ㄧㄚ）」！"
+      },
+      {
+        "id": "k2_L7_q6",
+        "type": "k2_feed",
+        "modeBadge": "🦖 貪吃小恐龍",
+        "prompt": "看圖聽聲音，餵小恐龍吃對的國字點心！",
+        "pic": "🦋",
+        "tts": "ㄈ、ㄟ，飛！拍拍翅膀飛高高，「飛」是哪一張國字卡呢？",
+        "options": [
+          "飛",
+          "鵝",
+          "愛",
+          "月"
+        ],
+        "optZhuyin": {
+          "飛": "ㄈㄟ",
+          "鵝": "ㄜˊ",
+          "愛": "ㄞˋ",
+          "月": "ㄩㄝˋ"
+        },
+        "answer": "飛",
+        "explain": "張開雙翅往上衝的國字，就是「飛（ㄈㄟ）」！"
+      },
+      {
+        "id": "k2_L7_q9",
+        "type": "k2_match",
+        "modeBadge": "🃏 3D 魔法翻翻牌",
+        "prompt": "翻開兩張一樣的魔法卡，把國字和圖案配對起來！",
+        "tts": "魔法翻翻牌！翻開兩張配對的卡片，把國字記起來喔！",
+        "pairs": [
+          [
+            {
+              "hanzi": "鴨",
+              "tts": "鴨"
+            },
+            {
+              "pic": "🦆",
+              "zy": "ㄧㄚ",
+              "tts": "ㄧ、ㄚ，鴨！"
+            }
+          ],
+          [
+            {
+              "hanzi": "月",
+              "tts": "月"
+            },
+            {
+              "pic": "🌙",
+              "zy": "ㄩㄝˋ",
+              "tts": "ㄩ、ㄝ，月！"
+            }
+          ],
+          [
+            {
+              "hanzi": "貓",
+              "tts": "貓"
+            },
+            {
+              "pic": "🐱",
+              "zy": "ㄇㄠ",
+              "tts": "ㄇ、ㄠ，貓！"
+            }
+          ]
+        ],
+        "explain": "哇！3 組國字與注音圖卡全部配對成功，記憶力一百分！"
+      },
+      {
+        "id": "k2_L7_q7",
+        "type": "k2_mole",
+        "modeBadge": "🔨 草原打地鼠",
+        "prompt": "看圖和注音，敲出對的國字地鼠！",
+        "pic": "🌙",
+        "hintZhuyin": "ㄩㄝˋ",
+        "tts": "晚上亮晶晶的月亮，「月」地鼠在哪裡？快敲它！",
+        "options": [
+          "月",
+          "貓",
+          "鴨",
+          "飛"
+        ],
+        "answer": "月",
+        "explain": "好厲害！彎彎的「月（ㄩㄝˋ）」一眼就認出來了！"
+      },
+      {
+        "id": "k2_L7_q8",
+        "type": "k2_chest",
+        "modeBadge": "🗝️ 黃金寶箱鎖",
+        "prompt": "看圖和注音，選「愛」的魔鑰匙打開黃金寶箱！",
+        "pic": "❤️",
+        "hintZhuyin": "ㄞˋ",
+        "tts": "黃金寶箱挑戰！國字「愛」是哪一把鑰匙呢？快打開寶箱！",
+        "options": [
+          "愛",
+          "鵝",
+          "月",
+          "貓"
+        ],
+        "answer": "愛",
+        "explain": "太棒了！連筆畫比較多的「愛（ㄞˋ）」你也認得囉！"
+      }
+    ]
   },
   {
-    id: 'k2_L8',
-    code: '第 8 關',
-    title: 'ㄢ ㄣ ㄤ ㄦ 象形識字王',
-    icon: '🌳',
-    scene: 'k2_L8',
-    sky: ['#fb7185', '#fde68a', '#dcfce7'],
-    summary: '認識 ㄢㄣㄤㄥㄦ 與「天、人、羊、星、耳、木」6 個經典國字',
-    studyCards: [
-      { pic: '🌤️', word: '天', zhuyin: 'ㄢ ㄊㄧㄢ', tip: '藍藍的天空！韻母是 ㄢ', tts: 'ㄢ！ㄊ、ㄧ、ㄢ，天！藍藍的天空！' },
-      { pic: '🧍', word: '人', zhuyin: 'ㄣ ㄖㄣˊ', tip: '兩腳站立！ㄖ 加 ㄣ 二聲', tts: 'ㄣ！ㄖ、ㄣ，人！兩腳站立的人！' },
-      { pic: '🐑', word: '羊', zhuyin: 'ㄤ ㄧㄤˊ', tip: '小綿羊咩咩！ㄧ 加 ㄤ 二聲', tts: 'ㄤ！ㄧ、ㄤ，羊！小綿羊咩咩！' },
-      { pic: '⭐', word: '星', zhuyin: 'ㄥ ㄒㄧㄥ', tip: '一閃一閃亮晶晶！韻母是 ㄥ', tts: 'ㄥ！ㄒ、ㄧ、ㄥ，星！閃亮的星星！' },
-      { pic: '👂', word: '耳', zhuyin: 'ㄦ ㄦˇ', tip: '小耳朵聽聲音！ㄦ 的三聲', tts: 'ㄦ！耳朵的耳！小耳朵聽聲音！' },
-      { pic: '🌳', word: '木', zhuyin: 'ㄇ ㄇㄨˋ', tip: '大樹就是木！ㄇ 加 ㄨ 四聲', tts: 'ㄇ！ㄇ、ㄨ，木！大樹的木！' },
+    "id": "k2_L8",
+    "code": "第 8 關",
+    "title": "ㄢ ㄣ ㄤ ㄦ 象形識字王",
+    "icon": "🌳",
+    "scene": "k2_L8",
+    "sky": [
+      "#fb7185",
+      "#fde68a",
+      "#dcfce7"
     ],
-    questions: [
+    "summary": "認識 ㄢㄣㄤㄥㄦ 與「天、人、羊、星、耳、木」6 個經典國字",
+    "studyCards": [
       {
-        id: 'k2_L8_q1',
-        type: 'k2_sound',
-        modeBadge: '🎯 聽音找 ㄅ ㄆ ㄇ',
-        prompt: '聽聲音看大字，射中「耳」的注音符號！',
-        pic: '👂',
-        charFocus: '耳',
-        tts: 'ㄦ！ㄦ！小耳朵聽聲音，「耳」用的是注音 ㄦ！請射中 ㄦ！',
-        options: ['ㄦ', 'ㄢ', 'ㄣ', 'ㄤ'],
-        answer: 'ㄦ',
-        explain: 'ㄦ！耳朵的「耳（ㄦˇ）」，注音符號就是捲舌的 ㄦ！',
+        "pic": "🌤️",
+        "word": "天",
+        "zhuyin": "ㄢ ㄊㄧㄢ",
+        "tip": "藍藍的天空！韻母是 ㄢ",
+        "tts": "ㄢ！ㄊ、ㄧ、ㄢ，天！藍藍的天空！"
       },
       {
-        id: 'k2_L8_q2',
-        type: 'k2_sound',
-        modeBadge: '🫧 聽音戳泡泡',
-        prompt: '聽聲音看大字，戳破「人」後面的韻母泡泡！',
-        pic: '🧍',
-        charFocus: '人',
-        tts: 'ㄣ！ㄖ、ㄣ，人！兩隻腳站立的「人」，請戳破韻母 ㄣ！',
-        options: ['ㄣ', 'ㄢ', 'ㄤ', 'ㄥ'],
-        answer: 'ㄣ',
-        explain: 'ㄣ！人（ㄖㄣˊ）是 ㄖ 加上閃電形狀的 ㄣ 二聲！',
+        "pic": "🧍",
+        "word": "人",
+        "zhuyin": "ㄣ ㄖㄣˊ",
+        "tip": "兩腳站立！ㄖ 加 ㄣ 二聲",
+        "tts": "ㄣ！ㄖ、ㄣ，人！兩腳站立的人！"
       },
       {
-        id: 'k2_L8_q3',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「羊」！',
-        pic: '🐑',
-        missingPos: 'second',
-        fixedPart: 'ㄧ',
-        toneLabel: '二聲',
-        resultChar: '羊',
-        fullZhuyin: 'ㄧㄤˊ',
-        tts: 'ㄧ、ㄤ，羊！小綿羊的「羊」，ㄧ 後面要加哪一個注音呢？',
-        options: ['ㄤ', 'ㄢ', 'ㄣ', 'ㄥ'],
-        answer: 'ㄤ',
-        explain: 'ㄧ、ㄤ！ㄧ 加 ㄤ 的二聲，拼起來就是頭上有羊角的「羊（ㄧㄤˊ）」！',
+        "pic": "🐑",
+        "word": "羊",
+        "zhuyin": "ㄤ ㄧㄤˊ",
+        "tip": "小綿羊咩咩！ㄧ 加 ㄤ 二聲",
+        "tts": "ㄤ！ㄧ、ㄤ，羊！小綿羊咩咩！"
       },
       {
-        id: 'k2_L8_q4',
-        type: 'k2_spell',
-        modeBadge: '🧪 拼音變國字',
-        prompt: '把缺少的注音放進魔法鍋，拼出「木」！',
-        pic: '🌳',
-        missingPos: 'first',
-        fixedPart: 'ㄨ',
-        toneLabel: '四聲',
-        resultChar: '木',
-        fullZhuyin: 'ㄇㄨˋ',
-        tts: 'ㄇ、ㄨ，木！大樹的「木」，前面要放哪一個注音呢？',
-        options: ['ㄇ', 'ㄅ', 'ㄈ', 'ㄌ'],
-        answer: 'ㄇ',
-        explain: 'ㄇ、ㄨ！ㄇ 加 ㄨ 的四聲，拼起來就是像一棵大樹的「木（ㄇㄨˋ）」！',
+        "pic": "⭐",
+        "word": "星",
+        "zhuyin": "ㄥ ㄒㄧㄥ",
+        "tip": "一閃一閃亮晶晶！韻母是 ㄥ",
+        "tts": "ㄥ！ㄒ、ㄧ、ㄥ，星！閃亮的星星！"
       },
       {
-        id: 'k2_L8_q5',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '🌤️',
-        tts: 'ㄊ、ㄧ、ㄢ，天！抬頭看藍藍的天空，「天」是哪一張國字卡呢？',
-        options: ['天', '人', '木', '耳'],
-        optZhuyin: { '天': 'ㄊㄧㄢ', '人': 'ㄖㄣˊ', '木': 'ㄇㄨˋ', '耳': 'ㄦˇ' },
-        answer: '天',
-        explain: '「大」的頭頂再加一條天空，就是「天（ㄊㄧㄢ）」！',
+        "pic": "👂",
+        "word": "耳",
+        "zhuyin": "ㄦ ㄦˇ",
+        "tip": "小耳朵聽聲音！ㄦ 的三聲",
+        "tts": "ㄦ！耳朵的耳！小耳朵聽聲音！"
       },
       {
-        id: 'k2_L8_q6',
-        type: 'k2_bridge',
-        modeBadge: '🧩 注音陪我認國字',
-        prompt: '看圖聽聲音，選出對的國字卡！',
-        pic: '⭐',
-        tts: 'ㄒ、ㄧ、ㄥ，星！一閃一閃亮晶晶，天上的「星」是哪一張國字卡呢？',
-        options: ['星', '羊', '天', '木'],
-        optZhuyin: { '星': 'ㄒㄧㄥ', '羊': 'ㄧㄤˊ', '天': 'ㄊㄧㄢ', '木': 'ㄇㄨˋ' },
-        answer: '星',
-        explain: '上面一個日、下面一個生，就是閃亮的「星（ㄒㄧㄥ）」！',
-      },
-      {
-        id: 'k2_L8_q7',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🌳',
-        hintZhuyin: 'ㄇㄨˋ',
-        tts: '像一棵大樹的「木」地鼠在哪裡？快敲它！',
-        options: ['木', '人', '天', '羊'],
-        answer: '木',
-        explain: '超棒！有樹幹和樹枝樹根的「木（ㄇㄨˋ）」記起來了！',
-      },
-      {
-        id: 'k2_L8_q8',
-        type: 'k2_mole',
-        modeBadge: '🔨 認國字打地鼠',
-        prompt: '看圖和注音，敲出對的國字地鼠！',
-        pic: '🧍',
-        hintZhuyin: 'ㄖㄣˊ',
-        tts: '兩腳站得穩穩的「人」地鼠在哪裡？敲一敲！',
-        options: ['人', '耳', '木', '星'],
-        answer: '人',
-        explain: '恭喜成為中班識字小狀元！一撇一捺就是「人（ㄖㄣˊ）」！',
-      },
+        "pic": "🌳",
+        "word": "木",
+        "zhuyin": "ㄇ ㄇㄨˋ",
+        "tip": "大樹就是木！ㄇ 加 ㄨ 四聲",
+        "tts": "ㄇ！ㄇ、ㄨ，木！大樹的木！"
+      }
     ],
-  },
+    "questions": [
+      {
+        "id": "k2_L8_q1",
+        "type": "k2_dart",
+        "modeBadge": "🎯 神準射飛鏢",
+        "prompt": "聽聲音看大字，射中「耳」的注音符號！",
+        "pic": "👂",
+        "charFocus": "耳",
+        "tts": "ㄦ！ㄦ！小耳朵聽聲音，「耳」用的是注音 ㄦ！請射中 ㄦ！",
+        "options": [
+          "ㄦ",
+          "ㄢ",
+          "ㄣ",
+          "ㄤ"
+        ],
+        "answer": "ㄦ",
+        "explain": "ㄦ！耳朵的「耳（ㄦˇ）」，注音符號就是捲舌的 ㄦ！"
+      },
+      {
+        "id": "k2_L8_q2",
+        "type": "k2_bubble",
+        "modeBadge": "🫧 奇幻戳泡泡",
+        "prompt": "聽聲音看大字，戳破「人」後面的韻母泡泡！",
+        "pic": "🧍",
+        "charFocus": "人",
+        "tts": "ㄣ！ㄖ、ㄣ，人！兩隻腳站立的「人」，請戳破韻母 ㄣ！",
+        "options": [
+          "ㄣ",
+          "ㄢ",
+          "ㄤ",
+          "ㄥ"
+        ],
+        "answer": "ㄣ",
+        "explain": "ㄣ！人（ㄖㄣˊ）是 ㄖ 加上閃電形狀的 ㄣ 二聲！"
+      },
+      {
+        "id": "k2_L8_q3",
+        "type": "k2_spell",
+        "modeBadge": "🧪 魔法拼音鍋",
+        "prompt": "把缺少的注音放進魔法鍋，拼出「羊」！",
+        "pic": "🐑",
+        "missingPos": "second",
+        "fixedPart": "ㄧ",
+        "toneLabel": "二聲",
+        "resultChar": "羊",
+        "fullZhuyin": "ㄧㄤˊ",
+        "tts": "ㄧ、ㄤ，羊！小綿羊的「羊」，ㄧ 後面要加哪一個注音呢？",
+        "options": [
+          "ㄤ",
+          "ㄢ",
+          "ㄣ",
+          "ㄥ"
+        ],
+        "answer": "ㄤ",
+        "explain": "ㄧ、ㄤ！ㄧ 加 ㄤ 的二聲，拼起來就是頭上有羊角的「羊（ㄧㄤˊ）」！"
+      },
+      {
+        "id": "k2_L8_q4",
+        "type": "k2_claw",
+        "modeBadge": "🕹️ 奇幻夾娃娃",
+        "prompt": "開動夾娃娃機，夾出缺少的注音拼出「木」！",
+        "pic": "🌳",
+        "missingPos": "first",
+        "fixedPart": "ㄨ",
+        "toneLabel": "四聲",
+        "resultChar": "木",
+        "fullZhuyin": "ㄇㄨˋ",
+        "tts": "ㄇ、ㄨ，木！大樹的「木」，前面要放哪一個注音呢？",
+        "options": [
+          "ㄇ",
+          "ㄅ",
+          "ㄈ",
+          "ㄌ"
+        ],
+        "answer": "ㄇ",
+        "explain": "ㄇ、ㄨ！ㄇ 加 ㄨ 的四聲，拼起來就是像一棵大樹的「木（ㄇㄨˋ）」！"
+      },
+      {
+        "id": "k2_L8_q5",
+        "type": "k2_fish",
+        "modeBadge": "🎣 星光釣魚池",
+        "prompt": "看圖聽聲音，甩竿釣起對的國字小魚！",
+        "pic": "🌤️",
+        "tts": "ㄊ、ㄧ、ㄢ，天！抬頭看藍藍的天空，「天」是哪一張國字卡呢？",
+        "options": [
+          "天",
+          "人",
+          "木",
+          "耳"
+        ],
+        "optZhuyin": {
+          "天": "ㄊㄧㄢ",
+          "人": "ㄖㄣˊ",
+          "木": "ㄇㄨˋ",
+          "耳": "ㄦˇ"
+        },
+        "answer": "天",
+        "explain": "「大」的頭頂再加一條天空，就是「天（ㄊㄧㄢ）」！"
+      },
+      {
+        "id": "k2_L8_q6",
+        "type": "k2_feed",
+        "modeBadge": "🦖 貪吃小恐龍",
+        "prompt": "看圖聽聲音，餵小恐龍吃對的國字點心！",
+        "pic": "⭐",
+        "tts": "ㄒ、ㄧ、ㄥ，星！一閃一閃亮晶晶，天上的「星」是哪一張國字卡呢？",
+        "options": [
+          "星",
+          "羊",
+          "天",
+          "木"
+        ],
+        "optZhuyin": {
+          "星": "ㄒㄧㄥ",
+          "羊": "ㄧㄤˊ",
+          "天": "ㄊㄧㄢ",
+          "木": "ㄇㄨˋ"
+        },
+        "answer": "星",
+        "explain": "上面一個日、下面一個生，就是閃亮的「星（ㄒㄧㄥ）」！"
+      },
+      {
+        "id": "k2_L8_q9",
+        "type": "k2_match",
+        "modeBadge": "🃏 3D 魔法翻翻牌",
+        "prompt": "翻開兩張一樣的魔法卡，把國字和圖案配對起來！",
+        "tts": "魔法翻翻牌！翻開兩張配對的卡片，把國字記起來喔！",
+        "pairs": [
+          [
+            {
+              "hanzi": "人",
+              "tts": "人"
+            },
+            {
+              "pic": "🧍",
+              "zy": "ㄖㄣˊ",
+              "tts": "ㄖ、ㄣ，人！"
+            }
+          ],
+          [
+            {
+              "hanzi": "羊",
+              "tts": "羊"
+            },
+            {
+              "pic": "🐑",
+              "zy": "ㄧㄤˊ",
+              "tts": "ㄧ、ㄤ，羊！"
+            }
+          ],
+          [
+            {
+              "hanzi": "木",
+              "tts": "木"
+            },
+            {
+              "pic": "🌳",
+              "zy": "ㄇㄨˋ",
+              "tts": "ㄇ、ㄨ，木！"
+            }
+          ]
+        ],
+        "explain": "哇！3 組國字與注音圖卡全部配對成功，記憶力一百分！"
+      },
+      {
+        "id": "k2_L8_q7",
+        "type": "k2_mole",
+        "modeBadge": "🔨 草原打地鼠",
+        "prompt": "看圖和注音，敲出對的國字地鼠！",
+        "pic": "🌳",
+        "hintZhuyin": "ㄇㄨˋ",
+        "tts": "像一棵大樹的「木」地鼠在哪裡？快敲它！",
+        "options": [
+          "木",
+          "人",
+          "天",
+          "羊"
+        ],
+        "answer": "木",
+        "explain": "超棒！有樹幹和樹枝樹根的「木（ㄇㄨˋ）」記起來了！"
+      },
+      {
+        "id": "k2_L8_q8",
+        "type": "k2_chest",
+        "modeBadge": "🗝️ 黃金寶箱鎖",
+        "prompt": "看圖和注音，選「人」的魔鑰匙打開黃金寶箱！",
+        "pic": "🧍",
+        "hintZhuyin": "ㄖㄣˊ",
+        "tts": "黃金寶箱挑戰！國字「人」是哪一把鑰匙呢？快打開寶箱！",
+        "options": [
+          "人",
+          "耳",
+          "木",
+          "星"
+        ],
+        "answer": "人",
+        "explain": "恭喜成為中班識字小狀元！一撇一捺就是「人（ㄖㄣˊ）」！"
+      }
+    ]
+  }
 ];
 
-// 幼兒中班 總複習大魔王加碼題（涵蓋 上、下、小、雨、心、十 等常見國字與 ㄅㄆㄇ 綜合挑戰）
 const K2_BOSS_EXTRAS = [
   {
-    id: 'k2_boss_1',
-    type: 'k2_bridge',
-    modeBadge: '👑 魔王識字挑戰',
-    prompt: '看箭頭聽聲音，選出「上」的國字卡！',
-    pic: '⬆️',
-    tts: 'ㄕ、ㄤ，上！往上面爬的「上」，是哪一張國字卡呢？',
-    options: ['上', '下', '大', '小'],
-    optZhuyin: { '上': 'ㄕㄤˋ', '下': 'ㄒㄧㄚˋ', '大': 'ㄉㄚˋ', '小': 'ㄒㄧㄠˇ' },
-    answer: '上',
-    explain: '短線在長橫線的上面，就是「上（ㄕㄤˋ）」！',
+    "id": "k2_boss_1",
+    "type": "k2_fish",
+    "modeBadge": "🎣 魔王釣魚池",
+    "prompt": "看箭頭聽聲音，選出「上」的國字卡！",
+    "pic": "⬆️",
+    "tts": "ㄕ、ㄤ，上！往上面爬的「上」，是哪一張國字卡呢？",
+    "options": [
+      "上",
+      "下",
+      "大",
+      "小"
+    ],
+    "optZhuyin": {
+      "上": "ㄕㄤˋ",
+      "下": "ㄒㄧㄚˋ",
+      "大": "ㄉㄚˋ",
+      "小": "ㄒㄧㄠˇ"
+    },
+    "answer": "上",
+    "explain": "短線在長橫線的上面，就是「上（ㄕㄤˋ）」！"
   },
   {
-    id: 'k2_boss_2',
-    type: 'k2_bridge',
-    modeBadge: '👑 魔王識字挑戰',
-    prompt: '看箭頭聽聲音，選出「下」的國字卡！',
-    pic: '⬇️',
-    tts: 'ㄒ、ㄧ、ㄚ，下！溜滑梯往下面的「下」，是哪一張國字卡呢？',
-    options: ['下', '上', '木', '天'],
-    optZhuyin: { '下': 'ㄒㄧㄚˋ', '上': 'ㄕㄤˋ', '木': 'ㄇㄨˋ', '天': 'ㄊㄧㄢ' },
-    answer: '下',
-    explain: '筆畫在長橫線的下面，就是「下（ㄒㄧㄚˋ）」！',
+    "id": "k2_boss_2",
+    "type": "k2_feed",
+    "modeBadge": "🦖 魔王餵恐龍",
+    "prompt": "看箭頭聽聲音，選出「下」的國字卡！",
+    "pic": "⬇️",
+    "tts": "ㄒ、ㄧ、ㄚ，下！溜滑梯往下面的「下」，是哪一張國字卡呢？",
+    "options": [
+      "下",
+      "上",
+      "木",
+      "天"
+    ],
+    "optZhuyin": {
+      "下": "ㄒㄧㄚˋ",
+      "上": "ㄕㄤˋ",
+      "木": "ㄇㄨˋ",
+      "天": "ㄊㄧㄢ"
+    },
+    "answer": "下",
+    "explain": "筆畫在長橫線的下面，就是「下（ㄒㄧㄚˋ）」！"
   },
   {
-    id: 'k2_boss_3',
-    type: 'k2_mole',
-    modeBadge: '👑 魔王打地鼠',
-    prompt: '看圖和注音，敲出「雨」地鼠！',
-    pic: '🌧️',
-    hintZhuyin: 'ㄩˇ',
-    tts: '滴滴答答下雨了！國字「雨」地鼠在哪裡？快敲它！',
-    options: ['雨', '水', '火', '月'],
-    answer: '雨',
-    explain: '天空掉下四顆小水滴的國字，就是下雨的「雨（ㄩˇ）」！',
+    "id": "k2_boss_3",
+    "type": "k2_mole",
+    "modeBadge": "🔨 魔王打地鼠",
+    "prompt": "看圖和注音，敲出「雨」地鼠！",
+    "pic": "🌧️",
+    "hintZhuyin": "ㄩˇ",
+    "tts": "滴滴答答下雨了！國字「雨」地鼠在哪裡？快敲它！",
+    "options": [
+      "雨",
+      "水",
+      "火",
+      "月"
+    ],
+    "answer": "雨",
+    "explain": "天空掉下四顆小水滴的國字，就是下雨的「雨（ㄩˇ）」！"
   },
   {
-    id: 'k2_boss_4',
-    type: 'k2_mole',
-    modeBadge: '👑 魔王打地鼠',
-    prompt: '看圖和注音，敲出「心」地鼠！',
-    pic: '💖',
-    hintZhuyin: 'ㄒㄧㄣ',
-    tts: '噗通噗通跳的愛心！國字「心」地鼠在哪裡？快敲它！',
-    options: ['心', '山', '手', '日'],
-    answer: '心',
-    explain: '彎彎一個勾加上三個點，就是開心的「心（ㄒㄧㄣ）」！',
+    "id": "k2_boss_4",
+    "type": "k2_chest",
+    "modeBadge": "🗝️ 魔王寶箱鎖",
+    "prompt": "看圖和注音，選「心」鑰匙打開魔王寶箱！",
+    "pic": "💖",
+    "hintZhuyin": "ㄒㄧㄣ",
+    "tts": "噗通噗通跳的愛心！國字「心」地鼠在哪裡？快敲它！",
+    "options": [
+      "心",
+      "山",
+      "手",
+      "日"
+    ],
+    "answer": "心",
+    "explain": "彎彎一個勾加上三個點，就是開心的「心（ㄒㄧㄣ）」！"
   },
   {
-    id: 'k2_boss_5',
-    type: 'k2_spell',
-    modeBadge: '👑 魔王拼音鍋',
-    prompt: '把缺少的注音放進魔法鍋，拼出「小」！',
-    pic: '🐜',
-    missingPos: 'first',
-    fixedPart: 'ㄧㄠ',
-    toneLabel: '三聲',
-    resultChar: '小',
-    fullZhuyin: 'ㄒㄧㄠˇ',
-    tts: 'ㄒ、ㄧ、ㄠ，小！小螞蟻好小的「小」，前面要放哪一個注音呢？',
-    options: ['ㄒ', 'ㄐ', 'ㄑ', 'ㄕ'],
-    answer: 'ㄒ',
-    explain: 'ㄒ！ㄒ 加 ㄧ、ㄠ 的三聲，拼起來就是大小的「小（ㄒㄧㄠˇ）」！',
+    "id": "k2_boss_5",
+    "type": "k2_claw",
+    "modeBadge": "🕹️ 魔王夾娃娃",
+    "prompt": "開動夾娃娃機，夾出缺少的注音拼出「小」！",
+    "pic": "🐜",
+    "missingPos": "first",
+    "fixedPart": "ㄧㄠ",
+    "toneLabel": "三聲",
+    "resultChar": "小",
+    "fullZhuyin": "ㄒㄧㄠˇ",
+    "tts": "ㄒ、ㄧ、ㄠ，小！小螞蟻好小的「小」，前面要放哪一個注音呢？",
+    "options": [
+      "ㄒ",
+      "ㄐ",
+      "ㄑ",
+      "ㄕ"
+    ],
+    "answer": "ㄒ",
+    "explain": "ㄒ！ㄒ 加 ㄧ、ㄠ 的三聲，拼起來就是大小的「小（ㄒㄧㄠˇ）」！"
   },
   {
-    id: 'k2_boss_6',
-    type: 'k2_mole',
-    modeBadge: '👑 魔王打地鼠',
-    prompt: '看圖和注音，敲出數字「十」地鼠！',
-    pic: '🔟',
-    hintZhuyin: 'ㄕˊ',
-    tts: '一橫一豎像十字路口！數字「十」地鼠在哪裡？快敲它！',
-    options: ['十', '一', '二', '三'],
-    answer: '十',
-    explain: '一橫加一豎，就是十全十美的數字「十（ㄕˊ）」！',
+    "id": "k2_boss_6",
+    "type": "k2_mole",
+    "modeBadge": "👑 魔王打地鼠",
+    "prompt": "看圖和注音，敲出數字「十」地鼠！",
+    "pic": "🔟",
+    "hintZhuyin": "ㄕˊ",
+    "tts": "一橫一豎像十字路口！數字「十」地鼠在哪裡？快敲它！",
+    "options": [
+      "十",
+      "一",
+      "二",
+      "三"
+    ],
+    "answer": "十",
+    "explain": "一橫加一豎，就是十全十美的數字「十（ㄕˊ）」！"
   },
+  {
+    "id": "k2_boss_7",
+    "type": "k2_match",
+    "modeBadge": "🃏 魔王翻翻牌",
+    "prompt": "翻開魔法閃卡，把「上、下、雨」國字和圖案配對起來！",
+    "tts": "魔王翻翻牌挑戰！把上、下、雨三個國字配對起來！",
+    "pairs": [
+      [
+        {
+          "hanzi": "上",
+          "tts": "上"
+        },
+        {
+          "pic": "⬆️",
+          "zy": "ㄕㄤˋ",
+          "tts": "ㄕ、ㄤ，上！"
+        }
+      ],
+      [
+        {
+          "hanzi": "下",
+          "tts": "下"
+        },
+        {
+          "pic": "⬇️",
+          "zy": "ㄒㄧㄚˋ",
+          "tts": "ㄒ、ㄧ、ㄚ，下！"
+        }
+      ],
+      [
+        {
+          "hanzi": "雨",
+          "tts": "雨"
+        },
+        {
+          "pic": "🌧️",
+          "zy": "ㄩˇ",
+          "tts": "ㄩ！下雨的雨！"
+        }
+      ]
+    ],
+    "explain": "太神啦！魔王翻翻牌全部配對成功！"
+  }
 ];
 
 module.exports = { K2_LESSONS, K2_BOSS_EXTRAS };
@@ -6298,6 +8227,19 @@ const GRADE1_LESSONS = [
         answer: '🐟 小魚',
         explain: '答對啦！小船在水上一左一右向前走，水裡的小魚游過來為小船加油！',
       },
+      {
+        id: 'g1_L1_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把 3 組「方位相反詞」配對起來！',
+        tts: '魔法翻翻牌！請把上和下、左和右、前和後配對起來！',
+        pairs: [
+          ['⬆️ 上', '⬇️ 下'],
+          ['⬅️ 左', '➡️ 右'],
+          ['🏃 向前', '🔙 向後'],
+        ],
+        explain: '方位小達人！「上下、左右、前後」三組相反詞全部配對成功！',
+      },
     ],
   },
   {
@@ -6400,6 +8342,19 @@ const GRADE1_LESSONS = [
         options: ['🚗 汽車', '⛵ 小船', '✈️ 飛機', '🛸 飛碟'],
         answer: '🚗 汽車',
         explain: '叮咚叮咚！汽車在地上跑，小船在水上走，飛機在天上飛！',
+      },
+      {
+        id: 'g1_L2_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把《印手印》的動作和景物配對起來！',
+        tts: '魔法翻翻牌！把小花一朵朵、小手招招手、嘴巴張開開配對起來！',
+        pairs: [
+          ['🌸 小花', '一朵朵'],
+          ['👋 小手', '招招手'],
+          ['😄 笑容', '亮晶晶'],
+        ],
+        explain: '太棒了！《印手印》裡的疊字詞語全部記熟囉！',
       },
     ],
   },
@@ -6512,6 +8467,19 @@ const GRADE1_LESSONS = [
         answerOrder: ['放學時，', '我和哥哥', '一起走路回家。'],
         explain: '嘟嘟——！「一起」代表大家同心協力做同一件事！',
       },
+      {
+        id: 'g1_L3_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把「包家族」部首與國字配對起來！',
+        tts: '魔法翻翻牌！三點水是泡、提手旁是抱、足部是跑，快翻牌配對！',
+        pairs: [
+          ['氵＋包', '🫧 吹泡泡'],
+          ['扌＋包', '🤗 擁抱'],
+          ['口＋欠', '🌬️ 吹風'],
+        ],
+        explain: '部首神探！有水是「泡」、用手是「抱」、用嘴吹氣是「吹」！',
+      },
     ],
   },
   {
@@ -6614,6 +8582,20 @@ const GRADE1_LESSONS = [
         answerOrder: ['藍藍', '的', '大海'],
         explain: '太美了！「青青的山」、「藍藍的大海」、「白白的雲」都是疊字形容詞！',
       },
+      {
+        id: 'g1_L4_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把多音字與課文短語配對起來！',
+        tts: '魔法翻翻牌！把要求、不要，還有青青的高山配對起來！',
+        excludeChars: '要',
+        pairs: [
+          ['要求', 'ㄧㄠ'],
+          ['不要', 'ㄧㄠˋ'],
+          ['青青的', '⛰️ 高山'],
+        ],
+        explain: '多音字滿分！「要求」讀一聲 ㄧㄠ，「不要」讀四聲 ㄧㄠˋ！',
+      },
     ],
   },
   {
@@ -6712,6 +8694,19 @@ const GRADE1_LESSONS = [
         options: ['🤩 充滿好奇', '😱 非常害怕', '😠 很討厭他', '😭 很難過'],
         answer: '🤩 充滿好奇',
         explain: '答對囉！小朋友對宇宙和外星世界充滿「好奇心」，想認識新朋友！',
+      },
+      {
+        id: 'g1_L5_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把國字和它的「正確部首」配對起來！',
+        tts: '魔法翻翻牌！外的部首是夕、河的部首是水、朋的部首是月，快翻牌配對！',
+        pairs: [
+          ['🛸 外星的外', '夕部'],
+          ['🌊 河流的河', '氵水部'],
+          ['👫 朋友的朋', '月部'],
+        ],
+        explain: '部首滿分！「外」是夕部、「河」是水部、「朋」是月部！',
       },
     ],
   },
@@ -6818,6 +8813,20 @@ const GRADE1_LESSONS = [
         tts: '請問：一年二班，還有兩張獎狀，這樣的二跟兩用法正確嗎？',
         answer: '⭕',
         explain: '完全正確！班級號碼、樓層、第幾名用「二」；幾張、幾輛、幾隻用「兩」！',
+      },
+      {
+        id: 'g1_L6_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把必考多音字「都」與「二／兩」配對起來！',
+        tts: '魔法翻翻牌！都市讀督、都是讀兜、還有兩隻金魚，快翻牌配對！',
+        excludeChars: '都',
+        pairs: [
+          ['🏙️ 都市', 'ㄉㄨ'],
+          ['✨ 都是', 'ㄉㄡ'],
+          ['🐠 魚缸裡', '兩隻金魚'],
+        ],
+        explain: '超強記憶力！「都市（ㄉㄨ）」、「都是（ㄉㄡ）」與「兩隻金魚」全配對成功！',
       },
     ],
   },
@@ -6927,6 +8936,19 @@ const GRADE1_LESSONS = [
         tts: '請問：貼紅紅的春聯，是在中秋節的習俗嗎？',
         answer: '❌',
         explain: '沒被騙到！貼春聯是「農曆新年（過年）」的習俗，不是中秋節喔！',
+      },
+      {
+        id: 'g1_L7_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把過年組字與春聯詞語配對起來！',
+        tts: '魔法翻翻牌！提手旁加巴是把、貝加占是貼、還有紅紅的春聯！',
+        pairs: [
+          ['扌＋巴', '🙌 請把'],
+          ['貝＋占', '🧧 張貼'],
+          ['紅紅的', '✨ 春聯'],
+        ],
+        explain: '恭喜發財！「把、貼、紅紅的春聯」全部配對成功！',
       },
     ],
   },
@@ -7107,6 +9129,19 @@ const GRADE2_LESSONS = [
         answer: '⭕',
         explain: '叮咚叮咚！兩個字頭上都有屋頂「宀」，都是「宀部」沒錯！',
       },
+      {
+        id: 'g2_L7_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把《等兔子來撞樹》的成語與形近字配對起來！',
+        tts: '魔法翻翻牌！把守株待兔、剛才與鋼鐵配對起來！',
+        pairs: [
+          ['🐰 守株待兔', '白費力氣'],
+          ['⏱️ 剛才', '立刀旁 刂'],
+          ['🏗️ 鋼鐵', '金部 金'],
+        ],
+        explain: '太強了！「守株待兔」的意思與「剛／鋼」形近字一次記熟！',
+      },
     ],
   },
   {
@@ -7209,6 +9244,20 @@ const GRADE2_LESSONS = [
         answer: '❌',
         explain: '完全識破陷阱！追花鹿的是「獅子」，被樹枝卡住的是漂亮的「角」，救牠一命的才是瘦長的「腳」！',
       },
+      {
+        id: 'g2_L8_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把多音字「角」與形近字「渴／喝」配對起來！',
+        tts: '魔法翻翻牌！主角唸決、鹿角唸絞、口渴想喝水，快翻牌配對！',
+        excludeChars: '角',
+        pairs: [
+          ['🎭 主角', 'ㄐㄩㄝˊ'],
+          ['🦌 鹿角', 'ㄐㄧㄠˇ'],
+          ['💧 口渴想', '👄 喝水'],
+        ],
+        explain: '必考題全破！「主角（ㄐㄩㄝˊ）」、「鹿角（ㄐㄧㄠˇ）」與「口渴喝水」全對！',
+      },
     ],
   },
   {
@@ -7308,6 +9357,19 @@ const GRADE2_LESSONS = [
         tts: '請問：赤腳國王中，除了國王之外，人人都打赤腳，這樣說對嗎？',
         answer: '❌',
         explain: '破解月考大陷阱！他的稱號就叫「赤腳國王」，原本連國王自己也是打赤腳（只是平常坐馬車踩地毯）！',
+      },
+      {
+        id: 'g2_L9_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把「踩／採／彩」三胞胎配對起來！',
+        tts: '魔法翻翻牌！用腳踩地毯、用手採花朵、還有七彩虹，快配對起來！',
+        pairs: [
+          ['🦶 足部「踩」', '踩高蹺'],
+          ['✋ 扌部「採」', '採花朵'],
+          ['🌈 彡部「彩」', '七彩虹'],
+        ],
+        explain: '三胞胎秒殺！用腳「踩」、用手「採」、繽紛色彩是「彩」！',
       },
     ],
   },
@@ -7416,6 +9478,19 @@ const GRADE2_LESSONS = [
         answer: '👨 爸爸（與家人）',
         explain: '答對啦！作者趁爸爸放假和家人一起去農場玩，回家前依依不捨向小羊揮揮手，和爸爸約好下次再來！',
       },
+      {
+        id: 'g2_L10_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把《去農場玩》的天氣成語與譬喻配對起來！',
+        tts: '魔法翻翻牌！把風和日麗、烏雲密布，還有羊群像棉花配對起來！',
+        pairs: [
+          ['☀️ 風和日麗', '晴朗好天氣'],
+          ['🌧️ 烏雲密布', '快要下雨了'],
+          ['🐑 白白羊群', '像朵朵棉花'],
+        ],
+        explain: '滿分過關！農場天氣成語與譬喻修辭全部配對成功！',
+      },
     ],
   },
   {
@@ -7513,6 +9588,19 @@ const GRADE2_LESSONS = [
         options: ['👟 小華買新鞋子（昨天）', '💬 跟小華聊天（今天）', '🏫 穿新鞋去學校（明天）'],
         answer: '👟 小華買新鞋子（昨天）',
         explain: '邏輯滿分！時間順序是：昨天（買新鞋）→ 今天（聊天）→ 明天（穿去學校）！',
+      },
+      {
+        id: 'g2_L11_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把「湯／陽／場」三兄弟配對起來！',
+        tts: '魔法翻翻牌！三點水是熱湯圓、阜部是大太陽、土部是操場！',
+        pairs: [
+          ['氵＋易', '🥣 熱湯圓'],
+          ['阝＋易', '☀️ 大太陽'],
+          ['土＋易', '🏃 操場'],
+        ],
+        explain: '形近字大師！「湯、陽、場」三個字再也不會搞混囉！',
       },
     ],
   },
@@ -7615,6 +9703,20 @@ const GRADE2_LESSONS = [
         tts: '請問：到野外上課告訴我們，學習不限於在教室裡，對嗎？',
         answer: '⭕',
         explain: '一百分！走進大自然用心觀察、發揮想像力，整個世界都是我們的大課本！',
+      },
+      {
+        id: 'g2_L12_q9',
+        type: 'memory',
+        modeBadge: '🃏 3D 魔法翻翻牌',
+        prompt: '翻開魔法閃卡，把《到野外上課》多音字「調」與大自然想像配對！',
+        tts: '魔法翻翻牌！調色盤讀條、唱曲調讀釣、大樹像綠傘，快配對起來！',
+        excludeChars: '調',
+        pairs: [
+          ['🎨 調色盤', 'ㄊㄧㄠˊ'],
+          ['🎵 唱曲調', 'ㄉㄧㄠˋ'],
+          ['🌳 大樹像', '☂️ 綠色大傘'],
+        ],
+        explain: '太精彩了！「調色（ㄊㄧㄠˊ）」、「曲調（ㄉㄧㄠˋ）」與課文連連看全對！',
       },
     ],
   },
@@ -7767,6 +9869,131 @@ const LESSON_FX_CONFIG = {
   g2_L12: { action: '🌈 點彩虹瀑布', cheer: '🌈 大自然真美！', emojis: ['🌈', '🦋', '🌿', '💧', '✨'], colors: ['#ef4444', '#fde047', '#38bdf8', '#4ade80'], floatUp: true },
 };
 
+const ARCADE_META = {
+  dart:       { icon: '🎯', badge: '🎯 神準射飛鏢' },
+  bubble_pop: { icon: '🫧', badge: '🫧 奇幻戳泡泡' },
+  alchemy:    { icon: '🧪', badge: '🧪 魔法組字鍋' },
+  claw:       { icon: '🕹️', badge: '🕹️ 奇幻夾娃娃' },
+  fish:       { icon: '🎣', badge: '🎣 星光釣魚池' },
+  feed:       { icon: '🦖', badge: '🦖 貪吃小恐龍' },
+  memory:     { icon: '🃏', badge: '🃏 3D 魔法翻翻牌' },
+  mole:       { icon: '🔨', badge: '🔨 草原打地鼠' },
+  typo_laser: { icon: '🛸', badge: '🛸 飛碟除蟲砲' },
+  chest_lock: { icon: '🗝️', badge: '🗝️ 黃金寶箱鎖' },
+  train:      { icon: '🚂', badge: '🚂 彩虹語句火車' },
+  judge:      { icon: '⚡', badge: '⚡ 正義雷霆審判' },
+};
+
+const K2_TYPE_TO_MODE = {
+  k2_dart: 'dart',
+  k2_bubble: 'bubble_pop',
+  k2_spell: 'alchemy',
+  k2_claw: 'claw',
+  k2_fish: 'fish',
+  k2_feed: 'feed',
+  k2_match: 'memory',
+  k2_mole: 'mole',
+  k2_chest: 'chest_lock',
+};
+
+function assignArcadeModes(questions) {
+  const used = new Set();
+  const deferred = [];
+
+  // Pass 1: Assign signature primary modes
+  questions.forEach((q, idx) => {
+    let mode = null;
+    if (K2_TYPE_TO_MODE[q.type]) {
+      mode = K2_TYPE_TO_MODE[q.type];
+    } else if (q.type === 'k2_sound') {
+      mode = !used.has('dart') ? 'dart' : 'bubble_pop';
+    } else if (q.type === 'k2_bridge') {
+      mode = !used.has('fish') ? 'fish' : 'feed';
+    } else if (q.type === 'memory') {
+      mode = 'memory';
+    } else if (q.type === 'train') {
+      mode = 'train';
+    } else if (q.type === 'judge') {
+      mode = 'judge';
+    } else if (q.type === 'typo') {
+      if (!used.has('mole')) mode = 'mole';
+      else if (!used.has('typo_laser')) mode = 'typo_laser';
+      else mode = idx % 2 === 0 ? 'mole' : 'typo_laser';
+    } else if (q.type === 'alchemy') {
+      if (!used.has('alchemy')) mode = 'alchemy';
+      else deferred.push(q);
+    } else if (q.type === 'bubble') {
+      if (!used.has('dart')) mode = 'dart';
+      else if (!used.has('bubble_pop')) mode = 'bubble_pop';
+      else deferred.push(q);
+    } else {
+      deferred.push(q);
+    }
+
+    if (mode) {
+      q._arcadeMode = mode;
+      used.add(mode);
+    }
+  });
+
+  // Pass 2: Assign deferred questions (quiz, 2nd+ alchemy, 3rd+ bubble)
+  // Place long-option questions first so they claim wide 2x2 card modes (claw, fish, feed, chest_lock),
+  // leaving mole/bubble_pop/dart for short-option questions!
+  const sortedDeferred = [...deferred].sort((a, b) => {
+    const maxA = Math.max(0, ...(a.options || []).map((o) => String(o).length));
+    const maxB = Math.max(0, ...(b.options || []).map((o) => String(o).length));
+    return maxB - maxA;
+  });
+
+  sortedDeferred.forEach((q, dIdx) => {
+    const maxLen = Math.max(0, ...(q.options || []).map((o) => String(o).length));
+    let pool;
+    if (q.type === 'bubble') {
+      pool = ['claw', 'fish', 'chest_lock', 'feed', 'dart', 'bubble_pop'];
+    } else if (maxLen > 5) {
+      pool = ['claw', 'fish', 'feed', 'chest_lock'];
+    } else {
+      pool = ['claw', 'fish', 'feed', 'chest_lock', 'mole', 'bubble_pop', 'dart'];
+    }
+    let picked = pool.find((m) => !used.has(m));
+    if (!picked) {
+      picked = pool[dIdx % pool.length];
+    }
+    q._arcadeMode = picked;
+    used.add(picked);
+  });
+
+  // Final pass: prevent adjacent identical arcade modes in Boss/Custom 12-question sessions & attach badges
+  for (let i = 0; i < questions.length; i++) {
+    const q = questions[i];
+    if (i > 0 && q._arcadeMode === questions[i - 1]._arcadeMode) {
+      const swapIdx = questions.findIndex((other, j) => j > i && other._arcadeMode !== q._arcadeMode);
+      if (swapIdx !== -1) {
+        [questions[i], questions[swapIdx]] = [questions[swapIdx], questions[i]];
+      }
+    }
+  }
+
+  questions.forEach((q) => {
+    const m = q._arcadeMode || 'claw';
+    const meta = ARCADE_META[m] || ARCADE_META.claw;
+    q._arcadeIcon = meta.icon;
+    if (q.id && q.id.startsWith('k2_') && q.modeBadge) {
+      q._arcadeBadge = q.modeBadge;
+    } else if (q.type === 'typo' && m === 'mole') {
+      q._arcadeBadge = '🔍 抓蟲打地鼠';
+    } else if (q.type === 'typo' && m === 'typo_laser') {
+      q._arcadeBadge = '🛸 飛碟除蟲砲';
+    } else if (q.type === 'alchemy' && m === 'alchemy') {
+      q._arcadeBadge = '🧪 魔法組字鍋';
+    } else {
+      q._arcadeBadge = meta.badge;
+    }
+  });
+
+  return questions;
+}
+
 class ChineseAdventureApp {
   constructor() {
     this.sound = new SoundEngine();
@@ -7912,11 +10139,18 @@ class ChineseAdventureApp {
 
   fmtText(text, q = null) {
     if (!text) return '';
-    let exclude = '';
+    let exclude = (q && q.excludeChars) || '';
     if (q && q.type === 'bubble') {
-      exclude = (q.targetHighlight || '') + ((q.prompt || '').match(/[「『]([^」』]+)[」』]/g) || []).join('');
+      exclude += (q.targetHighlight || '') + ((q.prompt || '').match(/[「『]([^」』]+)[」』]/g) || []).join('');
     }
     return annotateZhuyin(text, this.state.showZhuyin, exclude);
+  }
+
+  getLessonArcadeIcons(lesson) {
+    if (!lesson || !Array.isArray(lesson.questions)) return [];
+    const clones = lesson.questions.map((q) => ({ ...q }));
+    assignArcadeModes(clones);
+    return clones.map((q) => ({ icon: q._arcadeIcon, badge: q._arcadeBadge }));
   }
 
   getLessons(grade = this.state.grade) {
@@ -7969,7 +10203,10 @@ class ChineseAdventureApp {
     requestAnimationFrame(() => {
       const target = document.getElementById('feedback-zone') || document.getElementById('train-retry-msg');
       if (target && typeof target.scrollIntoView === 'function') {
-        target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const rect = target.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight - 8 || rect.top < 0) {
+          target.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+        }
       }
     });
   }
@@ -8162,10 +10399,39 @@ class ChineseAdventureApp {
       q.caughtBug = false;
       q.wrongTaps = 0;
     }
+    if ((q.type === 'memory' || q.type === 'k2_match') && Array.isArray(q.pairs)) {
+      const cards = [];
+      q.pairs.forEach((pair, pIdx) => {
+        pair.forEach((side, sIdx) => {
+          const uid = `${pIdx}_${sIdx}`;
+          if (side && typeof side === 'object') {
+            if (side.hanzi) {
+              cards.push({ uid, pairId: pIdx, kind: 'k2_hanzi', hanzi: side.hanzi, tts: side.tts || side.hanzi, flipped: false, matched: false, mismatch: false });
+            } else {
+              cards.push({ uid, pairId: pIdx, kind: 'k2_pic_zy', pic: side.pic || '🌟', zy: side.zy || '', tts: side.tts || side.zy || '', flipped: false, matched: false, mismatch: false });
+            }
+          } else {
+            const txt = String(side || '');
+            cards.push({ uid, pairId: pIdx, kind: 'text', text: txt, tts: txt, flipped: false, matched: false, mismatch: false });
+          }
+        });
+      });
+      let shufCards = shuffle(cards);
+      if (shufCards.length >= 4 && shufCards[0].pairId === shufCards[1].pairId && shufCards[2].pairId === shufCards[3].pairId) {
+        [shufCards[1], shufCards[2]] = [shufCards[2], shufCards[1]];
+      }
+      q.memCards = shufCards;
+      q.memMatched = 0;
+      q.memPeeking = true;
+      q._peekTimerSet = false;
+      q._memFlippedIds = [];
+      q._memLock = false;
+    }
     return q;
   }
 
   launchSession(cfg) {
+    assignArcadeModes(cfg.questions || []);
     this.session = {
       ...cfg,
       index: 0,
@@ -8298,13 +10564,13 @@ class ChineseAdventureApp {
 
       // Store clean copy into mistake vault for targeted review!
       const cleanCopy = { ...q };
-      delete cleanCopy.shuffledOptions;
-      delete cleanCopy.poolCarriages;
-      delete cleanCopy.hooked;
-      delete cleanCopy.trainRetries;
-      delete cleanCopy.trainRetryMsg;
-      delete cleanCopy.caughtBug;
-      delete cleanCopy.wrongTaps;
+      [
+        'shuffledOptions', 'poolCarriages', 'hooked', 'trainRetries', 'trainRetryMsg',
+        'caughtBug', 'wrongTaps', '_arcadeMode', '_arcadeIcon', '_arcadeBadge',
+        '_dartFlying', '_moleWhacking', '_clawBusy', '_fishBusy', '_feedBusy',
+        '_chestBusy', '_laserBusy', 'memCards', 'memMatched', 'memPeeking',
+        '_peekTimerSet', '_memFlippedIds', '_memLock',
+      ].forEach((k) => { delete cleanCopy[k]; });
       this.state.mistakes[q.id] = cleanCopy;
 
       if (this.state.autoRead) {
@@ -8332,6 +10598,10 @@ class ChineseAdventureApp {
       s.pickedValue = null;
       s.justOpenedChest = 0;
       this.render();
+      const deck = document.getElementById('command-deck');
+      if (deck && deck.getBoundingClientRect().top < 0) {
+        deck.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
       this.autoSpeakCurrent();
     } else {
       this.finishSession();
@@ -8685,16 +10955,31 @@ class ChineseAdventureApp {
       </div>
 
       ${isK2 ? `
-        <div class="k2-step-ribbon" aria-label="中班四步慢慢認國字">
-          <span class="k2-step-chip">🎯 聽音認 ${renderVerticalZhuyin('ㄅ', 'inline')}${renderVerticalZhuyin('ㄆ', 'inline')}${renderVerticalZhuyin('ㄇ', 'inline')}</span>
-          <span class="k2-step-arrow">➔</span>
-          <span class="k2-step-chip">🧪 拼音變國字</span>
-          <span class="k2-step-arrow">➔</span>
-          <span class="k2-step-chip">🧩 注音陪讀</span>
-          <span class="k2-step-arrow">➔</span>
-          <span class="k2-step-chip">🔨 敲地鼠認國字</span>
+        <div class="k2-step-ribbon" aria-label="中班每關9種遊樂場玩法">
+          <span class="k2-step-chip">🎯 射飛鏢</span>
+          <span class="k2-step-chip">🫧 戳泡泡</span>
+          <span class="k2-step-chip">🧪 拼音鍋</span>
+          <span class="k2-step-chip">🕹️ 夾娃娃</span>
+          <span class="k2-step-chip">🎣 釣小魚</span>
+          <span class="k2-step-chip">🦖 餵恐龍</span>
+          <span class="k2-step-chip">🃏 翻翻牌</span>
+          <span class="k2-step-chip">🔨 打地鼠</span>
+          <span class="k2-step-chip">🗝️ 開寶箱</span>
         </div>
-      ` : ''}
+      ` : `
+        <div class="k2-step-ribbon grade-arcade-ribbon" aria-label="每課9種不同闖關遊戲">
+          <span class="k2-step-chip">✨ 每課 9 種不同玩法：</span>
+          <span class="k2-step-chip">🎯 飛鏢</span>
+          <span class="k2-step-chip">🕹️ 夾娃娃</span>
+          <span class="k2-step-chip">🎣 釣魚</span>
+          <span class="k2-step-chip">🦖 餵恐龍</span>
+          <span class="k2-step-chip">🃏 翻翻牌</span>
+          <span class="k2-step-chip">🔨 打地鼠</span>
+          <span class="k2-step-chip">🛸 飛碟砲</span>
+          <span class="k2-step-chip">🚂 火車</span>
+          <span class="k2-step-chip">🗝️ 寶箱鎖</span>
+        </div>
+      `}
 
       <div class="review-hero-strip">
         <div class="hero-action-card boss-card">
@@ -8734,6 +11019,9 @@ class ChineseAdventureApp {
       const st = this.state.stars[l.id] || 0;
       const thumbSrc = (window.__ART__ && window.__ART__.lessons && window.__ART__.lessons[l.id]) || '';
       const isLessonK2 = l.id.startsWith('k2_');
+      const arcadeStripHtml = this.getLessonArcadeIcons(l)
+        .map((m) => `<span class="arcade-mini-dot" title="${escapeHtml(m.badge)}">${m.icon}</span>`)
+        .join('');
       const card = document.createElement('div');
       card.className = 'lesson-card lesson-card-3d';
       card.id = `card-${l.id}`;
@@ -8748,6 +11036,7 @@ class ChineseAdventureApp {
         </div>
         <div class="lesson-card-body">
           <h3 class="lesson-name">${this.fmtText(l.title)}</h3>
+          <div class="lesson-arcade-strip" aria-label="本課9種闖關玩法">${arcadeStripHtml}</div>
           <div class="lesson-btn-row">
             <button type="button" class="toy-btn sun sm" id="study-${l.id}" style="white-space:nowrap;">${isLessonK2 ? '📖 圖卡' : '📖 課文'}</button>
             <button type="button" class="toy-btn primary sm" id="play-${l.id}" style="white-space:nowrap;">▶️ 玩！</button>
@@ -8936,6 +11225,14 @@ class ChineseAdventureApp {
     const pct = Math.round(((s.index + (s.answered ? 1 : 0)) / s.questions.length) * 100);
     const chest3Done = Boolean(s.chestsClaimed[3]);
     const chest6Done = Boolean(s.chestsClaimed[6]);
+    const trailHtml = s.questions.map((sq, idx) => {
+      const cls = idx < s.index || (idx === s.index && s.answered)
+        ? 'done'
+        : idx === s.index
+          ? 'current'
+          : 'upcoming';
+      return `<span class="trail-node ${cls}" title="第 ${idx + 1} 關：${escapeHtml(sq._arcadeBadge || '')}">${sq._arcadeIcon || '🌟'}</span>`;
+    }).join('');
 
     deck.innerHTML = `
       <div class="play-top-row">
@@ -8952,9 +11249,11 @@ class ChineseAdventureApp {
         <button id="btn-speak-now" class="toy-btn sun sm">🔊 唸題目</button>
       </div>
 
+      <div class="arcade-stage-trail" aria-label="本課闖關玩法進度">${trailHtml}</div>
+
       <div class="question-header">
         <div style="flex:1;">
-          <span class="mode-pill">${renderVerticalZhuyin(q.modeBadge || '🌟 闖關挑戰', 'inline')}</span>
+          <span class="mode-pill">${renderVerticalZhuyin(q._arcadeBadge || q.modeBadge || '🌟 闖關挑戰', 'inline')}</span>
           <h2 class="question-prompt">${this.fmtText(q.prompt, q)}</h2>
         </div>
       </div>
@@ -8974,19 +11273,41 @@ class ChineseAdventureApp {
     if (storyBtn) storyBtn.onclick = () => this.sound.speak(q.story);
 
     const arena = document.getElementById('interactive-arena');
-    if (q.type === 'bubble') {
-      if (s.index % 2 === 0) this.renderDartMode(arena, q, s);
+    const mode = q._arcadeMode || 'claw';
+    const isK2 = Boolean(q.id && q.id.startsWith('k2_'));
+
+    if (mode === 'dart') {
+      if (isK2) this.renderK2SoundMode(arena, q, s, true);
+      else this.renderDartMode(arena, q, s);
+    } else if (mode === 'bubble_pop') {
+      if (isK2) this.renderK2SoundMode(arena, q, s, false);
       else this.renderBubbleMode(arena, q, s);
+    } else if (mode === 'alchemy') {
+      if (isK2) this.renderK2SpellMode(arena, q, s);
+      else this.renderAlchemyMode(arena, q, s);
+    } else if (mode === 'claw') {
+      this.renderClawMode(arena, q, s);
+    } else if (mode === 'fish') {
+      this.renderFishMode(arena, q, s);
+    } else if (mode === 'feed') {
+      this.renderFeedMode(arena, q, s);
+    } else if (mode === 'chest_lock') {
+      this.renderChestLockMode(arena, q, s);
+    } else if (mode === 'memory') {
+      this.renderMemoryMode(arena, q, s);
+    } else if (mode === 'mole') {
+      if (q.type === 'typo') this.renderTypoMode(arena, q, s, false);
+      else if (isK2) this.renderK2MoleMode(arena, q, s);
+      else this.renderQuizMoleMode(arena, q, s);
+    } else if (mode === 'typo_laser') {
+      this.renderTypoMode(arena, q, s, true);
+    } else if (mode === 'train') {
+      this.renderTrainMode(arena, q, s);
+    } else if (mode === 'judge') {
+      this.renderJudgeMode(arena, q, s);
+    } else {
+      this.renderClawMode(arena, q, s);
     }
-    else if (q.type === 'k2_sound') this.renderK2SoundMode(arena, q, s);
-    else if (q.type === 'k2_spell') this.renderK2SpellMode(arena, q, s);
-    else if (q.type === 'k2_bridge') this.renderK2BridgeMode(arena, q, s);
-    else if (q.type === 'k2_mole') this.renderK2MoleMode(arena, q, s);
-    else if (q.type === 'typo') this.renderTypoMode(arena, q, s);
-    else if (q.type === 'alchemy') this.renderAlchemyMode(arena, q, s);
-    else if (q.type === 'train') this.renderTrainMode(arena, q, s);
-    else if (q.type === 'judge') this.renderJudgeMode(arena, q, s);
-    else this.renderQuizMode(arena, q, s);
 
     if (s.answered) {
       const fb = document.getElementById('feedback-zone');
@@ -9011,37 +11332,568 @@ class ChineseAdventureApp {
     }
   }
 
-  renderDartMode(arena, q, s) {
-    const highlighted = q.targetHighlight
-      ? escapeHtml(q.targetHighlight).replace(/([「『][^」』]+[」』])/g, '<span class="muted-char-focus">$1</span>')
-      : '';
-    arena.innerHTML = `
-      ${highlighted ? `
+  renderArcadeContextBanner(q, s) {
+    const isK2 = Boolean(q.id && q.id.startsWith('k2_'));
+    if (isK2 && q.fixedPart && q.resultChar) {
+      const firstIsMissing = q.missingPos === 'first';
+      const fixedSlotHtml = `<button type="button" class="alchemy-slot k2-zy-slot k2-fixed-tap" id="btn-k2-fixed-zy" title="點我聽注音發音">${renderVerticalZhuyin(q.fixedPart, 'bubble')}</button>`;
+      const mysterySlotHtml = `<div class="alchemy-slot k2-zy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? renderVerticalZhuyin(q.answer, 'bubble') : '？'}</div>`;
+      const slot1Html = firstIsMissing ? mysterySlotHtml : fixedSlotHtml;
+      const slot2Html = !firstIsMissing ? mysterySlotHtml : fixedSlotHtml;
+      const toneHtml = q.toneLabel ? `<span class="k2-tone-pill">${escapeHtml(q.toneLabel)}</span>` : '';
+      return `
+        <div class="alchemy-arena k2-spell-arena" style="margin-bottom:10px;">
+          <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
+            <span class="k2-clue-pic">${escapeHtml(q.pic || '🕹️')}</span>
+            <span class="k2-speak-tag">🔊 點聽拼音</span>
+          </button>
+          <div class="alchemy-formula">
+            ${slot1Html}
+            <div class="alchemy-plus">＋</div>
+            ${slot2Html}
+            ${toneHtml}
+            <div class="alchemy-plus">＝</div>
+            <button type="button" class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}" id="btn-k2-goal-hanzi" title="點我聽國字發音">
+              ${s.answered ? renderCharWithZhuyin(q.resultChar, q.fullZhuyin, 'k2ruby') : escapeHtml(q.resultChar)}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    if (isK2 && q.pic) {
+      return `
+        <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點圖再聽一次！">
+          <span class="k2-clue-pic">${escapeHtml(q.pic)}</span>
+          ${q.charFocus ? `<span class="k2-clue-hanzi">${escapeHtml(q.charFocus)}</span>` : ''}
+          ${q.hintZhuyin ? `<span class="k2-mole-zy-badge">${renderVerticalZhuyin(q.hintZhuyin, 'bubble')}</span>` : ''}
+          <span class="k2-speak-tag">🔊 點聽聲音</span>
+        </button>
+      `;
+    }
+    if (q.type === 'bubble' && q.targetHighlight) {
+      const highlighted = escapeHtml(q.targetHighlight).replace(/([「『][^」』]+[」』])/g, '<span class="muted-char-focus">$1</span>');
+      return `
         <div class="target-word-banner">
           <div class="muted-hint-chip">🔇 自己讀！</div>
           <div class="target-word-main">${highlighted}</div>
         </div>
-      ` : ''}
+      `;
+    }
+    if (q.type === 'alchemy' && q.basePart) {
+      const isVertical = q.position === 'top';
+      const formulaHtml = isVertical
+        ? `
+          <div class="alchemy-formula">
+            <div class="alchemy-stack" title="上下疊合結構">
+              <div class="alchemy-slot">${escapeHtml(q.basePart)}</div>
+              <div class="alchemy-plus">＋</div>
+              <div class="alchemy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? escapeHtml(q.answer) : '？'}</div>
+            </div>
+            <div class="alchemy-plus">＝</div>
+            <div class="alchemy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? escapeHtml(q.resultChar) : '✨'}</div>
+          </div>
+        `
+        : `
+          <div class="alchemy-formula">
+            <div class="alchemy-slot">${escapeHtml(q.basePart)}</div>
+            <div class="alchemy-plus">＋</div>
+            <div class="alchemy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? escapeHtml(q.answer) : '？'}</div>
+            <div class="alchemy-plus">＝</div>
+            <div class="alchemy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? escapeHtml(q.resultChar) : '✨'}</div>
+          </div>
+        `;
+      return `
+        <div class="alchemy-arena" style="margin-bottom:10px;">
+          <div style="font-weight:800;color:#475569;font-size:0.95rem;">
+            💡 造詞提示：${this.fmtText(q.wordHint, q)} ${isVertical ? '（上下疊合）' : '（左右組合）'}
+          </div>
+          ${formulaHtml}
+        </div>
+      `;
+    }
+    return '';
+  }
+
+  bindArcadeContextBanner(q) {
+    const clueBtn = document.getElementById('btn-k2-clue');
+    if (clueBtn) {
+      clueBtn.onclick = () => {
+        this.sound.playPop();
+        this.sound.speak(q.tts || q.resultChar || q.charFocus || q.answer);
+      };
+    }
+    const fixedBtn = document.getElementById('btn-k2-fixed-zy');
+    if (fixedBtn) {
+      fixedBtn.onclick = () => {
+        this.sound.speak(Array.from(q.fixedPart || '').join('、'));
+      };
+    }
+    const goalBtn = document.getElementById('btn-k2-goal-hanzi');
+    if (goalBtn) {
+      goalBtn.onclick = () => {
+        this.sound.speak(q.resultChar);
+      };
+    }
+  }
+
+  populateArcadeOption(btn, opt, q, leadEmoji = '') {
+    const isPureZhuyin = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
+    const isK2 = Boolean(q.id && q.id.startsWith('k2_'));
+    let bodyHtml = '';
+    let allowSpeakChip = false;
+
+    if (isPureZhuyin) {
+      bodyHtml = renderVerticalZhuyin(opt, 'bubble');
+      allowSpeakChip = isK2;
+    } else if (q.optZhuyin && q.optZhuyin[opt]) {
+      bodyHtml = renderCharWithZhuyin(opt, q.optZhuyin[opt], 'k2ruby');
+      allowSpeakChip = true;
+    } else if (isK2) {
+      bodyHtml = `<span class="arcade-k2-pure-hanzi">${escapeHtml(opt)}</span>`;
+      allowSpeakChip = false;
+    } else {
+      bodyHtml = this.fmtText(opt, q);
+      allowSpeakChip = q.type !== 'bubble';
+    }
+
+    btn.innerHTML = `
+      ${leadEmoji ? `<span class="arcade-opt-emblem">${leadEmoji}</span>` : ''}
+      <span class="arcade-opt-content">${bodyHtml}</span>
+      ${allowSpeakChip ? `<span role="button" tabindex="0" class="opt-speak-chip" title="聽發音">🔊</span>` : ''}
+    `;
+
+    const spk = btn.querySelector('.opt-speak-chip');
+    if (spk) {
+      spk.onclick = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.sound.speak(opt);
+      };
+    }
+  }
+
+  renderClawMode(arena, q, s) {
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="claw-machine-stage" id="claw-stage">
+        <div class="claw-top-rail">
+          <span class="claw-rail-title">🕹️ 點扭蛋球下爪夾起來！</span>
+        </div>
+        <div class="claw-gantry-zone">
+          <div class="claw-carriage" id="claw-carriage" style="--claw-x: 50%;">
+            <div class="claw-motor">🕹️</div>
+            <div class="claw-cable"></div>
+            <div class="claw-prongs">🦾</div>
+          </div>
+        </div>
+        <div class="claw-capsules-grid" id="claw-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const stage = document.getElementById('claw-stage');
+    const carriage = document.getElementById('claw-carriage');
+    const grid = document.getElementById('claw-grid');
+    const capIcons = ['🔴', '🔵', '🟡', '🟢'];
+
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `claw-capsule-btn cap-${idx % 4}`;
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      this.populateArcadeOption(btn, opt, q, capIcons[idx % 4]);
+
+      btn.onpointerenter = (e) => {
+        if (s.answered || q._clawBusy || (e && e.pointerType && e.pointerType !== 'mouse')) return;
+        if (stage && carriage) {
+          const sr = stage.getBoundingClientRect();
+          const br = btn.getBoundingClientRect();
+          const pctX = Math.max(18, Math.min(82, ((br.left + br.width / 2 - sr.left) / Math.max(1, sr.width)) * 100));
+          carriage.style.setProperty('--claw-x', `${pctX.toFixed(1)}%`);
+        }
+      };
+
+      btn.onclick = () => {
+        if (s.answered || q._clawBusy) return;
+        q._clawBusy = true;
+        this.sound.playClawGrab();
+        const br = btn.getBoundingClientRect();
+        if (stage && carriage) {
+          const sr = stage.getBoundingClientRect();
+          const pctX = Math.max(18, Math.min(82, ((br.left + br.width / 2 - sr.left) / Math.max(1, sr.width)) * 100));
+          carriage.style.setProperty('--claw-x', `${pctX.toFixed(1)}%`);
+          carriage.classList.add('grabbing');
+        }
+        btn.classList.add('grabbed-lift');
+        this.fx.multiRipple(br.left + br.width / 2, br.top + br.height / 2, ['#fde047', '#38bdf8', '#fb7185']);
+        setTimeout(() => {
+          q._clawBusy = false;
+          this.handleAnswer(opt === q.answer, opt);
+        }, 340);
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  renderFishMode(arena, q, s) {
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="fish-pond-stage">
+        <div class="fish-dock-bar" id="fish-dock">
+          <span>🎣 點小魚甩竿釣上岸！</span>
+        </div>
+        <div class="fish-pond-grid" id="fish-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const dock = document.getElementById('fish-dock');
+    const grid = document.getElementById('fish-grid');
+    const fishIcons = ['🐠', '🐡', '🐟', '🐬'];
+
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `fish-swim-btn f-${idx % 4}`;
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      const fEmoji = fishIcons[idx % 4];
+      this.populateArcadeOption(btn, opt, q, fEmoji);
+
+      btn.onclick = () => {
+        if (s.answered || q._fishBusy) return;
+        q._fishBusy = true;
+        btn.classList.add('hooked');
+        this.sound.playFishSplash();
+        const br = btn.getBoundingClientRect();
+        const dr = dock ? dock.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        const fromX = br.left + br.width / 2;
+        const fromY = br.top + br.height / 2;
+        const toX = dr.left + dr.width / 2;
+        const toY = dr.top + dr.height / 2;
+        this.fx.multiRipple(fromX, fromY, ['#38bdf8', '#bae6fd', '#ffffff']);
+        this.fx.flyItem(fromX, fromY, toX, toY, fEmoji, '#38bdf8', () => {
+          q._fishBusy = false;
+          this.handleAnswer(opt === q.answer, opt);
+        }, 72);
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  renderFeedMode(arena, q, s) {
+    const dinoMood = s.answered
+      ? (s.isCorrect ? '😋 嗷嗚～超好吃！' : '😵 咦？味道怪怪的！')
+      : '😋 肚子餓～點正確點心餵我吃！';
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="dino-feeder-stage">
+        <div class="dino-pal-header ${s.answered && s.isCorrect ? 'happy-chomp' : ''}" id="dino-mouth-target">
+          <span class="dino-avatar">🦖</span>
+          <span class="dino-speech-pill">${escapeHtml(dinoMood)}</span>
+        </div>
+        <div class="dino-food-grid" id="dino-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const mouth = document.getElementById('dino-mouth-target');
+    const grid = document.getElementById('dino-grid');
+    const foodIcons = ['🍩', '🍔', '🍓', '🍕'];
+
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `dino-food-btn df-${idx % 4}`;
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      const foodEmoji = foodIcons[idx % 4];
+      this.populateArcadeOption(btn, opt, q, foodEmoji);
+
+      btn.onclick = () => {
+        if (s.answered || q._feedBusy) return;
+        q._feedBusy = true;
+        this.sound.playPop();
+        const isOk = opt === q.answer;
+        const br = btn.getBoundingClientRect();
+        const mr = mouth ? mouth.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        this.fx.flyItem(
+          br.left + br.width / 2,
+          br.top + br.height / 2,
+          mr.left + mr.width * 0.35,
+          mr.top + mr.height / 2,
+          foodEmoji,
+          '#fb923c',
+          () => {
+            q._feedBusy = false;
+            if (mouth) mouth.classList.add('happy-chomp');
+            this.sound.playDinoChomp(isOk);
+            this.handleAnswer(isOk, opt);
+          },
+          84
+        );
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  renderChestLockMode(arena, q, s) {
+    const chestLabel = s.answered && s.isCorrect
+      ? '🎊 黃金寶箱打開啦！'
+      : '🔒 選出正確魔鑰匙，打開黃金寶箱！';
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="chest-lock-stage">
+        <div class="golden-chest-box ${s.answered && s.isCorrect ? 'unlocked' : ''}" id="golden-chest-target">
+          <span class="golden-chest-icon">${s.answered && s.isCorrect ? '🎊' : '🧰'}</span>
+          <span class="golden-chest-pill">${escapeHtml(chestLabel)}</span>
+        </div>
+        <div class="chest-keys-grid" id="chest-keys-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const chest = document.getElementById('golden-chest-target');
+    const grid = document.getElementById('chest-keys-grid');
+
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `chest-key-btn ck-${idx % 4}`;
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      this.populateArcadeOption(btn, opt, q, '🗝️');
+
+      btn.onclick = () => {
+        if (s.answered || q._chestBusy) return;
+        q._chestBusy = true;
+        this.sound.playTap();
+        const isOk = opt === q.answer;
+        const br = btn.getBoundingClientRect();
+        const cr = chest ? chest.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        this.fx.flyItem(
+          br.left + br.width / 2,
+          br.top + br.height / 2,
+          cr.left + cr.width / 2,
+          cr.top + cr.height / 2,
+          '🗝️',
+          '#facc15',
+          () => {
+            q._chestBusy = false;
+            if (isOk) this.sound.playKeyUnlock();
+            this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#fde047' : '#fb7185', 95);
+            this.handleAnswer(isOk, opt);
+          },
+          78
+        );
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  renderMemoryMode(arena, q, s) {
+    const totalPairs = (q.pairs && q.pairs.length) || 3;
+    const matchedNow = s.answered ? totalPairs : (q.memMatched || 0);
+    const statusText = s.answered
+      ? `🎉 ${totalPairs} 組魔法閃卡全部配對成功！`
+      : q.memPeeking
+        ? `👀 先偷看記位置！（直接點卡片也能馬上翻牌喔）`
+        : `🃏 點兩張配對！（已完成 ${matchedNow} / ${totalPairs} 組）`;
+
+    arena.innerHTML = `
+      <div class="memory-arena-stage">
+        <div class="memory-status-bar">${escapeHtml(statusText)}</div>
+        <div class="memory-grid-3x2" id="memory-grid"></div>
+      </div>
+    `;
+
+    if (q.memPeeking && !q._peekTimerSet && !s.answered) {
+      q._peekTimerSet = true;
+      setTimeout(() => {
+        if (this.view === 'play' && this.session && this.session.questions[this.session.index] === q && q.memPeeking) {
+          q.memPeeking = false;
+          this.render();
+        }
+      }, 900);
+    }
+
+    const grid = document.getElementById('memory-grid');
+    (q.memCards || []).forEach((card, idx) => {
+      const isFaceUp = Boolean(s.answered || q.memPeeking || card.matched || card.flipped);
+      const isMatched = Boolean(s.answered || card.matched);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.id = `mem-card-${idx}`;
+      btn.dataset.pairId = String(card.pairId);
+      btn.className = `mem-card-btn ${isFaceUp ? 'is-face-up' : ''} ${isMatched ? 'is-matched' : ''} ${card.mismatch ? 'is-mismatch' : ''}`;
+
+      let frontHtml = '';
+      if (card.kind === 'k2_hanzi') {
+        frontHtml = `<span class="mem-k2-hanzi">${escapeHtml(card.hanzi)}</span>`;
+      } else if (card.kind === 'k2_pic_zy') {
+        frontHtml = `
+          <span class="mem-k2-pic">${escapeHtml(card.pic)}</span>
+          <span class="mem-k2-zy">${renderVerticalZhuyin(card.zy, 'bubble')}</span>
+        `;
+      } else {
+        frontHtml = `<span class="mem-g-text">${this.fmtText(card.text, q)}</span>`;
+      }
+
+      btn.innerHTML = `
+        <span class="mem-card-inner">
+          <span class="mem-face mem-face-back">
+            <span class="mem-back-star">🃏</span>
+            <span class="mem-back-sub">✨</span>
+          </span>
+          <span class="mem-face mem-face-front">${frontHtml}</span>
+        </span>
+      `;
+
+      btn.onclick = () => {
+        if (s.answered || q._memLock) return;
+        if (q.memPeeking) {
+          q.memPeeking = false;
+        }
+        if (card.matched || card.flipped) return;
+
+        card.flipped = true;
+        q._memFlippedIds.push(card.uid);
+        this.sound.playCardFlip();
+        if (this.state.autoRead && card.tts) {
+          this.sound.speak(card.tts);
+        }
+
+        if (q._memFlippedIds.length === 1) {
+          this.render();
+          return;
+        }
+
+        if (q._memFlippedIds.length === 2) {
+          const [id1, id2] = q._memFlippedIds;
+          const c1 = q.memCards.find((c) => c.uid === id1);
+          const c2 = q.memCards.find((c) => c.uid === id2);
+          if (c1 && c2 && c1.pairId === c2.pairId) {
+            c1.matched = true;
+            c2.matched = true;
+            q._memFlippedIds = [];
+            q.memMatched = (q.memMatched || 0) + 1;
+            this.sound.playPairMatch();
+            const r = btn.getBoundingClientRect();
+            this.fx.confettiBurst(r.left + r.width / 2, r.top + r.height / 2, 26);
+            if (q.memMatched >= totalPairs) {
+              this.handleAnswer(true, 'paired_all');
+            } else {
+              this.render();
+            }
+          } else {
+            q._memLock = true;
+            if (c1) c1.mismatch = true;
+            if (c2) c2.mismatch = true;
+            this.render();
+            setTimeout(() => {
+              if (c1) { c1.flipped = false; c1.mismatch = false; }
+              if (c2) { c2.flipped = false; c2.mismatch = false; }
+              q._memFlippedIds = [];
+              q._memLock = false;
+              if (this.view === 'play') this.render();
+            }, 560);
+          }
+        }
+      };
+
+      grid.appendChild(btn);
+    });
+  }
+
+  renderQuizMoleMode(arena, q, s) {
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="mole-meadow-arena">
+        <div class="mole-arena-title">🔨 拿木槌敲出正確答案地鼠！</div>
+        <div class="mole-holes-grid" id="mole-holes-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const holes = document.getElementById('mole-holes-grid');
+    const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
+    q.shuffledOptions.forEach((opt, idx) => {
+      const hole = document.createElement('button');
+      hole.type = 'button';
+      hole.className = `mole-hole-btn m-${idx}`;
+      hole.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) hole.classList.add('correct-pick');
+        else if (opt === s.pickedValue) hole.classList.add('wrong-pick');
+      }
+      const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
+      const signInner = isPureZy ? renderVerticalZhuyin(opt, 'inline') : this.fmtText(opt, q);
+      hole.innerHTML = `
+        <span class="mole-hammer">🔨</span>
+        <span class="mole-critter">
+          <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
+          <span class="mole-sign mole-quiz-sign">${signInner}</span>
+        </span>
+        <span class="mole-mound"></span>
+      `;
+      hole.onclick = () => {
+        if (s.answered || q._moleWhacking) return;
+        q._moleWhacking = true;
+        hole.classList.add('whacking');
+        const isOk = opt === q.answer;
+        this.sound.playHammerBonk(isOk);
+        const r = hole.getBoundingClientRect();
+        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
+        this.fx.screenShake(7);
+        setTimeout(() => {
+          q._moleWhacking = false;
+          this.handleAnswer(isOk, opt);
+        }, 220);
+      };
+      holes.appendChild(hole);
+    });
+  }
+
+  renderDartMode(arena, q, s) {
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
       <div class="dart-arena-box">
-        <div class="dart-arena-hint">🎯 射中正確注音！</div>
+        <div class="dart-arena-hint">🎯 射中正確答案！</div>
         <div class="dart-targets-grid" id="dart-wrap"></div>
         <div class="dart-launcher-bar" id="dart-launcher">🎯 點靶心發射！</div>
       </div>
     `;
+    this.bindArcadeContextBanner(q);
     const wrap = document.getElementById('dart-wrap');
     const launcher = document.getElementById('dart-launcher');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = `dart-target-btn d-${idx}`;
       btn.dataset.optIdx = idx;
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
+      const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
+      const coreHtml = isPureZy ? renderVerticalZhuyin(opt, 'dart') : this.fmtText(opt, q);
       btn.innerHTML = `
         <span class="dart-ring-outer">
           <span class="dart-ring-mid">
-            <span class="dart-ring-core">${renderVerticalZhuyin(opt, 'dart')}</span>
+            <span class="dart-ring-core">${coreHtml}</span>
           </span>
         </span>
       `;
@@ -9065,28 +11917,23 @@ class ChineseAdventureApp {
   }
 
   renderBubbleMode(arena, q, s) {
-    const highlighted = q.targetHighlight
-      ? escapeHtml(q.targetHighlight).replace(/([「『][^」』]+[」』])/g, '<span class="muted-char-focus">$1</span>')
-      : '';
     arena.innerHTML = `
-      ${highlighted ? `
-        <div class="target-word-banner">
-          <div class="muted-hint-chip">🔇 自己讀！</div>
-          <div class="target-word-main">${highlighted}</div>
-        </div>
-      ` : ''}
+      ${this.renderArcadeContextBanner(q, s)}
       <div class="bubbles-stage" id="bubbles-wrap"></div>
     `;
+    this.bindArcadeContextBanner(q);
     const wrap = document.getElementById('bubbles-wrap');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'bubble-opt-btn';
       btn.dataset.optIdx = idx;
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      btn.innerHTML = renderVerticalZhuyin(opt, 'bubble');
+      const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
+      btn.innerHTML = isPureZy ? renderVerticalZhuyin(opt, 'bubble') : this.fmtText(opt, q);
       btn.onclick = () => {
         if (s.answered) return;
         const r = btn.getBoundingClientRect();
@@ -9097,12 +11944,12 @@ class ChineseAdventureApp {
     });
   }
 
-  renderTypoMode(arena, q, s) {
+  renderTypoMode(arena, q, s, useLaser = false) {
     const stepText = s.answered
       ? `✅ ${q.chars.map((c, i) => (i === q.wrongIndex ? `【${q.answer}】` : c)).join('')}`
       : !q.caughtBug
-        ? '🐛 點出寫錯的字！'
-        : `🔨 敲對的字！`;
+        ? (useLaser ? '🛸 雷達掃描：點出寫錯的外星蟲字！' : '🐛 點出寫錯的字！')
+        : (useLaser ? '⚡ 發射飛碟雷射，射中正確國字水晶！' : '🔨 敲對的字！');
 
     // Count real (non-punctuation) character ordinal of wrongIndex for accurate kid hints
     let realWrongOrd = 0;
@@ -9111,12 +11958,19 @@ class ChineseAdventureApp {
     }
 
     arena.innerHTML = `
-      <div class="typo-step-banner" id="typo-banner">${escapeHtml(stepText)}</div>
+      <div class="typo-step-banner ${useLaser ? 'laser-theme' : ''}" id="typo-banner">${escapeHtml(stepText)}</div>
       <div class="typo-sentence-grid" id="typo-chars"></div>
-      <div class="mole-meadow-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
-        <div class="mole-arena-title">🔨 敲對的字！</div>
-        <div class="mole-holes-grid" id="mole-holes-grid"></div>
-      </div>
+      ${useLaser ? `
+        <div class="ufo-laser-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
+          <div class="ufo-ship-header" id="ufo-muzzle">🛸 點能量水晶發射雷射光束！</div>
+          <div class="ufo-crystals-grid" id="ufo-crystals-grid"></div>
+        </div>
+      ` : `
+        <div class="mole-meadow-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
+          <div class="mole-arena-title">🔨 敲對的字！</div>
+          <div class="mole-holes-grid" id="mole-holes-grid"></div>
+        </div>
+      `}
     `;
 
     const charsWrap = document.getElementById('typo-chars');
@@ -9130,6 +11984,7 @@ class ChineseAdventureApp {
       }
 
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'char-tile-btn';
       btn.id = `char-tile-${idx}`;
       if (s.answered && idx === q.wrongIndex) {
@@ -9143,10 +11998,13 @@ class ChineseAdventureApp {
         if (s.answered || q.caughtBug) return;
         if (idx === q.wrongIndex) {
           q.caughtBug = true;
-          this.sound.playMolePop();
+          if (useLaser) this.sound.playUfoLaser();
+          else this.sound.playMolePop();
           const r = btn.getBoundingClientRect();
-          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#4ade80', 85);
-          if (this.state.autoRead) this.sound.speak('抓到了！敲對的字！');
+          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, useLaser ? '#38bdf8' : '#4ade80', 85);
+          if (this.state.autoRead) {
+            this.sound.speak(useLaser ? '鎖定錯字！請發射雷射選對的字！' : '抓到了！敲對的字！');
+          }
           this.render();
         } else {
           q.wrongTaps = (q.wrongTaps || 0) + 1;
@@ -9165,11 +12023,52 @@ class ChineseAdventureApp {
       charsWrap.appendChild(btn);
     });
 
-    if (q.caughtBug || s.answered) {
+    if ((q.caughtBug || s.answered) && useLaser) {
+      const grid = document.getElementById('ufo-crystals-grid');
+      const muzzle = document.getElementById('ufo-muzzle');
+      q.shuffledOptions.forEach((opt, idx) => {
+        const cry = document.createElement('button');
+        cry.type = 'button';
+        cry.className = `ufo-crystal-btn uc-${idx % 4}`;
+        cry.dataset.optIdx = idx;
+        if (s.answered) {
+          if (opt === q.answer) cry.classList.add('correct-pick');
+          else if (opt === s.pickedValue) cry.classList.add('wrong-pick');
+        }
+        cry.innerHTML = `
+          <span class="ufo-crystal-gem">🔮</span>
+          <span class="ufo-crystal-char">${escapeHtml(opt)}</span>
+        `;
+        cry.onclick = () => {
+          if (s.answered || q._laserBusy) return;
+          q._laserBusy = true;
+          const isOk = opt === q.answer;
+          this.sound.playUfoLaser();
+          const cr = cry.getBoundingClientRect();
+          const mr = muzzle ? muzzle.getBoundingClientRect() : { left: window.innerWidth / 2, top: cr.top - 70, width: 0, height: 0 };
+          this.fx.flyItem(
+            mr.left + mr.width / 2,
+            mr.top + mr.height / 2,
+            cr.left + cr.width / 2,
+            cr.top + cr.height / 2,
+            '⚡',
+            '#38bdf8',
+            () => {
+              q._laserBusy = false;
+              this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#38bdf8' : '#fb7185', 95);
+              this.handleAnswer(isOk, opt);
+            },
+            24
+          );
+        };
+        grid.appendChild(cry);
+      });
+    } else if (q.caughtBug || s.answered) {
       const holes = document.getElementById('mole-holes-grid');
       const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
       q.shuffledOptions.forEach((opt, idx) => {
         const hole = document.createElement('button');
+        hole.type = 'button';
         hole.className = `mole-hole-btn m-${idx}`;
         hole.dataset.optIdx = idx;
         if (s.answered) {
@@ -9239,6 +12138,7 @@ class ChineseAdventureApp {
     const wrap = document.getElementById('alchemy-opts');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'option-card-btn';
       btn.dataset.optIdx = idx;
       btn.style.fontSize = '1.48rem';
@@ -9276,6 +12176,7 @@ class ChineseAdventureApp {
     } else {
       activeList.forEach((car, hIdx) => {
         const b = document.createElement('button');
+        b.type = 'button';
         b.className = 'train-hooked-car';
         b.innerHTML = this.fmtText(car.text, q);
         if (!s.answered) {
@@ -9296,6 +12197,7 @@ class ChineseAdventureApp {
       q.poolCarriages.forEach((car, idx) => {
         if (car.used) return;
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'toy-btn primary';
         btn.dataset.optIdx = idx;
         btn.style.fontSize = '1.15rem';
@@ -9363,28 +12265,7 @@ class ChineseAdventureApp {
     noBtn.onclick = () => { if (!s.answered) this.handleAnswer(q.answer === '❌', '❌'); };
   }
 
-  renderQuizMode(arena, q, s) {
-    arena.innerHTML = `<div class="options-grid" id="quiz-opts"></div>`;
-    const wrap = document.getElementById('quiz-opts');
-    q.shuffledOptions.forEach((opt, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'option-card-btn';
-      btn.dataset.optIdx = idx;
-      if (s.answered) {
-        if (opt === q.answer) btn.classList.add('correct-pick');
-        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
-      }
-      this.attachOptionContent(btn, opt, q);
-      btn.onclick = () => {
-        if (s.answered) return;
-        this.handleAnswer(opt === q.answer, opt);
-      };
-      wrap.appendChild(btn);
-    });
-  }
-
-  renderK2SoundMode(arena, q, s) {
-    const useDart = s.index % 2 === 0;
+  renderK2SoundMode(arena, q, s, useDart = true) {
     arena.innerHTML = `
       <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點我再聽一次！">
         <span class="k2-clue-pic">${escapeHtml(q.pic || '🌟')}</span>
@@ -9486,25 +12367,7 @@ class ChineseAdventureApp {
       <div class="options-grid k2-spell-opts" id="k2-spell-opts"></div>
     `;
 
-    const clueBtn = document.getElementById('btn-k2-clue');
-    if (clueBtn) {
-      clueBtn.onclick = () => {
-        this.sound.playPop();
-        this.sound.speak(q.tts || q.resultChar);
-      };
-    }
-    const fixedBtn = document.getElementById('btn-k2-fixed-zy');
-    if (fixedBtn) {
-      fixedBtn.onclick = () => {
-        this.sound.speak(Array.from(q.fixedPart || '').join('、'));
-      };
-    }
-    const goalBtn = document.getElementById('btn-k2-goal-hanzi');
-    if (goalBtn) {
-      goalBtn.onclick = () => {
-        this.sound.speak(q.resultChar);
-      };
-    }
+    this.bindArcadeContextBanner(q);
 
     const wrap = document.getElementById('k2-spell-opts');
     q.shuffledOptions.forEach((opt, idx) => {
@@ -9519,54 +12382,6 @@ class ChineseAdventureApp {
       btn.innerHTML = `
         <span class="k2-zy-opt-center">${renderVerticalZhuyin(opt, 'bubble')}</span>
         <span role="button" tabindex="0" class="opt-speak-chip" title="聽注音發音">🔊</span>
-      `;
-      const spk = btn.querySelector('.opt-speak-chip');
-      if (spk) {
-        spk.onclick = (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          this.sound.speak(opt);
-        };
-      }
-      btn.onclick = () => {
-        if (s.answered) return;
-        this.handleAnswer(opt === q.answer, opt);
-      };
-      wrap.appendChild(btn);
-    });
-  }
-
-  renderK2BridgeMode(arena, q, s) {
-    arena.innerHTML = `
-      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點圖再聽一次！">
-        <span class="k2-clue-pic giant">${escapeHtml(q.pic || '🌟')}</span>
-        <span class="k2-speak-tag">🔊 點圖聽聲音</span>
-      </button>
-      <div class="options-grid k2-bridge-grid" id="k2-bridge-opts"></div>
-    `;
-
-    const clueBtn = document.getElementById('btn-k2-clue');
-    if (clueBtn) {
-      clueBtn.onclick = () => {
-        this.sound.playPop();
-        this.sound.speak(q.tts || q.answer);
-      };
-    }
-
-    const wrap = document.getElementById('k2-bridge-opts');
-    q.shuffledOptions.forEach((opt, idx) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'option-card-btn k2-bridge-btn';
-      btn.dataset.optIdx = idx;
-      if (s.answered) {
-        if (opt === q.answer) btn.classList.add('correct-pick');
-        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
-      }
-      const zy = q.optZhuyin && q.optZhuyin[opt];
-      btn.innerHTML = `
-        <span class="k2-bridge-char-wrap">${renderCharWithZhuyin(opt, zy, 'k2ruby')}</span>
-        <span role="button" tabindex="0" class="opt-speak-chip" title="聽這個字的發音">🔊</span>
       `;
       const spk = btn.querySelector('.opt-speak-chip');
       if (spk) {

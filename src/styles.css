@@ -2685,7 +2685,728 @@ button.alchemy-slot.k2-hanzi-goal:hover {
   text-align: center;
 }
 
+/* =========================================================
+   v10 Multi-Arcade Carnival: 9 Distinct Games Inside Every Lesson
+   (Claw Machine, Fishing Pond, Dino Feeder, Golden Chest,
+    3D Flip-Card Memory, UFO Laser Zapper, Hub & Stage Trail)
+   ========================================================= */
 
+.grade-arcade-ribbon {
+  background: linear-gradient(135deg, #f0f9ff 0%, #fef9c3 52%, #ecfdf5 100%);
+  box-shadow: 0 5px 0 rgba(56, 189, 248, 0.26), 0 8px 18px rgba(15, 23, 42, 0.06);
+}
 
+/* Hub Card 9-Game Mini Strip */
+.lesson-arcade-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 6px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1.5px solid #e2e8f0;
+  pointer-events: none;
+}
 
+.arcade-mini-dot {
+  font-size: 0.84rem;
+  line-height: 1.15;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.08));
+}
+
+/* Play Mode Stage Trail (Shows All 9 Distinct Games!) */
+.arcade-stage-trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: -2px 0 10px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 2px solid #e2e8f0;
+}
+
+.trail-node {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.98rem;
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  opacity: 0.68;
+  transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+}
+
+.trail-node.done {
+  background: #dcfce7;
+  border-color: #4ade80;
+  opacity: 0.95;
+  box-shadow: 0 2px 0 #22c55e;
+}
+
+.trail-node.current {
+  opacity: 1;
+  transform: scale(1.18) translateY(-2px);
+  background: linear-gradient(180deg, #fef08a 0%, #fde047 100%);
+  border: 2px solid #f59e0b;
+  box-shadow: 0 4px 0 #d97706, 0 6px 12px rgba(245, 158, 11, 0.35);
+}
+
+/* Shared Option Layout for Claw / Fish / Dino / Chest */
+.arcade-opt-emblem {
+  font-size: 1.85rem;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 3px 4px rgba(15, 23, 42, 0.16));
+  pointer-events: none;
+}
+
+.arcade-opt-content {
+  flex: 1;
+  font-size: 1.24rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.42;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.arcade-k2-pure-hanzi {
+  font-size: 2.35rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.mole-sign.mole-quiz-sign {
+  font-size: 1.18rem;
+  padding: 5px 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* 1. 🕹️ Fantasy Claw Machine (奇幻夾娃娃機) */
+.claw-machine-stage {
+  position: relative;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(180deg, #ede9fe 0%, #fae8ff 48%, #fffbeb 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(139, 92, 246, 0.2);
+  overflow: hidden;
+}
+
+.claw-top-rail {
+  background: linear-gradient(90deg, #7c3aed 0%, #ec4899 50%, #f59e0b 100%);
+  border-radius: 999px;
+  padding: 5px 14px;
+  text-align: center;
+  box-shadow: 0 4px 0 #5b21b6;
+}
+
+.claw-rail-title {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.claw-gantry-zone {
+  position: relative;
+  height: 66px;
+  margin-bottom: 4px;
+  pointer-events: none;
+}
+
+.claw-carriage {
+  position: absolute;
+  top: 0;
+  left: var(--claw-x, 50%);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: left 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.claw-motor {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.claw-cable {
+  width: 4px;
+  height: 14px;
+  background: linear-gradient(180deg, #475569, #94a3b8);
+  border-radius: 999px;
+  transition: height 0.18s ease;
+}
+
+.claw-prongs {
+  font-size: 1.7rem;
+  line-height: 1;
+  margin-top: -3px;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.22));
+  transition: transform 0.18s ease;
+}
+
+.claw-carriage.grabbing .claw-cable {
+  height: 36px;
+}
+
+.claw-carriage.grabbing .claw-prongs {
+  transform: scale(1.22) rotate(-8deg);
+}
+
+.claw-capsules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.claw-capsule-btn {
+  appearance: none;
+  min-height: 92px;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: radial-gradient(circle at 24% 22%, #ffffff 0%, #ffe4e6 55%, #fecdd3 100%);
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.9), 0 6px 0 #f43f5e, 0 10px 18px rgba(244, 63, 94, 0.18);
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.claw-capsule-btn.cap-1 {
+  background: radial-gradient(circle at 24% 22%, #ffffff 0%, #e0f2fe 55%, #bae6fd 100%);
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.9), 0 6px 0 #0284c7, 0 10px 18px rgba(2, 132, 199, 0.18);
+}
+
+.claw-capsule-btn.cap-2 {
+  background: radial-gradient(circle at 24% 22%, #ffffff 0%, #fef9c3 55%, #fde68a 100%);
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.9), 0 6px 0 #d97706, 0 10px 18px rgba(217, 119, 6, 0.18);
+}
+
+.claw-capsule-btn.cap-3 {
+  background: radial-gradient(circle at 24% 22%, #ffffff 0%, #d1fae5 55%, #a7f3d0 100%);
+  box-shadow: inset 0 3px 8px rgba(255, 255, 255, 0.9), 0 6px 0 #059669, 0 10px 18px rgba(5, 150, 105, 0.18);
+}
+
+.claw-capsule-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.04);
+}
+
+.claw-capsule-btn.grabbed-lift {
+  transform: translateY(-12px) scale(1.05);
+}
+
+/* 2. 🎣 Starlight Fishing Pond (星光釣魚池) */
+.fish-pond-stage {
+  position: relative;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.45) 0%, transparent 45%),
+    linear-gradient(180deg, #bae6fd 0%, #7dd3fc 48%, #38bdf8 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 14px rgba(255, 255, 255, 0.8), 0 10px 24px rgba(2, 132, 199, 0.24);
+}
+
+.fish-dock-bar {
+  width: fit-content;
+  margin: 0 auto 12px;
+  background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+  color: #78350f;
+  border: 2.5px solid #b45309;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  box-shadow: 0 4px 0 #92400e;
+}
+
+.fish-pond-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.fish-swim-btn {
+  appearance: none;
+  min-height: 92px;
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 249, 255, 0.94) 100%);
+  box-shadow: 0 6px 0 #0369a1, 0 10px 18px rgba(3, 105, 161, 0.22);
+  animation: fishBobSwim 2.6s ease-in-out infinite alternate;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.fish-swim-btn.f-1 { animation-delay: 0.4s; }
+.fish-swim-btn.f-2 { animation-delay: 0.8s; }
+.fish-swim-btn.f-3 { animation-delay: 1.2s; }
+
+@keyframes fishBobSwim {
+  0% { transform: translateX(-3px) translateY(0px); }
+  100% { transform: translateX(3px) translateY(-4px); }
+}
+
+.fish-swim-btn:hover {
+  filter: brightness(1.05);
+  transform: scale(1.03) translateY(-3px);
+}
+
+.fish-swim-btn.hooked {
+  transform: translateY(-10px) scale(1.05);
+}
+
+/* 3. 🦖 Hungry Baby Dino Feeder (貪吃小恐龍) */
+.dino-feeder-stage {
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(180deg, #ecfdf5 0%, #fef9c3 55%, #ffedd5 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(16, 185, 129, 0.2);
+}
+
+.dino-pal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto 12px;
+  width: fit-content;
+  background: #ffffff;
+  border: 2.5px solid #34d399;
+  border-radius: 999px;
+  padding: 6px 18px 6px 12px;
+  box-shadow: 0 5px 0 #10b981;
+}
+
+.dino-avatar {
+  font-size: 2.35rem;
+  line-height: 1;
+  animation: dinoIdleBounce 1.8s ease-in-out infinite;
+}
+
+.dino-pal-header.happy-chomp .dino-avatar {
+  animation: popBounce 0.4s ease 2;
+}
+
+@keyframes dinoIdleBounce {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-5px) rotate(4deg); }
+}
+
+.dino-speech-pill {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #065f46;
+}
+
+.dino-food-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.dino-food-btn {
+  appearance: none;
+  min-height: 92px;
+  border-radius: 24px;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
+  box-shadow: 0 6px 0 #fb923c, 0 10px 18px rgba(249, 115, 22, 0.18);
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.dino-food-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.03);
+}
+
+/* 4. 🗝️ Golden Treasure Chest Lock (黃金寶箱鎖) */
+.chest-lock-stage {
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(180deg, #fef9c3 0%, #fde68a 48%, #ffedd5 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(217, 119, 6, 0.24);
+}
+
+.golden-chest-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto 12px;
+  width: fit-content;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  border: 2.5px solid #f59e0b;
+  border-radius: 999px;
+  padding: 6px 18px 6px 12px;
+  box-shadow: 0 5px 0 #d97706;
+}
+
+.golden-chest-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+  animation: chestWobble 2.2s ease-in-out infinite;
+}
+
+@keyframes chestWobble {
+  0%, 100% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(4deg) scale(1.08); }
+}
+
+.golden-chest-pill {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #92400e;
+}
+
+.chest-keys-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.chest-key-btn {
+  appearance: none;
+  min-height: 92px;
+  border-radius: 24px;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%);
+  box-shadow: 0 6px 0 #eab308, 0 10px 18px rgba(202, 138, 4, 0.2);
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.chest-key-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.04);
+}
+
+/* 5. 🃏 3D Magic Flip-Card Memory Arena (魔法翻翻牌 — Flat Z=0 Hit Plane for 100% Safari Clickability!) */
+.memory-arena-stage {
+  border-radius: 26px;
+  border: 3px solid #ffffff;
+  background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 52%, #e0f2fe 100%);
+  padding: 12px 14px 16px;
+  box-shadow: inset 0 3px 12px rgba(255, 255, 255, 0.9), 0 10px 24px rgba(124, 58, 237, 0.2);
+}
+
+.memory-status-bar {
+  width: fit-content;
+  margin: 0 auto 12px;
+  background: #ffffff;
+  color: #5b21b6;
+  border: 2px solid #c4b5fd;
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  box-shadow: 0 3px 0 #a78bfa;
+  text-align: center;
+}
+
+.memory-grid-3x2 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.mem-card-btn {
+  appearance: none;
+  position: relative;
+  min-height: 118px;
+  border-radius: 22px;
+  border: 3px solid #ffffff;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 55%, #ec4899 100%);
+  box-shadow: 0 7px 0 #6d28d9, 0 10px 20px rgba(109, 40, 217, 0.24);
+  transition: transform 0.14s ease, box-shadow 0.16s ease, background 0.16s ease;
+  overflow: hidden;
+}
+
+.mem-card-btn:hover {
+  transform: translateY(-3px);
+}
+
+.mem-card-btn.is-face-up {
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  box-shadow: 0 7px 0 #f59e0b, 0 10px 20px rgba(245, 158, 11, 0.22);
+  animation: memCardReveal 0.24s ease-out;
+}
+
+.mem-card-btn.is-matched {
+  background: linear-gradient(180deg, #ecfdf5 0%, #bbf7d0 100%);
+  border-color: #4ade80;
+  box-shadow: 0 7px 0 #16a34a, 0 0 18px rgba(74, 222, 128, 0.5);
+  cursor: default;
+}
+
+.mem-card-btn.is-mismatch {
+  background: linear-gradient(180deg, #fff1f2 0%, #fecdd3 100%);
+  box-shadow: 0 7px 0 #e11d48;
+  animation: gentleShake 0.35s ease;
+}
+
+@keyframes memCardReveal {
+  0% { transform: scaleX(0.25) scaleY(0.96); }
+  100% { transform: scaleX(1) scaleY(1); }
+}
+
+.mem-card-inner,
+.mem-face {
+  pointer-events: none;
+}
+
+.mem-card-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 112px;
+  padding: 10px 8px;
+}
+
+.mem-face-back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.mem-face-front {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.mem-card-btn.is-face-up .mem-face-back {
+  display: none;
+}
+
+.mem-card-btn.is-face-up .mem-face-front {
+  display: flex;
+}
+
+.mem-back-star {
+  font-size: 2.3rem;
+  line-height: 1;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+}
+
+.mem-back-sub {
+  font-size: 1rem;
+}
+
+.mem-k2-hanzi {
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: #be123c;
+  line-height: 1.08;
+}
+
+.mem-k2-pic {
+  font-size: 2.35rem;
+  line-height: 1;
+}
+
+.mem-g-text {
+  font-size: 1.24rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.42;
+  text-align: center;
+}
+
+/* 6. 🛸 UFO Space Crystal Laser Zapper (飛碟除蟲砲) */
+.typo-step-banner.laser-theme {
+  background: linear-gradient(90deg, #e0f2fe 0%, #ede9fe 100%);
+  color: #1e3a8a;
+  border: 2px solid #7dd3fc;
+}
+
+.ufo-laser-arena {
+  border-radius: 26px;
+  border: 3px solid #7dd3fc;
+  background: radial-gradient(circle at 50% 15%, #312e81 0%, #0f172a 100%);
+  padding: 14px 16px 18px;
+  box-shadow: inset 0 2px 16px rgba(56, 189, 248, 0.45), 0 10px 24px rgba(15, 23, 42, 0.35);
+}
+
+.ufo-ship-header {
+  width: fit-content;
+  margin: 0 auto 14px;
+  background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 0.94rem;
+  font-weight: 900;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.55);
+  animation: dartBob 2s ease-in-out infinite;
+}
+
+.ufo-crystals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(96px, 1fr));
+  gap: 12px;
+}
+
+.ufo-crystal-btn {
+  appearance: none;
+  min-height: 108px;
+  border-radius: 22px;
+  border: 2.5px solid #7dd3fc;
+  cursor: pointer;
+  touch-action: manipulation;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(180deg, rgba(224, 242, 254, 0.96) 0%, rgba(186, 230, 253, 0.92) 100%);
+  box-shadow: 0 6px 0 #0284c7, 0 0 18px rgba(56, 189, 248, 0.45);
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.ufo-crystal-btn:hover {
+  transform: translateY(-4px) scale(1.04);
+  filter: brightness(1.07);
+}
+
+.ufo-crystal-gem {
+  font-size: 1.55rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.ufo-crystal-char {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.1;
+  pointer-events: none;
+}
+
+/* Correct / Wrong feedback states for all new arcade buttons */
+.claw-capsule-btn.correct-pick,
+.fish-swim-btn.correct-pick,
+.dino-food-btn.correct-pick,
+.chest-key-btn.correct-pick,
+.ufo-crystal-btn.correct-pick {
+  background: linear-gradient(180deg, #dcfce7 0%, #86efac 100%) !important;
+  border-color: #22c55e !important;
+  box-shadow: 0 6px 0 #15803d, 0 0 18px rgba(74, 222, 128, 0.65) !important;
+}
+
+.claw-capsule-btn.wrong-pick,
+.fish-swim-btn.wrong-pick,
+.dino-food-btn.wrong-pick,
+.chest-key-btn.wrong-pick,
+.ufo-crystal-btn.wrong-pick {
+  background: linear-gradient(180deg, #ffe4e6 0%, #fecdd3 100%) !important;
+  border-color: #f43f5e !important;
+  box-shadow: 0 6px 0 #be123c !important;
+  opacity: 0.78;
+}
+
+@media (max-width: 680px) {
+  .claw-capsules-grid,
+  .fish-pond-grid,
+  .dino-food-grid,
+  .chest-keys-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .claw-capsule-btn,
+  .fish-swim-btn,
+  .dino-food-btn,
+  .chest-key-btn {
+    min-height: 76px;
+    padding: 10px 12px;
+  }
+  .arcade-opt-content {
+    font-size: 1.08rem;
+  }
+  .arcade-k2-pure-hanzi {
+    font-size: 1.95rem;
+  }
+  .memory-grid-3x2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+  }
+  .mem-card-btn {
+    min-height: 98px;
+  }
+  .mem-card-inner {
+    min-height: 92px;
+  }
+  .mem-k2-hanzi {
+    font-size: 2.2rem;
+  }
+  .mem-g-text {
+    font-size: 1.08rem;
+  }
+  .ufo-crystals-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .trail-node {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+  }
+}
 

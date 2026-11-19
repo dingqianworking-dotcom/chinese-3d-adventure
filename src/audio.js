@@ -76,7 +76,7 @@ const ZHUYIN_SYLLABLE_TO_HANZI = {
   'ㄩˊ': '魚', 'ㄩˇ': '雨', 'ㄩㄝˋ': '月', 'ㄩㄥˇ': '泳',
 };
 
-const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣]/gu;
+const EMOJI_STRIP_RE = /[🫧🔍🧩🚂⚡🐉🏆✨💎⭐🎯🔊👆⭕❌□🐛💮🚃🎉💡🎁🔥🧪🔨👑🏡🐰🐶🐥⛰️🌿🌙🌳👨🏃👩🚪🐴🌬️🐘🐮🐦👋😄🦒👄🔓🌸🦆🦢❤️🦋🐱🌤️🧍🐑👂⬆️⬇️🌧️💖🐜🔟1️⃣2️⃣3️⃣4️⃣5️⃣7️⃣🕹️🎣🦖🃏🗝️🛸🍩🍔🍓🍕🐠🐡🐟🐬🔮🧰🦾🪝💦😋]/gu;
 const ZHUYIN_TOKEN_RE = /(?:˙)?[\u3105-\u3129]+(?:[ˊˇˋ˙])?/g;
 const PURE_PUNCT_RE = /^[\s，。！？、；：「」『』（）()—…,.!?;:'"]+$/;
 
@@ -312,6 +312,45 @@ class SoundEngine {
 
   playMolePop() {
     this.tone(330, 0.08, 'sine', 0.12, 0, 660);
+  }
+
+  playClawGrab() {
+    this.tone(240, 0.12, 'triangle', 0.13, 0, 340);
+    this.tone(460, 0.12, 'sine', 0.14, 0.11, 250);
+    this.tone(659.25, 0.14, 'triangle', 0.16, 0.22, 987.77);
+  }
+
+  playFishSplash() {
+    this.tone(720, 0.09, 'sine', 0.13, 0, 320);
+    [290, 440, 660, 880].forEach((n, i) => this.tone(n, 0.075, 'sine', 0.14, 0.08 + i * 0.04, n * 1.35));
+  }
+
+  playDinoChomp(isYum = true) {
+    this.tone(360, 0.08, 'sine', 0.13, 0, 640);
+    this.tone(190, 0.08, 'triangle', 0.22, 0.11, 95);
+    this.tone(210, 0.08, 'triangle', 0.2, 0.19, 105);
+    if (isYum) {
+      this.tone(587.33, 0.11, 'sine', 0.16, 0.25, 880);
+    }
+  }
+
+  playCardFlip() {
+    this.tone(460, 0.065, 'triangle', 0.12, 0, 760);
+  }
+
+  playPairMatch() {
+    [587.33, 783.99, 1174.66].forEach((n, i) => this.tone(n, 0.12, 'triangle', 0.16, i * 0.05));
+  }
+
+  playKeyUnlock() {
+    this.tone(660, 0.08, 'triangle', 0.15, 0, 880);
+    this.tone(523.25, 0.09, 'sine', 0.16, 0.09, 1046.5);
+    this.tone(1318.5, 0.16, 'triangle', 0.18, 0.17);
+  }
+
+  playUfoLaser() {
+    this.tone(1180, 0.12, 'sawtooth', 0.11, 0, 280);
+    this.tone(880, 0.11, 'sine', 0.15, 0.12, 1480);
   }
 
   playSparkleBurst() {

@@ -59,6 +59,131 @@ const LESSON_FX_CONFIG = {
   g2_L12: { action: '🌈 點彩虹瀑布', cheer: '🌈 大自然真美！', emojis: ['🌈', '🦋', '🌿', '💧', '✨'], colors: ['#ef4444', '#fde047', '#38bdf8', '#4ade80'], floatUp: true },
 };
 
+const ARCADE_META = {
+  dart:       { icon: '🎯', badge: '🎯 神準射飛鏢' },
+  bubble_pop: { icon: '🫧', badge: '🫧 奇幻戳泡泡' },
+  alchemy:    { icon: '🧪', badge: '🧪 魔法組字鍋' },
+  claw:       { icon: '🕹️', badge: '🕹️ 奇幻夾娃娃' },
+  fish:       { icon: '🎣', badge: '🎣 星光釣魚池' },
+  feed:       { icon: '🦖', badge: '🦖 貪吃小恐龍' },
+  memory:     { icon: '🃏', badge: '🃏 3D 魔法翻翻牌' },
+  mole:       { icon: '🔨', badge: '🔨 草原打地鼠' },
+  typo_laser: { icon: '🛸', badge: '🛸 飛碟除蟲砲' },
+  chest_lock: { icon: '🗝️', badge: '🗝️ 黃金寶箱鎖' },
+  train:      { icon: '🚂', badge: '🚂 彩虹語句火車' },
+  judge:      { icon: '⚡', badge: '⚡ 正義雷霆審判' },
+};
+
+const K2_TYPE_TO_MODE = {
+  k2_dart: 'dart',
+  k2_bubble: 'bubble_pop',
+  k2_spell: 'alchemy',
+  k2_claw: 'claw',
+  k2_fish: 'fish',
+  k2_feed: 'feed',
+  k2_match: 'memory',
+  k2_mole: 'mole',
+  k2_chest: 'chest_lock',
+};
+
+function assignArcadeModes(questions) {
+  const used = new Set();
+  const deferred = [];
+
+  // Pass 1: Assign signature primary modes
+  questions.forEach((q, idx) => {
+    let mode = null;
+    if (K2_TYPE_TO_MODE[q.type]) {
+      mode = K2_TYPE_TO_MODE[q.type];
+    } else if (q.type === 'k2_sound') {
+      mode = !used.has('dart') ? 'dart' : 'bubble_pop';
+    } else if (q.type === 'k2_bridge') {
+      mode = !used.has('fish') ? 'fish' : 'feed';
+    } else if (q.type === 'memory') {
+      mode = 'memory';
+    } else if (q.type === 'train') {
+      mode = 'train';
+    } else if (q.type === 'judge') {
+      mode = 'judge';
+    } else if (q.type === 'typo') {
+      if (!used.has('mole')) mode = 'mole';
+      else if (!used.has('typo_laser')) mode = 'typo_laser';
+      else mode = idx % 2 === 0 ? 'mole' : 'typo_laser';
+    } else if (q.type === 'alchemy') {
+      if (!used.has('alchemy')) mode = 'alchemy';
+      else deferred.push(q);
+    } else if (q.type === 'bubble') {
+      if (!used.has('dart')) mode = 'dart';
+      else if (!used.has('bubble_pop')) mode = 'bubble_pop';
+      else deferred.push(q);
+    } else {
+      deferred.push(q);
+    }
+
+    if (mode) {
+      q._arcadeMode = mode;
+      used.add(mode);
+    }
+  });
+
+  // Pass 2: Assign deferred questions (quiz, 2nd+ alchemy, 3rd+ bubble)
+  // Place long-option questions first so they claim wide 2x2 card modes (claw, fish, feed, chest_lock),
+  // leaving mole/bubble_pop/dart for short-option questions!
+  const sortedDeferred = [...deferred].sort((a, b) => {
+    const maxA = Math.max(0, ...(a.options || []).map((o) => String(o).length));
+    const maxB = Math.max(0, ...(b.options || []).map((o) => String(o).length));
+    return maxB - maxA;
+  });
+
+  sortedDeferred.forEach((q, dIdx) => {
+    const maxLen = Math.max(0, ...(q.options || []).map((o) => String(o).length));
+    let pool;
+    if (q.type === 'bubble') {
+      pool = ['claw', 'fish', 'chest_lock', 'feed', 'dart', 'bubble_pop'];
+    } else if (maxLen > 5) {
+      pool = ['claw', 'fish', 'feed', 'chest_lock'];
+    } else {
+      pool = ['claw', 'fish', 'feed', 'chest_lock', 'mole', 'bubble_pop', 'dart'];
+    }
+    let picked = pool.find((m) => !used.has(m));
+    if (!picked) {
+      picked = pool[dIdx % pool.length];
+    }
+    q._arcadeMode = picked;
+    used.add(picked);
+  });
+
+  // Final pass: prevent adjacent identical arcade modes in Boss/Custom 12-question sessions & attach badges
+  for (let i = 0; i < questions.length; i++) {
+    const q = questions[i];
+    if (i > 0 && q._arcadeMode === questions[i - 1]._arcadeMode) {
+      const swapIdx = questions.findIndex((other, j) => j > i && other._arcadeMode !== q._arcadeMode);
+      if (swapIdx !== -1) {
+        [questions[i], questions[swapIdx]] = [questions[swapIdx], questions[i]];
+      }
+    }
+  }
+
+  questions.forEach((q) => {
+    const m = q._arcadeMode || 'claw';
+    const meta = ARCADE_META[m] || ARCADE_META.claw;
+    q._arcadeIcon = meta.icon;
+    if (q.id && q.id.startsWith('k2_') && q.modeBadge) {
+      q._arcadeBadge = q.modeBadge;
+    } else if (q.type === 'typo' && m === 'mole') {
+      q._arcadeBadge = '🔍 抓蟲打地鼠';
+    } else if (q.type === 'typo' && m === 'typo_laser') {
+      q._arcadeBadge = '🛸 飛碟除蟲砲';
+    } else if (q.type === 'alchemy' && m === 'alchemy') {
+      q._arcadeBadge = '🧪 魔法組字鍋';
+    } else {
+      q._arcadeBadge = meta.badge;
+    }
+  });
+
+  return questions;
+}
+
 class ChineseAdventureApp {
   constructor() {
     this.sound = new SoundEngine();
@@ -204,11 +329,18 @@ class ChineseAdventureApp {
 
   fmtText(text, q = null) {
     if (!text) return '';
-    let exclude = '';
+    let exclude = (q && q.excludeChars) || '';
     if (q && q.type === 'bubble') {
-      exclude = (q.targetHighlight || '') + ((q.prompt || '').match(/[「『]([^」』]+)[」』]/g) || []).join('');
+      exclude += (q.targetHighlight || '') + ((q.prompt || '').match(/[「『]([^」』]+)[」』]/g) || []).join('');
     }
     return annotateZhuyin(text, this.state.showZhuyin, exclude);
+  }
+
+  getLessonArcadeIcons(lesson) {
+    if (!lesson || !Array.isArray(lesson.questions)) return [];
+    const clones = lesson.questions.map((q) => ({ ...q }));
+    assignArcadeModes(clones);
+    return clones.map((q) => ({ icon: q._arcadeIcon, badge: q._arcadeBadge }));
   }
 
   getLessons(grade = this.state.grade) {
@@ -261,7 +393,10 @@ class ChineseAdventureApp {
     requestAnimationFrame(() => {
       const target = document.getElementById('feedback-zone') || document.getElementById('train-retry-msg');
       if (target && typeof target.scrollIntoView === 'function') {
-        target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const rect = target.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight - 8 || rect.top < 0) {
+          target.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+        }
       }
     });
   }
@@ -454,10 +589,39 @@ class ChineseAdventureApp {
       q.caughtBug = false;
       q.wrongTaps = 0;
     }
+    if ((q.type === 'memory' || q.type === 'k2_match') && Array.isArray(q.pairs)) {
+      const cards = [];
+      q.pairs.forEach((pair, pIdx) => {
+        pair.forEach((side, sIdx) => {
+          const uid = `${pIdx}_${sIdx}`;
+          if (side && typeof side === 'object') {
+            if (side.hanzi) {
+              cards.push({ uid, pairId: pIdx, kind: 'k2_hanzi', hanzi: side.hanzi, tts: side.tts || side.hanzi, flipped: false, matched: false, mismatch: false });
+            } else {
+              cards.push({ uid, pairId: pIdx, kind: 'k2_pic_zy', pic: side.pic || '🌟', zy: side.zy || '', tts: side.tts || side.zy || '', flipped: false, matched: false, mismatch: false });
+            }
+          } else {
+            const txt = String(side || '');
+            cards.push({ uid, pairId: pIdx, kind: 'text', text: txt, tts: txt, flipped: false, matched: false, mismatch: false });
+          }
+        });
+      });
+      let shufCards = shuffle(cards);
+      if (shufCards.length >= 4 && shufCards[0].pairId === shufCards[1].pairId && shufCards[2].pairId === shufCards[3].pairId) {
+        [shufCards[1], shufCards[2]] = [shufCards[2], shufCards[1]];
+      }
+      q.memCards = shufCards;
+      q.memMatched = 0;
+      q.memPeeking = true;
+      q._peekTimerSet = false;
+      q._memFlippedIds = [];
+      q._memLock = false;
+    }
     return q;
   }
 
   launchSession(cfg) {
+    assignArcadeModes(cfg.questions || []);
     this.session = {
       ...cfg,
       index: 0,
@@ -590,13 +754,13 @@ class ChineseAdventureApp {
 
       // Store clean copy into mistake vault for targeted review!
       const cleanCopy = { ...q };
-      delete cleanCopy.shuffledOptions;
-      delete cleanCopy.poolCarriages;
-      delete cleanCopy.hooked;
-      delete cleanCopy.trainRetries;
-      delete cleanCopy.trainRetryMsg;
-      delete cleanCopy.caughtBug;
-      delete cleanCopy.wrongTaps;
+      [
+        'shuffledOptions', 'poolCarriages', 'hooked', 'trainRetries', 'trainRetryMsg',
+        'caughtBug', 'wrongTaps', '_arcadeMode', '_arcadeIcon', '_arcadeBadge',
+        '_dartFlying', '_moleWhacking', '_clawBusy', '_fishBusy', '_feedBusy',
+        '_chestBusy', '_laserBusy', 'memCards', 'memMatched', 'memPeeking',
+        '_peekTimerSet', '_memFlippedIds', '_memLock',
+      ].forEach((k) => { delete cleanCopy[k]; });
       this.state.mistakes[q.id] = cleanCopy;
 
       if (this.state.autoRead) {
@@ -624,6 +788,10 @@ class ChineseAdventureApp {
       s.pickedValue = null;
       s.justOpenedChest = 0;
       this.render();
+      const deck = document.getElementById('command-deck');
+      if (deck && deck.getBoundingClientRect().top < 0) {
+        deck.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
       this.autoSpeakCurrent();
     } else {
       this.finishSession();
@@ -977,16 +1145,31 @@ class ChineseAdventureApp {
       </div>
 
       ${isK2 ? `
-        <div class="k2-step-ribbon" aria-label="中班四步慢慢認國字">
-          <span class="k2-step-chip">🎯 聽音認 ${renderVerticalZhuyin('ㄅ', 'inline')}${renderVerticalZhuyin('ㄆ', 'inline')}${renderVerticalZhuyin('ㄇ', 'inline')}</span>
-          <span class="k2-step-arrow">➔</span>
-          <span class="k2-step-chip">🧪 拼音變國字</span>
-          <span class="k2-step-arrow">➔</span>
-          <span class="k2-step-chip">🧩 注音陪讀</span>
-          <span class="k2-step-arrow">➔</span>
-          <span class="k2-step-chip">🔨 敲地鼠認國字</span>
+        <div class="k2-step-ribbon" aria-label="中班每關9種遊樂場玩法">
+          <span class="k2-step-chip">🎯 射飛鏢</span>
+          <span class="k2-step-chip">🫧 戳泡泡</span>
+          <span class="k2-step-chip">🧪 拼音鍋</span>
+          <span class="k2-step-chip">🕹️ 夾娃娃</span>
+          <span class="k2-step-chip">🎣 釣小魚</span>
+          <span class="k2-step-chip">🦖 餵恐龍</span>
+          <span class="k2-step-chip">🃏 翻翻牌</span>
+          <span class="k2-step-chip">🔨 打地鼠</span>
+          <span class="k2-step-chip">🗝️ 開寶箱</span>
         </div>
-      ` : ''}
+      ` : `
+        <div class="k2-step-ribbon grade-arcade-ribbon" aria-label="每課9種不同闖關遊戲">
+          <span class="k2-step-chip">✨ 每課 9 種不同玩法：</span>
+          <span class="k2-step-chip">🎯 飛鏢</span>
+          <span class="k2-step-chip">🕹️ 夾娃娃</span>
+          <span class="k2-step-chip">🎣 釣魚</span>
+          <span class="k2-step-chip">🦖 餵恐龍</span>
+          <span class="k2-step-chip">🃏 翻翻牌</span>
+          <span class="k2-step-chip">🔨 打地鼠</span>
+          <span class="k2-step-chip">🛸 飛碟砲</span>
+          <span class="k2-step-chip">🚂 火車</span>
+          <span class="k2-step-chip">🗝️ 寶箱鎖</span>
+        </div>
+      `}
 
       <div class="review-hero-strip">
         <div class="hero-action-card boss-card">
@@ -1026,6 +1209,9 @@ class ChineseAdventureApp {
       const st = this.state.stars[l.id] || 0;
       const thumbSrc = (window.__ART__ && window.__ART__.lessons && window.__ART__.lessons[l.id]) || '';
       const isLessonK2 = l.id.startsWith('k2_');
+      const arcadeStripHtml = this.getLessonArcadeIcons(l)
+        .map((m) => `<span class="arcade-mini-dot" title="${escapeHtml(m.badge)}">${m.icon}</span>`)
+        .join('');
       const card = document.createElement('div');
       card.className = 'lesson-card lesson-card-3d';
       card.id = `card-${l.id}`;
@@ -1040,6 +1226,7 @@ class ChineseAdventureApp {
         </div>
         <div class="lesson-card-body">
           <h3 class="lesson-name">${this.fmtText(l.title)}</h3>
+          <div class="lesson-arcade-strip" aria-label="本課9種闖關玩法">${arcadeStripHtml}</div>
           <div class="lesson-btn-row">
             <button type="button" class="toy-btn sun sm" id="study-${l.id}" style="white-space:nowrap;">${isLessonK2 ? '📖 圖卡' : '📖 課文'}</button>
             <button type="button" class="toy-btn primary sm" id="play-${l.id}" style="white-space:nowrap;">▶️ 玩！</button>
@@ -1228,6 +1415,14 @@ class ChineseAdventureApp {
     const pct = Math.round(((s.index + (s.answered ? 1 : 0)) / s.questions.length) * 100);
     const chest3Done = Boolean(s.chestsClaimed[3]);
     const chest6Done = Boolean(s.chestsClaimed[6]);
+    const trailHtml = s.questions.map((sq, idx) => {
+      const cls = idx < s.index || (idx === s.index && s.answered)
+        ? 'done'
+        : idx === s.index
+          ? 'current'
+          : 'upcoming';
+      return `<span class="trail-node ${cls}" title="第 ${idx + 1} 關：${escapeHtml(sq._arcadeBadge || '')}">${sq._arcadeIcon || '🌟'}</span>`;
+    }).join('');
 
     deck.innerHTML = `
       <div class="play-top-row">
@@ -1244,9 +1439,11 @@ class ChineseAdventureApp {
         <button id="btn-speak-now" class="toy-btn sun sm">🔊 唸題目</button>
       </div>
 
+      <div class="arcade-stage-trail" aria-label="本課闖關玩法進度">${trailHtml}</div>
+
       <div class="question-header">
         <div style="flex:1;">
-          <span class="mode-pill">${renderVerticalZhuyin(q.modeBadge || '🌟 闖關挑戰', 'inline')}</span>
+          <span class="mode-pill">${renderVerticalZhuyin(q._arcadeBadge || q.modeBadge || '🌟 闖關挑戰', 'inline')}</span>
           <h2 class="question-prompt">${this.fmtText(q.prompt, q)}</h2>
         </div>
       </div>
@@ -1266,19 +1463,41 @@ class ChineseAdventureApp {
     if (storyBtn) storyBtn.onclick = () => this.sound.speak(q.story);
 
     const arena = document.getElementById('interactive-arena');
-    if (q.type === 'bubble') {
-      if (s.index % 2 === 0) this.renderDartMode(arena, q, s);
+    const mode = q._arcadeMode || 'claw';
+    const isK2 = Boolean(q.id && q.id.startsWith('k2_'));
+
+    if (mode === 'dart') {
+      if (isK2) this.renderK2SoundMode(arena, q, s, true);
+      else this.renderDartMode(arena, q, s);
+    } else if (mode === 'bubble_pop') {
+      if (isK2) this.renderK2SoundMode(arena, q, s, false);
       else this.renderBubbleMode(arena, q, s);
+    } else if (mode === 'alchemy') {
+      if (isK2) this.renderK2SpellMode(arena, q, s);
+      else this.renderAlchemyMode(arena, q, s);
+    } else if (mode === 'claw') {
+      this.renderClawMode(arena, q, s);
+    } else if (mode === 'fish') {
+      this.renderFishMode(arena, q, s);
+    } else if (mode === 'feed') {
+      this.renderFeedMode(arena, q, s);
+    } else if (mode === 'chest_lock') {
+      this.renderChestLockMode(arena, q, s);
+    } else if (mode === 'memory') {
+      this.renderMemoryMode(arena, q, s);
+    } else if (mode === 'mole') {
+      if (q.type === 'typo') this.renderTypoMode(arena, q, s, false);
+      else if (isK2) this.renderK2MoleMode(arena, q, s);
+      else this.renderQuizMoleMode(arena, q, s);
+    } else if (mode === 'typo_laser') {
+      this.renderTypoMode(arena, q, s, true);
+    } else if (mode === 'train') {
+      this.renderTrainMode(arena, q, s);
+    } else if (mode === 'judge') {
+      this.renderJudgeMode(arena, q, s);
+    } else {
+      this.renderClawMode(arena, q, s);
     }
-    else if (q.type === 'k2_sound') this.renderK2SoundMode(arena, q, s);
-    else if (q.type === 'k2_spell') this.renderK2SpellMode(arena, q, s);
-    else if (q.type === 'k2_bridge') this.renderK2BridgeMode(arena, q, s);
-    else if (q.type === 'k2_mole') this.renderK2MoleMode(arena, q, s);
-    else if (q.type === 'typo') this.renderTypoMode(arena, q, s);
-    else if (q.type === 'alchemy') this.renderAlchemyMode(arena, q, s);
-    else if (q.type === 'train') this.renderTrainMode(arena, q, s);
-    else if (q.type === 'judge') this.renderJudgeMode(arena, q, s);
-    else this.renderQuizMode(arena, q, s);
 
     if (s.answered) {
       const fb = document.getElementById('feedback-zone');
@@ -1303,37 +1522,568 @@ class ChineseAdventureApp {
     }
   }
 
-  renderDartMode(arena, q, s) {
-    const highlighted = q.targetHighlight
-      ? escapeHtml(q.targetHighlight).replace(/([「『][^」』]+[」』])/g, '<span class="muted-char-focus">$1</span>')
-      : '';
-    arena.innerHTML = `
-      ${highlighted ? `
+  renderArcadeContextBanner(q, s) {
+    const isK2 = Boolean(q.id && q.id.startsWith('k2_'));
+    if (isK2 && q.fixedPart && q.resultChar) {
+      const firstIsMissing = q.missingPos === 'first';
+      const fixedSlotHtml = `<button type="button" class="alchemy-slot k2-zy-slot k2-fixed-tap" id="btn-k2-fixed-zy" title="點我聽注音發音">${renderVerticalZhuyin(q.fixedPart, 'bubble')}</button>`;
+      const mysterySlotHtml = `<div class="alchemy-slot k2-zy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? renderVerticalZhuyin(q.answer, 'bubble') : '？'}</div>`;
+      const slot1Html = firstIsMissing ? mysterySlotHtml : fixedSlotHtml;
+      const slot2Html = !firstIsMissing ? mysterySlotHtml : fixedSlotHtml;
+      const toneHtml = q.toneLabel ? `<span class="k2-tone-pill">${escapeHtml(q.toneLabel)}</span>` : '';
+      return `
+        <div class="alchemy-arena k2-spell-arena" style="margin-bottom:10px;">
+          <button type="button" class="k2-hero-clue-card compact" id="btn-k2-clue" title="點我聽拼音提示！">
+            <span class="k2-clue-pic">${escapeHtml(q.pic || '🕹️')}</span>
+            <span class="k2-speak-tag">🔊 點聽拼音</span>
+          </button>
+          <div class="alchemy-formula">
+            ${slot1Html}
+            <div class="alchemy-plus">＋</div>
+            ${slot2Html}
+            ${toneHtml}
+            <div class="alchemy-plus">＝</div>
+            <button type="button" class="alchemy-slot k2-hanzi-goal ${s.answered ? 'result-forged' : ''}" id="btn-k2-goal-hanzi" title="點我聽國字發音">
+              ${s.answered ? renderCharWithZhuyin(q.resultChar, q.fullZhuyin, 'k2ruby') : escapeHtml(q.resultChar)}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    if (isK2 && q.pic) {
+      return `
+        <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點圖再聽一次！">
+          <span class="k2-clue-pic">${escapeHtml(q.pic)}</span>
+          ${q.charFocus ? `<span class="k2-clue-hanzi">${escapeHtml(q.charFocus)}</span>` : ''}
+          ${q.hintZhuyin ? `<span class="k2-mole-zy-badge">${renderVerticalZhuyin(q.hintZhuyin, 'bubble')}</span>` : ''}
+          <span class="k2-speak-tag">🔊 點聽聲音</span>
+        </button>
+      `;
+    }
+    if (q.type === 'bubble' && q.targetHighlight) {
+      const highlighted = escapeHtml(q.targetHighlight).replace(/([「『][^」』]+[」』])/g, '<span class="muted-char-focus">$1</span>');
+      return `
         <div class="target-word-banner">
           <div class="muted-hint-chip">🔇 自己讀！</div>
           <div class="target-word-main">${highlighted}</div>
         </div>
-      ` : ''}
+      `;
+    }
+    if (q.type === 'alchemy' && q.basePart) {
+      const isVertical = q.position === 'top';
+      const formulaHtml = isVertical
+        ? `
+          <div class="alchemy-formula">
+            <div class="alchemy-stack" title="上下疊合結構">
+              <div class="alchemy-slot">${escapeHtml(q.basePart)}</div>
+              <div class="alchemy-plus">＋</div>
+              <div class="alchemy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? escapeHtml(q.answer) : '？'}</div>
+            </div>
+            <div class="alchemy-plus">＝</div>
+            <div class="alchemy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? escapeHtml(q.resultChar) : '✨'}</div>
+          </div>
+        `
+        : `
+          <div class="alchemy-formula">
+            <div class="alchemy-slot">${escapeHtml(q.basePart)}</div>
+            <div class="alchemy-plus">＋</div>
+            <div class="alchemy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? escapeHtml(q.answer) : '？'}</div>
+            <div class="alchemy-plus">＝</div>
+            <div class="alchemy-slot ${s.answered ? 'result-forged' : 'mystery'}">${s.answered ? escapeHtml(q.resultChar) : '✨'}</div>
+          </div>
+        `;
+      return `
+        <div class="alchemy-arena" style="margin-bottom:10px;">
+          <div style="font-weight:800;color:#475569;font-size:0.95rem;">
+            💡 造詞提示：${this.fmtText(q.wordHint, q)} ${isVertical ? '（上下疊合）' : '（左右組合）'}
+          </div>
+          ${formulaHtml}
+        </div>
+      `;
+    }
+    return '';
+  }
+
+  bindArcadeContextBanner(q) {
+    const clueBtn = document.getElementById('btn-k2-clue');
+    if (clueBtn) {
+      clueBtn.onclick = () => {
+        this.sound.playPop();
+        this.sound.speak(q.tts || q.resultChar || q.charFocus || q.answer);
+      };
+    }
+    const fixedBtn = document.getElementById('btn-k2-fixed-zy');
+    if (fixedBtn) {
+      fixedBtn.onclick = () => {
+        this.sound.speak(Array.from(q.fixedPart || '').join('、'));
+      };
+    }
+    const goalBtn = document.getElementById('btn-k2-goal-hanzi');
+    if (goalBtn) {
+      goalBtn.onclick = () => {
+        this.sound.speak(q.resultChar);
+      };
+    }
+  }
+
+  populateArcadeOption(btn, opt, q, leadEmoji = '') {
+    const isPureZhuyin = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
+    const isK2 = Boolean(q.id && q.id.startsWith('k2_'));
+    let bodyHtml = '';
+    let allowSpeakChip = false;
+
+    if (isPureZhuyin) {
+      bodyHtml = renderVerticalZhuyin(opt, 'bubble');
+      allowSpeakChip = isK2;
+    } else if (q.optZhuyin && q.optZhuyin[opt]) {
+      bodyHtml = renderCharWithZhuyin(opt, q.optZhuyin[opt], 'k2ruby');
+      allowSpeakChip = true;
+    } else if (isK2) {
+      bodyHtml = `<span class="arcade-k2-pure-hanzi">${escapeHtml(opt)}</span>`;
+      allowSpeakChip = false;
+    } else {
+      bodyHtml = this.fmtText(opt, q);
+      allowSpeakChip = q.type !== 'bubble';
+    }
+
+    btn.innerHTML = `
+      ${leadEmoji ? `<span class="arcade-opt-emblem">${leadEmoji}</span>` : ''}
+      <span class="arcade-opt-content">${bodyHtml}</span>
+      ${allowSpeakChip ? `<span role="button" tabindex="0" class="opt-speak-chip" title="聽發音">🔊</span>` : ''}
+    `;
+
+    const spk = btn.querySelector('.opt-speak-chip');
+    if (spk) {
+      spk.onclick = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.sound.speak(opt);
+      };
+    }
+  }
+
+  renderClawMode(arena, q, s) {
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="claw-machine-stage" id="claw-stage">
+        <div class="claw-top-rail">
+          <span class="claw-rail-title">🕹️ 點扭蛋球下爪夾起來！</span>
+        </div>
+        <div class="claw-gantry-zone">
+          <div class="claw-carriage" id="claw-carriage" style="--claw-x: 50%;">
+            <div class="claw-motor">🕹️</div>
+            <div class="claw-cable"></div>
+            <div class="claw-prongs">🦾</div>
+          </div>
+        </div>
+        <div class="claw-capsules-grid" id="claw-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const stage = document.getElementById('claw-stage');
+    const carriage = document.getElementById('claw-carriage');
+    const grid = document.getElementById('claw-grid');
+    const capIcons = ['🔴', '🔵', '🟡', '🟢'];
+
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `claw-capsule-btn cap-${idx % 4}`;
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      this.populateArcadeOption(btn, opt, q, capIcons[idx % 4]);
+
+      btn.onpointerenter = (e) => {
+        if (s.answered || q._clawBusy || (e && e.pointerType && e.pointerType !== 'mouse')) return;
+        if (stage && carriage) {
+          const sr = stage.getBoundingClientRect();
+          const br = btn.getBoundingClientRect();
+          const pctX = Math.max(18, Math.min(82, ((br.left + br.width / 2 - sr.left) / Math.max(1, sr.width)) * 100));
+          carriage.style.setProperty('--claw-x', `${pctX.toFixed(1)}%`);
+        }
+      };
+
+      btn.onclick = () => {
+        if (s.answered || q._clawBusy) return;
+        q._clawBusy = true;
+        this.sound.playClawGrab();
+        const br = btn.getBoundingClientRect();
+        if (stage && carriage) {
+          const sr = stage.getBoundingClientRect();
+          const pctX = Math.max(18, Math.min(82, ((br.left + br.width / 2 - sr.left) / Math.max(1, sr.width)) * 100));
+          carriage.style.setProperty('--claw-x', `${pctX.toFixed(1)}%`);
+          carriage.classList.add('grabbing');
+        }
+        btn.classList.add('grabbed-lift');
+        this.fx.multiRipple(br.left + br.width / 2, br.top + br.height / 2, ['#fde047', '#38bdf8', '#fb7185']);
+        setTimeout(() => {
+          q._clawBusy = false;
+          this.handleAnswer(opt === q.answer, opt);
+        }, 340);
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  renderFishMode(arena, q, s) {
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="fish-pond-stage">
+        <div class="fish-dock-bar" id="fish-dock">
+          <span>🎣 點小魚甩竿釣上岸！</span>
+        </div>
+        <div class="fish-pond-grid" id="fish-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const dock = document.getElementById('fish-dock');
+    const grid = document.getElementById('fish-grid');
+    const fishIcons = ['🐠', '🐡', '🐟', '🐬'];
+
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `fish-swim-btn f-${idx % 4}`;
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      const fEmoji = fishIcons[idx % 4];
+      this.populateArcadeOption(btn, opt, q, fEmoji);
+
+      btn.onclick = () => {
+        if (s.answered || q._fishBusy) return;
+        q._fishBusy = true;
+        btn.classList.add('hooked');
+        this.sound.playFishSplash();
+        const br = btn.getBoundingClientRect();
+        const dr = dock ? dock.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        const fromX = br.left + br.width / 2;
+        const fromY = br.top + br.height / 2;
+        const toX = dr.left + dr.width / 2;
+        const toY = dr.top + dr.height / 2;
+        this.fx.multiRipple(fromX, fromY, ['#38bdf8', '#bae6fd', '#ffffff']);
+        this.fx.flyItem(fromX, fromY, toX, toY, fEmoji, '#38bdf8', () => {
+          q._fishBusy = false;
+          this.handleAnswer(opt === q.answer, opt);
+        }, 72);
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  renderFeedMode(arena, q, s) {
+    const dinoMood = s.answered
+      ? (s.isCorrect ? '😋 嗷嗚～超好吃！' : '😵 咦？味道怪怪的！')
+      : '😋 肚子餓～點正確點心餵我吃！';
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="dino-feeder-stage">
+        <div class="dino-pal-header ${s.answered && s.isCorrect ? 'happy-chomp' : ''}" id="dino-mouth-target">
+          <span class="dino-avatar">🦖</span>
+          <span class="dino-speech-pill">${escapeHtml(dinoMood)}</span>
+        </div>
+        <div class="dino-food-grid" id="dino-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const mouth = document.getElementById('dino-mouth-target');
+    const grid = document.getElementById('dino-grid');
+    const foodIcons = ['🍩', '🍔', '🍓', '🍕'];
+
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `dino-food-btn df-${idx % 4}`;
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      const foodEmoji = foodIcons[idx % 4];
+      this.populateArcadeOption(btn, opt, q, foodEmoji);
+
+      btn.onclick = () => {
+        if (s.answered || q._feedBusy) return;
+        q._feedBusy = true;
+        this.sound.playPop();
+        const isOk = opt === q.answer;
+        const br = btn.getBoundingClientRect();
+        const mr = mouth ? mouth.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        this.fx.flyItem(
+          br.left + br.width / 2,
+          br.top + br.height / 2,
+          mr.left + mr.width * 0.35,
+          mr.top + mr.height / 2,
+          foodEmoji,
+          '#fb923c',
+          () => {
+            q._feedBusy = false;
+            if (mouth) mouth.classList.add('happy-chomp');
+            this.sound.playDinoChomp(isOk);
+            this.handleAnswer(isOk, opt);
+          },
+          84
+        );
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  renderChestLockMode(arena, q, s) {
+    const chestLabel = s.answered && s.isCorrect
+      ? '🎊 黃金寶箱打開啦！'
+      : '🔒 選出正確魔鑰匙，打開黃金寶箱！';
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="chest-lock-stage">
+        <div class="golden-chest-box ${s.answered && s.isCorrect ? 'unlocked' : ''}" id="golden-chest-target">
+          <span class="golden-chest-icon">${s.answered && s.isCorrect ? '🎊' : '🧰'}</span>
+          <span class="golden-chest-pill">${escapeHtml(chestLabel)}</span>
+        </div>
+        <div class="chest-keys-grid" id="chest-keys-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const chest = document.getElementById('golden-chest-target');
+    const grid = document.getElementById('chest-keys-grid');
+
+    q.shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `chest-key-btn ck-${idx % 4}`;
+      btn.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) btn.classList.add('correct-pick');
+        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
+      }
+      this.populateArcadeOption(btn, opt, q, '🗝️');
+
+      btn.onclick = () => {
+        if (s.answered || q._chestBusy) return;
+        q._chestBusy = true;
+        this.sound.playTap();
+        const isOk = opt === q.answer;
+        const br = btn.getBoundingClientRect();
+        const cr = chest ? chest.getBoundingClientRect() : { left: window.innerWidth / 2, top: br.top - 90, width: 0, height: 0 };
+        this.fx.flyItem(
+          br.left + br.width / 2,
+          br.top + br.height / 2,
+          cr.left + cr.width / 2,
+          cr.top + cr.height / 2,
+          '🗝️',
+          '#facc15',
+          () => {
+            q._chestBusy = false;
+            if (isOk) this.sound.playKeyUnlock();
+            this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#fde047' : '#fb7185', 95);
+            this.handleAnswer(isOk, opt);
+          },
+          78
+        );
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  renderMemoryMode(arena, q, s) {
+    const totalPairs = (q.pairs && q.pairs.length) || 3;
+    const matchedNow = s.answered ? totalPairs : (q.memMatched || 0);
+    const statusText = s.answered
+      ? `🎉 ${totalPairs} 組魔法閃卡全部配對成功！`
+      : q.memPeeking
+        ? `👀 先偷看記位置！（直接點卡片也能馬上翻牌喔）`
+        : `🃏 點兩張配對！（已完成 ${matchedNow} / ${totalPairs} 組）`;
+
+    arena.innerHTML = `
+      <div class="memory-arena-stage">
+        <div class="memory-status-bar">${escapeHtml(statusText)}</div>
+        <div class="memory-grid-3x2" id="memory-grid"></div>
+      </div>
+    `;
+
+    if (q.memPeeking && !q._peekTimerSet && !s.answered) {
+      q._peekTimerSet = true;
+      setTimeout(() => {
+        if (this.view === 'play' && this.session && this.session.questions[this.session.index] === q && q.memPeeking) {
+          q.memPeeking = false;
+          this.render();
+        }
+      }, 900);
+    }
+
+    const grid = document.getElementById('memory-grid');
+    (q.memCards || []).forEach((card, idx) => {
+      const isFaceUp = Boolean(s.answered || q.memPeeking || card.matched || card.flipped);
+      const isMatched = Boolean(s.answered || card.matched);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.id = `mem-card-${idx}`;
+      btn.dataset.pairId = String(card.pairId);
+      btn.className = `mem-card-btn ${isFaceUp ? 'is-face-up' : ''} ${isMatched ? 'is-matched' : ''} ${card.mismatch ? 'is-mismatch' : ''}`;
+
+      let frontHtml = '';
+      if (card.kind === 'k2_hanzi') {
+        frontHtml = `<span class="mem-k2-hanzi">${escapeHtml(card.hanzi)}</span>`;
+      } else if (card.kind === 'k2_pic_zy') {
+        frontHtml = `
+          <span class="mem-k2-pic">${escapeHtml(card.pic)}</span>
+          <span class="mem-k2-zy">${renderVerticalZhuyin(card.zy, 'bubble')}</span>
+        `;
+      } else {
+        frontHtml = `<span class="mem-g-text">${this.fmtText(card.text, q)}</span>`;
+      }
+
+      btn.innerHTML = `
+        <span class="mem-card-inner">
+          <span class="mem-face mem-face-back">
+            <span class="mem-back-star">🃏</span>
+            <span class="mem-back-sub">✨</span>
+          </span>
+          <span class="mem-face mem-face-front">${frontHtml}</span>
+        </span>
+      `;
+
+      btn.onclick = () => {
+        if (s.answered || q._memLock) return;
+        if (q.memPeeking) {
+          q.memPeeking = false;
+        }
+        if (card.matched || card.flipped) return;
+
+        card.flipped = true;
+        q._memFlippedIds.push(card.uid);
+        this.sound.playCardFlip();
+        if (this.state.autoRead && card.tts) {
+          this.sound.speak(card.tts);
+        }
+
+        if (q._memFlippedIds.length === 1) {
+          this.render();
+          return;
+        }
+
+        if (q._memFlippedIds.length === 2) {
+          const [id1, id2] = q._memFlippedIds;
+          const c1 = q.memCards.find((c) => c.uid === id1);
+          const c2 = q.memCards.find((c) => c.uid === id2);
+          if (c1 && c2 && c1.pairId === c2.pairId) {
+            c1.matched = true;
+            c2.matched = true;
+            q._memFlippedIds = [];
+            q.memMatched = (q.memMatched || 0) + 1;
+            this.sound.playPairMatch();
+            const r = btn.getBoundingClientRect();
+            this.fx.confettiBurst(r.left + r.width / 2, r.top + r.height / 2, 26);
+            if (q.memMatched >= totalPairs) {
+              this.handleAnswer(true, 'paired_all');
+            } else {
+              this.render();
+            }
+          } else {
+            q._memLock = true;
+            if (c1) c1.mismatch = true;
+            if (c2) c2.mismatch = true;
+            this.render();
+            setTimeout(() => {
+              if (c1) { c1.flipped = false; c1.mismatch = false; }
+              if (c2) { c2.flipped = false; c2.mismatch = false; }
+              q._memFlippedIds = [];
+              q._memLock = false;
+              if (this.view === 'play') this.render();
+            }, 560);
+          }
+        }
+      };
+
+      grid.appendChild(btn);
+    });
+  }
+
+  renderQuizMoleMode(arena, q, s) {
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
+      <div class="mole-meadow-arena">
+        <div class="mole-arena-title">🔨 拿木槌敲出正確答案地鼠！</div>
+        <div class="mole-holes-grid" id="mole-holes-grid"></div>
+      </div>
+    `;
+    this.bindArcadeContextBanner(q);
+
+    const holes = document.getElementById('mole-holes-grid');
+    const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
+    q.shuffledOptions.forEach((opt, idx) => {
+      const hole = document.createElement('button');
+      hole.type = 'button';
+      hole.className = `mole-hole-btn m-${idx}`;
+      hole.dataset.optIdx = idx;
+      if (s.answered) {
+        if (opt === q.answer) hole.classList.add('correct-pick');
+        else if (opt === s.pickedValue) hole.classList.add('wrong-pick');
+      }
+      const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
+      const signInner = isPureZy ? renderVerticalZhuyin(opt, 'inline') : this.fmtText(opt, q);
+      hole.innerHTML = `
+        <span class="mole-hammer">🔨</span>
+        <span class="mole-critter">
+          <img class="mole-pixar-img" src="${moleSrc}" alt="地鼠" />
+          <span class="mole-sign mole-quiz-sign">${signInner}</span>
+        </span>
+        <span class="mole-mound"></span>
+      `;
+      hole.onclick = () => {
+        if (s.answered || q._moleWhacking) return;
+        q._moleWhacking = true;
+        hole.classList.add('whacking');
+        const isOk = opt === q.answer;
+        this.sound.playHammerBonk(isOk);
+        const r = hole.getBoundingClientRect();
+        this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, isOk ? '#fde047' : '#fb7185', 95);
+        this.fx.screenShake(7);
+        setTimeout(() => {
+          q._moleWhacking = false;
+          this.handleAnswer(isOk, opt);
+        }, 220);
+      };
+      holes.appendChild(hole);
+    });
+  }
+
+  renderDartMode(arena, q, s) {
+    arena.innerHTML = `
+      ${this.renderArcadeContextBanner(q, s)}
       <div class="dart-arena-box">
-        <div class="dart-arena-hint">🎯 射中正確注音！</div>
+        <div class="dart-arena-hint">🎯 射中正確答案！</div>
         <div class="dart-targets-grid" id="dart-wrap"></div>
         <div class="dart-launcher-bar" id="dart-launcher">🎯 點靶心發射！</div>
       </div>
     `;
+    this.bindArcadeContextBanner(q);
     const wrap = document.getElementById('dart-wrap');
     const launcher = document.getElementById('dart-launcher');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = `dart-target-btn d-${idx}`;
       btn.dataset.optIdx = idx;
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
+      const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
+      const coreHtml = isPureZy ? renderVerticalZhuyin(opt, 'dart') : this.fmtText(opt, q);
       btn.innerHTML = `
         <span class="dart-ring-outer">
           <span class="dart-ring-mid">
-            <span class="dart-ring-core">${renderVerticalZhuyin(opt, 'dart')}</span>
+            <span class="dart-ring-core">${coreHtml}</span>
           </span>
         </span>
       `;
@@ -1357,28 +2107,23 @@ class ChineseAdventureApp {
   }
 
   renderBubbleMode(arena, q, s) {
-    const highlighted = q.targetHighlight
-      ? escapeHtml(q.targetHighlight).replace(/([「『][^」』]+[」』])/g, '<span class="muted-char-focus">$1</span>')
-      : '';
     arena.innerHTML = `
-      ${highlighted ? `
-        <div class="target-word-banner">
-          <div class="muted-hint-chip">🔇 自己讀！</div>
-          <div class="target-word-main">${highlighted}</div>
-        </div>
-      ` : ''}
+      ${this.renderArcadeContextBanner(q, s)}
       <div class="bubbles-stage" id="bubbles-wrap"></div>
     `;
+    this.bindArcadeContextBanner(q);
     const wrap = document.getElementById('bubbles-wrap');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'bubble-opt-btn';
       btn.dataset.optIdx = idx;
       if (s.answered) {
         if (opt === q.answer) btn.classList.add('correct-pick');
         else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
       }
-      btn.innerHTML = renderVerticalZhuyin(opt, 'bubble');
+      const isPureZy = /^[\u3105-\u3129ˊˇˋ˙\s]+$/.test(String(opt));
+      btn.innerHTML = isPureZy ? renderVerticalZhuyin(opt, 'bubble') : this.fmtText(opt, q);
       btn.onclick = () => {
         if (s.answered) return;
         const r = btn.getBoundingClientRect();
@@ -1389,12 +2134,12 @@ class ChineseAdventureApp {
     });
   }
 
-  renderTypoMode(arena, q, s) {
+  renderTypoMode(arena, q, s, useLaser = false) {
     const stepText = s.answered
       ? `✅ ${q.chars.map((c, i) => (i === q.wrongIndex ? `【${q.answer}】` : c)).join('')}`
       : !q.caughtBug
-        ? '🐛 點出寫錯的字！'
-        : `🔨 敲對的字！`;
+        ? (useLaser ? '🛸 雷達掃描：點出寫錯的外星蟲字！' : '🐛 點出寫錯的字！')
+        : (useLaser ? '⚡ 發射飛碟雷射，射中正確國字水晶！' : '🔨 敲對的字！');
 
     // Count real (non-punctuation) character ordinal of wrongIndex for accurate kid hints
     let realWrongOrd = 0;
@@ -1403,12 +2148,19 @@ class ChineseAdventureApp {
     }
 
     arena.innerHTML = `
-      <div class="typo-step-banner" id="typo-banner">${escapeHtml(stepText)}</div>
+      <div class="typo-step-banner ${useLaser ? 'laser-theme' : ''}" id="typo-banner">${escapeHtml(stepText)}</div>
       <div class="typo-sentence-grid" id="typo-chars"></div>
-      <div class="mole-meadow-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
-        <div class="mole-arena-title">🔨 敲對的字！</div>
-        <div class="mole-holes-grid" id="mole-holes-grid"></div>
-      </div>
+      ${useLaser ? `
+        <div class="ufo-laser-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
+          <div class="ufo-ship-header" id="ufo-muzzle">🛸 點能量水晶發射雷射光束！</div>
+          <div class="ufo-crystals-grid" id="ufo-crystals-grid"></div>
+        </div>
+      ` : `
+        <div class="mole-meadow-arena" id="typo-stamps" style="${!q.caughtBug && !s.answered ? 'display:none;' : ''}">
+          <div class="mole-arena-title">🔨 敲對的字！</div>
+          <div class="mole-holes-grid" id="mole-holes-grid"></div>
+        </div>
+      `}
     `;
 
     const charsWrap = document.getElementById('typo-chars');
@@ -1422,6 +2174,7 @@ class ChineseAdventureApp {
       }
 
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'char-tile-btn';
       btn.id = `char-tile-${idx}`;
       if (s.answered && idx === q.wrongIndex) {
@@ -1435,10 +2188,13 @@ class ChineseAdventureApp {
         if (s.answered || q.caughtBug) return;
         if (idx === q.wrongIndex) {
           q.caughtBug = true;
-          this.sound.playMolePop();
+          if (useLaser) this.sound.playUfoLaser();
+          else this.sound.playMolePop();
           const r = btn.getBoundingClientRect();
-          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, '#4ade80', 85);
-          if (this.state.autoRead) this.sound.speak('抓到了！敲對的字！');
+          this.fx.shockwave(r.left + r.width / 2, r.top + r.height / 2, useLaser ? '#38bdf8' : '#4ade80', 85);
+          if (this.state.autoRead) {
+            this.sound.speak(useLaser ? '鎖定錯字！請發射雷射選對的字！' : '抓到了！敲對的字！');
+          }
           this.render();
         } else {
           q.wrongTaps = (q.wrongTaps || 0) + 1;
@@ -1457,11 +2213,52 @@ class ChineseAdventureApp {
       charsWrap.appendChild(btn);
     });
 
-    if (q.caughtBug || s.answered) {
+    if ((q.caughtBug || s.answered) && useLaser) {
+      const grid = document.getElementById('ufo-crystals-grid');
+      const muzzle = document.getElementById('ufo-muzzle');
+      q.shuffledOptions.forEach((opt, idx) => {
+        const cry = document.createElement('button');
+        cry.type = 'button';
+        cry.className = `ufo-crystal-btn uc-${idx % 4}`;
+        cry.dataset.optIdx = idx;
+        if (s.answered) {
+          if (opt === q.answer) cry.classList.add('correct-pick');
+          else if (opt === s.pickedValue) cry.classList.add('wrong-pick');
+        }
+        cry.innerHTML = `
+          <span class="ufo-crystal-gem">🔮</span>
+          <span class="ufo-crystal-char">${escapeHtml(opt)}</span>
+        `;
+        cry.onclick = () => {
+          if (s.answered || q._laserBusy) return;
+          q._laserBusy = true;
+          const isOk = opt === q.answer;
+          this.sound.playUfoLaser();
+          const cr = cry.getBoundingClientRect();
+          const mr = muzzle ? muzzle.getBoundingClientRect() : { left: window.innerWidth / 2, top: cr.top - 70, width: 0, height: 0 };
+          this.fx.flyItem(
+            mr.left + mr.width / 2,
+            mr.top + mr.height / 2,
+            cr.left + cr.width / 2,
+            cr.top + cr.height / 2,
+            '⚡',
+            '#38bdf8',
+            () => {
+              q._laserBusy = false;
+              this.fx.shockwave(cr.left + cr.width / 2, cr.top + cr.height / 2, isOk ? '#38bdf8' : '#fb7185', 95);
+              this.handleAnswer(isOk, opt);
+            },
+            24
+          );
+        };
+        grid.appendChild(cry);
+      });
+    } else if (q.caughtBug || s.answered) {
       const holes = document.getElementById('mole-holes-grid');
       const moleSrc = (window.__ART__ && window.__ART__.mole) || '';
       q.shuffledOptions.forEach((opt, idx) => {
         const hole = document.createElement('button');
+        hole.type = 'button';
         hole.className = `mole-hole-btn m-${idx}`;
         hole.dataset.optIdx = idx;
         if (s.answered) {
@@ -1531,6 +2328,7 @@ class ChineseAdventureApp {
     const wrap = document.getElementById('alchemy-opts');
     q.shuffledOptions.forEach((opt, idx) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'option-card-btn';
       btn.dataset.optIdx = idx;
       btn.style.fontSize = '1.48rem';
@@ -1568,6 +2366,7 @@ class ChineseAdventureApp {
     } else {
       activeList.forEach((car, hIdx) => {
         const b = document.createElement('button');
+        b.type = 'button';
         b.className = 'train-hooked-car';
         b.innerHTML = this.fmtText(car.text, q);
         if (!s.answered) {
@@ -1588,6 +2387,7 @@ class ChineseAdventureApp {
       q.poolCarriages.forEach((car, idx) => {
         if (car.used) return;
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'toy-btn primary';
         btn.dataset.optIdx = idx;
         btn.style.fontSize = '1.15rem';
@@ -1655,28 +2455,7 @@ class ChineseAdventureApp {
     noBtn.onclick = () => { if (!s.answered) this.handleAnswer(q.answer === '❌', '❌'); };
   }
 
-  renderQuizMode(arena, q, s) {
-    arena.innerHTML = `<div class="options-grid" id="quiz-opts"></div>`;
-    const wrap = document.getElementById('quiz-opts');
-    q.shuffledOptions.forEach((opt, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'option-card-btn';
-      btn.dataset.optIdx = idx;
-      if (s.answered) {
-        if (opt === q.answer) btn.classList.add('correct-pick');
-        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
-      }
-      this.attachOptionContent(btn, opt, q);
-      btn.onclick = () => {
-        if (s.answered) return;
-        this.handleAnswer(opt === q.answer, opt);
-      };
-      wrap.appendChild(btn);
-    });
-  }
-
-  renderK2SoundMode(arena, q, s) {
-    const useDart = s.index % 2 === 0;
+  renderK2SoundMode(arena, q, s, useDart = true) {
     arena.innerHTML = `
       <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點我再聽一次！">
         <span class="k2-clue-pic">${escapeHtml(q.pic || '🌟')}</span>
@@ -1778,25 +2557,7 @@ class ChineseAdventureApp {
       <div class="options-grid k2-spell-opts" id="k2-spell-opts"></div>
     `;
 
-    const clueBtn = document.getElementById('btn-k2-clue');
-    if (clueBtn) {
-      clueBtn.onclick = () => {
-        this.sound.playPop();
-        this.sound.speak(q.tts || q.resultChar);
-      };
-    }
-    const fixedBtn = document.getElementById('btn-k2-fixed-zy');
-    if (fixedBtn) {
-      fixedBtn.onclick = () => {
-        this.sound.speak(Array.from(q.fixedPart || '').join('、'));
-      };
-    }
-    const goalBtn = document.getElementById('btn-k2-goal-hanzi');
-    if (goalBtn) {
-      goalBtn.onclick = () => {
-        this.sound.speak(q.resultChar);
-      };
-    }
+    this.bindArcadeContextBanner(q);
 
     const wrap = document.getElementById('k2-spell-opts');
     q.shuffledOptions.forEach((opt, idx) => {
@@ -1811,54 +2572,6 @@ class ChineseAdventureApp {
       btn.innerHTML = `
         <span class="k2-zy-opt-center">${renderVerticalZhuyin(opt, 'bubble')}</span>
         <span role="button" tabindex="0" class="opt-speak-chip" title="聽注音發音">🔊</span>
-      `;
-      const spk = btn.querySelector('.opt-speak-chip');
-      if (spk) {
-        spk.onclick = (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          this.sound.speak(opt);
-        };
-      }
-      btn.onclick = () => {
-        if (s.answered) return;
-        this.handleAnswer(opt === q.answer, opt);
-      };
-      wrap.appendChild(btn);
-    });
-  }
-
-  renderK2BridgeMode(arena, q, s) {
-    arena.innerHTML = `
-      <button type="button" class="k2-hero-clue-card" id="btn-k2-clue" title="點圖再聽一次！">
-        <span class="k2-clue-pic giant">${escapeHtml(q.pic || '🌟')}</span>
-        <span class="k2-speak-tag">🔊 點圖聽聲音</span>
-      </button>
-      <div class="options-grid k2-bridge-grid" id="k2-bridge-opts"></div>
-    `;
-
-    const clueBtn = document.getElementById('btn-k2-clue');
-    if (clueBtn) {
-      clueBtn.onclick = () => {
-        this.sound.playPop();
-        this.sound.speak(q.tts || q.answer);
-      };
-    }
-
-    const wrap = document.getElementById('k2-bridge-opts');
-    q.shuffledOptions.forEach((opt, idx) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'option-card-btn k2-bridge-btn';
-      btn.dataset.optIdx = idx;
-      if (s.answered) {
-        if (opt === q.answer) btn.classList.add('correct-pick');
-        else if (opt === s.pickedValue) btn.classList.add('wrong-pick');
-      }
-      const zy = q.optZhuyin && q.optZhuyin[opt];
-      btn.innerHTML = `
-        <span class="k2-bridge-char-wrap">${renderCharWithZhuyin(opt, zy, 'k2ruby')}</span>
-        <span role="button" tabindex="0" class="opt-speak-chip" title="聽這個字的發音">🔊</span>
       `;
       const spk = btn.querySelector('.opt-speak-chip');
       if (spk) {

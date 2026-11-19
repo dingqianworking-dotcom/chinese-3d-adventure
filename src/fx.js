@@ -1,4 +1,4 @@
-// 60fps Canvas 2D Arcade Juice & Particle Engine (Confetti, Shockwaves, Flying Darts, Floating Text, Screen Shake)
+// 60fps Canvas 2D Arcade Juice & Particle Engine (Confetti, Shockwaves, Flying Projectiles, Floating Text, Screen Shake)
 class FXEngine {
   constructor(canvasId = 'fx-canvas') {
     this.canvas = typeof document !== 'undefined' ? document.getElementById(canvasId) : null;
@@ -88,22 +88,42 @@ class FXEngine {
     this.texts.push({ x, y, vy: -95, text, color, life: 1.05, maxLife: 1.05 });
   }
 
-  flyDart(fromX, fromY, toX, toY, onArrive) {
+  flyItem(fromX, fromY, toX, toY, emoji = '🎯', trailColor = 'rgba(253, 224, 71, 0.82)', onArrive = null, arcHeight = 62) {
     if (!this.ctx) {
       if (onArrive) onArrive();
       return;
     }
-    this.darts.push({
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (onArrive) onArrive();
+    };
+    const item = {
       fromX, fromY, toX, toY,
+      emoji,
+      trailColor,
+      arcHeight,
       t: 0,
       dur: 0.24,
-      onArrive,
-    });
+      onArrive: finish,
+    };
+    this.darts.push(item);
+    // Safety fallback if requestAnimationFrame is throttled in background tabs
+    setTimeout(() => {
+      const idx = this.darts.indexOf(item);
+      if (idx >= 0) this.darts.splice(idx, 1);
+      finish();
+    }, 480);
+  }
+
+  flyDart(fromX, fromY, toX, toY, onArrive) {
+    this.flyItem(fromX, fromY, toX, toY, '🎯', 'rgba(253, 224, 71, 0.82)', onArrive, 55);
   }
 
   screenShake(px = 7) {
     const shell = document.querySelector('.app-shell');
-    if (!shell) return;
+    if (!shell || typeof shell.animate !== 'function') return;
     shell.animate(
       [
         { transform: 'translate(0, 0)' },
@@ -139,18 +159,17 @@ class FXEngine {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.w, this.h);
 
-    // Flying Darts
+    // Flying Projectiles (Darts, Treats, Magic Keys, Fish, Lasers)
     for (let i = this.darts.length - 1; i >= 0; i--) {
       const d = this.darts[i];
       d.t += dt / d.dur;
       const p = Math.min(1, d.t);
       const x = d.fromX + (d.toX - d.fromX) * p;
-      const y = d.fromY + (d.toY - d.fromY) * p - Math.sin(p * Math.PI) * 55;
+      const y = d.fromY + (d.toY - d.fromY) * p - Math.sin(p * Math.PI) * (d.arcHeight || 55);
       const ang = Math.atan2(d.toY - d.fromY, d.toX - d.fromX);
 
-      // Golden trail
       ctx.save();
-      ctx.strokeStyle = 'rgba(253, 224, 71, 0.78)';
+      ctx.strokeStyle = d.trailColor || 'rgba(253, 224, 71, 0.78)';
       ctx.lineWidth = 6;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -158,13 +177,12 @@ class FXEngine {
       ctx.lineTo(x, y);
       ctx.stroke();
 
-      // Dart emoji / body
       ctx.translate(x, y);
-      ctx.rotate(ang + Math.PI / 4);
-      ctx.font = '34px sans-serif';
+      ctx.rotate(d.emoji === '🎯' ? ang + Math.PI / 4 : Math.sin(p * Math.PI * 3) * 0.25);
+      ctx.font = '36px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('🎯', 0, 0);
+      ctx.fillText(d.emoji || '🎯', 0, 0);
       ctx.restore();
 
       if (p >= 1) {
